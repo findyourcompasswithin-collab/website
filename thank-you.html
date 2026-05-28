@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Thank You | Find Your Compass Within</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Allura&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.card{background:#F2E8D9;border-radius:14px;max-width:500px;width:100%;overflow:hidden;text-align:center}
+.card-top{background:#2F4F3F;padding:40px 36px 32px;position:relative}
+.card-top::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#C2A46F,#A6B695,#C2A46F)}
+.card-top h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:400;color:#F5F0E8;line-height:1.2;margin-bottom:8px}
+.card-top h1 em{color:#d9be92}
+.card-top p{font-size:13px;color:rgba(245,240,232,0.5);font-weight:300}
+.card-body{padding:32px 36px}
+.card-body p{font-size:14px;color:#5a7a68;line-height:1.8;margin-bottom:20px}
+.email-note{background:#fff;border:0.5px solid #E6D8C3;border-radius:8px;padding:16px 20px;margin-bottom:24px;text-align:left}
+.email-note p{font-size:13px;color:#2F4F3F;font-weight:500;margin:0 0 4px}
+.email-note span{font-size:12px;color:#5a7a68;font-weight:300;line-height:1.6}
+.btn{display:inline-block;background:#C2A46F;color:#fff;text-decoration:none;padding:13px 28px;border-radius:6px;font-size:13px;font-weight:500;letter-spacing:0.3px;transition:opacity 0.2s;cursor:pointer;border:none}
+.btn:hover{opacity:0.88}
+.btn-outline{background:transparent;color:#2F4F3F;border:1px solid #C2A46F;color:#C2A46F;margin-left:10px}
+.script{font-family:'Allura',cursive;font-size:26px;color:#C2A46F;margin-bottom:12px;display:block}
+.footer-note{font-size:11px;color:rgba(47,79,63,0.4);margin-top:20px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="card-top">
+    <span class="script" style="color:rgba(194,164,111,0.8)">Well done.</span>
+    <h1>Your purchase is <em>confirmed</em></h1>
+    <p>Payment processed securely via Payfast</p>
+  </div>
+  <div class="card-body">
+    <p>Your download link is on its way to your inbox. It may take a minute or two to arrive. Please also check your spam folder if you do not see it.</p>
+
+    <div class="email-note">
+      <p>&#9993; Check your email</p>
+      <span>We have sent your download link to the email address you provided at checkout. The links are valid for 48 hours. Please save your files to your device.</span>
+    </div>
+
+    <a href="/" class="btn">Back to the website</a>
+    <a href="mailto:hello@findyourcompasswithin.com" class="btn btn-outline">Contact us</a>
+
+    <p class="footer-note">If you have not received your email within 10 minutes, please email us at hello@findyourcompasswithin.com and we will send your files manually.</p>
+  </div>
+</div>
+</body>
+</html>
