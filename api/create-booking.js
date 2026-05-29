@@ -104,7 +104,7 @@ export default async function handler(req, res) {
   const resend      = new Resend(process.env.RESEND_API_KEY);
   const siteUrl     = process.env.SITE_URL || 'https://findyourcompasswithin.com';
   const fromAddress = `${process.env.FROM_NAME || 'Find Your Compass Within'} <${process.env.FROM_EMAIL}>`;
-  const zoomLink    = process.env.ZOOM_LINK || '#';
+  const meetLink    = process.env.MEET_LINK || '#';
 
   // Confirmation email to client
   await resend.emails.send({
@@ -116,7 +116,7 @@ export default async function handler(req, res) {
       packageName: booking.package_name,
       displayDate,
       displayTime,
-      zoomLink,
+      meetLink,
       siteUrl,
     }),
   });
@@ -132,7 +132,7 @@ export default async function handler(req, res) {
       <p><strong>Package:</strong> ${escapeHtml(booking.package_name)}</p>
       <p><strong>Date:</strong> ${displayDate}</p>
       <p><strong>Time:</strong> ${displayTime}</p>
-      <p><strong>Zoom:</strong> <a href="${zoomLink}">${zoomLink}</a></p>
+      <p><strong>Google Meet:</strong> <a href="${meetLink}">${meetLink}</a></p>
     </div>`,
   });
 
@@ -144,7 +144,7 @@ function escapeHtml(str) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function buildClientConfirmationEmail({ clientName, packageName, displayDate, displayTime, zoomLink, siteUrl }) {
+function buildClientConfirmationEmail({ clientName, packageName, displayDate, displayTime, meetLink, siteUrl }) {
   const firstName = escapeHtml(clientName.split(' ')[0]);
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#F2E8D9;">
@@ -170,8 +170,8 @@ function buildClientConfirmationEmail({ clientName, packageName, displayDate, di
     </div>
 
     <div style="text-align:center;margin:24px 0;">
-      <a href="${zoomLink}" style="display:inline-block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:14px 28px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;">
-        Join on Zoom &rarr;
+      <a href="${meetLink}" style="display:inline-block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:14px 28px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;">
+        Join Google Meet &rarr;
       </a>
     </div>
 
