@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Book Your Session | Find Your Compass Within</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;padding:40px 20px}
+.wrap{max-width:660px;margin:0 auto}
+
+/* Logo */
+.logo{text-align:center;margin-bottom:32px}
+.logo a{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;color:#F5F0E8;text-decoration:none}
+.logo a em{color:#C2A46F}
+
+/* Card */
+.card{background:#F2E8D9;border-radius:14px;overflow:hidden}
+.card-head{background:#2F4F3F;padding:28px 36px;border:0.5px solid rgba(194,164,111,0.2)}
+.card-head-bar{height:3px;background:linear-gradient(90deg,#C2A46F,#A6B695,#C2A46F);margin-bottom:20px;border-radius:2px}
+.card-head h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:#F5F0E8;margin:0 0 6px}
+.card-head p{font-size:12px;color:rgba(245,240,232,0.45);font-weight:300}
+.card-body{padding:32px 36px}
+
+/* Month navigation */
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.month-nav h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;color:#2F4F3F}
+.nav-btn{background:none;border:0.5px solid #D9C9B0;border-radius:6px;width:34px;height:34px;cursor:pointer;color:#5a7a68;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.nav-btn:hover{border-color:#C2A46F;color:#C2A46F}
+.nav-btn:disabled{opacity:0.3;cursor:not-allowed}
+
+/* Calendar grid */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:24px}
+.cal-day-header{text-align:center;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#8a9e94;padding:8px 0}
+.cal-day{text-align:center;padding:10px 0;border-radius:8px;font-size:13px;cursor:default;transition:all 0.15s;min-height:40px;display:flex;align-items:center;justify-content:center;position:relative}
+.cal-day.empty{background:transparent}
+.cal-day.unavailable{color:#c4b9aa;background:transparent}
+.cal-day.available{background:#fff;color:#2F4F3F;cursor:pointer;font-weight:500;border:0.5px solid #E6D8C3}
+.cal-day.available:hover{background:#2F4F3F;color:#F2E8D9;border-color:#2F4F3F}
+.cal-day.selected{background:#C2A46F;color:#fff;border-color:#C2A46F}
+.cal-day.today{border:1.5px solid #A6B695}
+.cal-day.past{color:#d4c8bb;background:transparent}
+
+/* Time slots */
+.slots-section{margin-top:4px}
+.slots-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#8a9e94;margin-bottom:14px}
+.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.slot-btn{background:#fff;border:0.5px solid #D9C9B0;border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.15s;font-family:'Outfit',sans-serif}
+.slot-btn:hover{border-color:#C2A46F;background:rgba(194,164,111,0.06)}
+.slot-btn.selected{background:#2F4F3F;border-color:#2F4F3F;color:#F2E8D9}
+.slot-time{font-size:14px;font-weight:500;color:#2F4F3F;display:block}
+.slot-btn.selected .slot-time{color:#F2E8D9}
+.slot-label{font-size:10px;color:#8a9e94;display:block;margin-top:2px}
+.slot-btn.selected .slot-label{color:rgba(242,232,217,0.6)}
+.slot-short{font-size:9px;color:#C2A46F;display:block;margin-top:3px}
+
+/* Confirm panel */
+.confirm-panel{background:#fff;border:0.5px solid #D9C9B0;border-radius:10px;padding:20px 24px;margin-bottom:20px;display:none}
+.confirm-panel.show{display:block}
+.confirm-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#C2A46F;margin-bottom:12px}
+.confirm-details p{font-size:14px;color:#2F4F3F;margin-bottom:6px;line-height:1.5}
+.confirm-details strong{font-weight:500}
+
+/* Button */
+.btn-confirm{width:100%;background:#2F4F3F;color:#F2E8D9;border:none;border-radius:7px;padding:14px;font-size:13px;font-weight:500;letter-spacing:0.3px;cursor:pointer;font-family:'Outfit',sans-serif;transition:opacity 0.2s;display:none}
+.btn-confirm.show{display:block}
+.btn-confirm:hover:not(:disabled){opacity:0.88}
+.btn-confirm:disabled{opacity:0.5;cursor:not-allowed}
+
+/* Error / loading */
+.s-error{background:rgba(192,57,43,0.08);border:0.5px solid rgba(192,57,43,0.25);border-radius:7px;padding:14px 18px;color:#c0392b;font-size:13px;margin-bottom:16px;display:none}
+.s-loading{text-align:center;padding:60px 20px;color:rgba(245,240,232,0.5)}
+.spinner{width:32px;height:32px;border:2px solid rgba(194,164,111,0.2);border-top-color:#C2A46F;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.notice{font-size:11px;color:rgba(47,79,63,0.45);text-align:center;margin-top:16px;line-height:1.6}
+@media(max-width:480px){.slots-grid{grid-template-columns:repeat(2,1fr)}.card-body{padding:24px 20px}.card-head{padding:24px 20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="logo">
+    <a href="/">Find Your Compass <em>Within</em></a>
+  </div>
+
+  <div id="loading-state">
+    <div class="s-loading">
+      <div class="spinner"></div>
+      <p>Loading available times…</p>
+    </div>
+  </div>
+
+  <div id="error-state" style="display:none;text-align:center;padding:60px 20px">
+    <p style="color:rgba(245,240,232,0.6);font-size:14px;line-height:1.7">
+      This link is invalid or the questionnaire has not been completed yet.<br>
+      Please email <a href="mailto:melcooper@findyourcompasswithin.com" style="color:#C2A46F">melcooper@findyourcompasswithin.com</a> if you need assistance.
+    </p>
+  </div>
+
+  <div id="scheduler" style="display:none">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-bar"></div>
+        <h2>Book Your Session</h2>
+        <p id="booking-sub">Choose a date and time that works for you — Monday to Friday, 09:00–13:00 SAST</p>
+      </div>
+      <div class="card-body">
+
+        <div class="s-error" id="s-error"></div>
+
+        <!-- Month navigation -->
+        <div class="month-nav">
+          <button class="nav-btn" id="prev-month" onclick="changeMonth(-1)">&#8592;</button>
+          <h3 id="month-title">Month Year</h3>
+          <button class="nav-btn" id="next-month" onclick="changeMonth(1)">&#8594;</button>
+        </div>
+
+        <!-- Calendar -->
+        <div class="cal-grid" id="calendar">
+          <div class="cal-day-header">Sun</div>
+          <div class="cal-day-header">Mon</div>
+          <div class="cal-day-header">Tue</div>
+          <div class="cal-day-header">Wed</div>
+          <div class="cal-day-header">Thu</div>
+          <div class="cal-day-header">Fri</div>
+          <div class="cal-day-header">Sat</div>
+        </div>
+
+        <!-- Time slots -->
+        <div class="slots-section" id="slots-section" style="display:none">
+          <div class="slots-label" id="slots-date-label">Available times</div>
+          <div class="slots-grid" id="slots-grid"></div>
+        </div>
+
+        <!-- Confirm panel -->
+        <div class="confirm-panel" id="confirm-panel">
+          <div class="confirm-label">Your selected session</div>
+          <div class="confirm-details">
+            <p><strong>Date:</strong> <span id="confirm-date"></span></p>
+            <p><strong>Time:</strong> <span id="confirm-time"></span> SAST</p>
+            <p><strong>Duration:</strong> 60 minutes · via Zoom</p>
+          </div>
+        </div>
+
+        <button class="btn-confirm" id="confirm-btn" onclick="confirmBooking()">
+          Confirm This Session &rarr;
+        </button>
+
+        <p class="notice">Sessions run Monday to Friday, 09:00–13:00 South African Standard Time.<br>
+        All times shown are SAST (UTC+2). You will receive a Zoom link in your confirmation email.</p>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let token         = '';
+let currentYear   = 0;
+let currentMonth  = 0;
+let availableData = {};
+let selectedDate  = '';
+let selectedTime  = '';
+
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(window.location.search);
+  token = params.get('token') || '';
+
+  if (!token) { showError(); return; }
+
+  try {
+    const res = await fetch(`/api/verify-token?token=${encodeURIComponent(token)}`);
+    if (!res.ok) throw new Error();
+    const { booking } = await res.json();
+
+    if (!booking.questionnaire_completed) {
+      window.location.href = `/questionnaire?token=${token}`;
+      return;
+    }
+
+    const now = new Date();
+    currentYear  = now.getFullYear();
+    currentMonth = now.getMonth() + 1;
+
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('scheduler').style.display     = 'block';
+
+    await loadMonth(currentYear, currentMonth);
+  } catch {
+    showError();
+  }
+});
+
+function showError() {
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('error-state').style.display   = 'block';
+}
+
+// ── Month loading ─────────────────────────────────────────────────────────────
+async function loadMonth(year, month) {
+  const monthStr = `${year}-${String(month).padStart(2,'0')}`;
+  document.getElementById('month-title').textContent = `${MONTH_NAMES[month-1]} ${year}`;
+
+  try {
+    const res = await fetch(`/api/get-available-slots?month=${monthStr}`);
+    const { availableDates } = await res.json();
+    availableData = availableDates || {};
+  } catch {
+    availableData = {};
+  }
+
+  renderCalendar(year, month);
+  resetSlots();
+
+  // Prev month nav — can't go before current month
+  const now = new Date();
+  document.getElementById('prev-month').disabled =
+    (year === now.getFullYear() && month <= now.getMonth() + 1);
+}
+
+async function changeMonth(delta) {
+  currentMonth += delta;
+  if (currentMonth > 12) { currentMonth = 1; currentYear++; }
+  if (currentMonth < 1)  { currentMonth = 12; currentYear--; }
+  await loadMonth(currentYear, currentMonth);
+}
+
+// ── Calendar render ───────────────────────────────────────────────────────────
+function renderCalendar(year, month) {
+  const grid    = document.getElementById('calendar');
+  const headers = Array.from(grid.querySelectorAll('.cal-day-header'));
+
+  // Remove old day cells
+  grid.querySelectorAll('.cal-day').forEach(d => d.remove());
+
+  const firstDow    = new Date(year, month - 1, 1).getDay();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const today       = new Date().toISOString().split('T')[0];
+
+  // Empty cells before first day
+  for (let i = 0; i < firstDow; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-day empty';
+    grid.appendChild(cell);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const mm      = String(month).padStart(2,'0');
+    const dd      = String(d).padStart(2,'0');
+    const dateStr = `${year}-${mm}-${dd}`;
+    const cell    = document.createElement('div');
+    cell.textContent = d;
+
+    if (dateStr < today) {
+      cell.className = 'cal-day past';
+    } else if (availableData[dateStr]) {
+      cell.className = 'cal-day available';
+      if (dateStr === today) cell.classList.add('today');
+      cell.onclick = () => selectDate(dateStr, cell);
+    } else {
+      cell.className = 'cal-day unavailable';
+      if (dateStr === today) cell.classList.add('today');
+    }
+
+    grid.appendChild(cell);
+  }
+}
+
+// ── Date + slot selection ─────────────────────────────────────────────────────
+function selectDate(dateStr, cell) {
+  // Deselect previous
+  document.querySelectorAll('.cal-day.selected').forEach(c => {
+    c.classList.remove('selected');
+    c.classList.add('available');
+  });
+  cell.classList.add('selected');
+  cell.classList.remove('available');
+
+  selectedDate = dateStr;
+  selectedTime = '';
+  resetConfirm();
+
+  const slots = availableData[dateStr] || [];
+  renderSlots(dateStr, slots);
+}
+
+function renderSlots(dateStr, slots) {
+  const section  = document.getElementById('slots-section');
+  const grid     = document.getElementById('slots-grid');
+  const label    = document.getElementById('slots-date-label');
+  const dateDisp = new Date(`${dateStr}T12:00:00+02:00`).toLocaleDateString('en-ZA', {
+    weekday:'long', day:'numeric', month:'long', timeZone:'Africa/Johannesburg'
+  });
+
+  label.textContent = `Available times — ${dateDisp}`;
+  grid.innerHTML    = '';
+
+  slots.forEach(slot => {
+    const btn = document.createElement('div');
+    btn.className = 'slot-btn';
+    btn.innerHTML = `
+      <span class="slot-time">${slot.time}</span>
+      <span class="slot-label">SAST · 60 min</span>
+      ${slot.shortNotice ? '<span class="slot-short">Short notice</span>' : ''}
+    `;
+    btn.onclick = () => selectSlot(slot.time, btn);
+    grid.appendChild(btn);
+  });
+
+  section.style.display = 'block';
+}
+
+function selectSlot(time, btn) {
+  document.querySelectorAll('.slot-btn.selected').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedTime = time;
+  updateConfirmPanel();
+}
+
+function updateConfirmPanel() {
+  if (!selectedDate || !selectedTime) return;
+
+  const displayDate = new Date(`${selectedDate}T12:00:00+02:00`).toLocaleDateString('en-ZA', {
+    weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone:'Africa/Johannesburg'
+  });
+
+  document.getElementById('confirm-date').textContent = displayDate;
+  document.getElementById('confirm-time').textContent = selectedTime;
+  document.getElementById('confirm-panel').classList.add('show');
+  document.getElementById('confirm-btn').classList.add('show');
+}
+
+function resetSlots() {
+  document.getElementById('slots-section').style.display = 'none';
+  document.getElementById('slots-grid').innerHTML        = '';
+  selectedDate = '';
+  selectedTime = '';
+  resetConfirm();
+}
+
+function resetConfirm() {
+  document.getElementById('confirm-panel').classList.remove('show');
+  document.getElementById('confirm-btn').classList.remove('show');
+}
+
+// ── Confirm booking ───────────────────────────────────────────────────────────
+async function confirmBooking() {
+  if (!selectedDate || !selectedTime) return;
+
+  const btn    = document.getElementById('confirm-btn');
+  const errEl  = document.getElementById('s-error');
+  errEl.style.display = 'none';
+  btn.textContent     = 'Confirming…';
+  btn.disabled        = true;
+
+  try {
+    const res = await fetch('/api/create-booking', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ token, date: selectedDate, time: selectedTime }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Could not confirm booking');
+
+    window.location.href = `/booking-confirmed?date=${encodeURIComponent(data.date)}&time=${encodeURIComponent(data.time)}`;
+  } catch (err) {
+    errEl.textContent    = err.message || 'Something went wrong. Please try again.';
+    errEl.style.display  = 'block';
+    btn.textContent      = 'Confirm This Session →';
+    btn.disabled         = false;
+    // Reload slots to reflect any changes
+    await loadMonth(currentYear, currentMonth);
+  }
+}
+</script>
+</body>
+</html>

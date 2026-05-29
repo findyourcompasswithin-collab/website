@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pre-Session Questionnaire | Find Your Compass Within</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;padding:40px 20px}
+.wrap{max-width:620px;margin:0 auto}
+
+/* Header */
+.q-logo{text-align:center;margin-bottom:32px}
+.q-logo a{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;color:#F5F0E8;text-decoration:none}
+.q-logo a em{color:#C2A46F}
+
+/* Progress */
+.progress-bar{background:rgba(255,255,255,0.1);border-radius:99px;height:3px;margin-bottom:32px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#C2A46F,#A6B695);border-radius:99px;transition:width 0.4s ease}
+.progress-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(194,164,111,0.65);text-align:center;margin-bottom:24px}
+
+/* Card */
+.q-card{background:#F2E8D9;border-radius:14px;overflow:hidden}
+.q-card-head{background:#2F4F3F;border:0.5px solid rgba(194,164,111,0.2);padding:28px 36px}
+.q-card-head-bar{height:3px;background:linear-gradient(90deg,#C2A46F,#A6B695,#C2A46F);margin-bottom:20px;border-radius:2px}
+.q-card-head h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:#F5F0E8;margin:0 0 6px}
+.q-card-head p{font-size:12px;color:rgba(245,240,232,0.45);font-weight:300;line-height:1.5}
+.q-card-body{padding:32px 36px}
+.q-card-body > p{font-size:14px;color:#5a7a68;line-height:1.7;margin-bottom:24px}
+
+/* Steps */
+.step{display:none}
+.step.active{display:block}
+.step-q{font-size:15px;color:#2F4F3F;font-weight:500;margin-bottom:16px;line-height:1.5}
+.step-hint{font-size:12px;color:#8a9e94;margin-bottom:16px;font-weight:300}
+
+/* Inputs */
+textarea{width:100%;background:#fff;border:0.5px solid #D9C9B0;border-radius:8px;padding:14px 16px;font-size:14px;color:#2F4F3F;font-family:'Outfit',sans-serif;resize:vertical;min-height:120px;outline:none;transition:border-color 0.2s;line-height:1.7}
+textarea:focus{border-color:#C2A46F}
+textarea.sm{min-height:80px}
+
+/* Checkboxes */
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.check-item{display:flex;align-items:center;gap:10px;background:#fff;border:0.5px solid #D9C9B0;border-radius:8px;padding:12px 14px;cursor:pointer;transition:border-color 0.2s,background 0.2s}
+.check-item:hover{border-color:#C2A46F}
+.check-item.selected{background:rgba(194,164,111,0.08);border-color:#C2A46F}
+.check-item input[type="checkbox"]{display:none}
+.check-box{width:16px;height:16px;border:1.5px solid #D9C9B0;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.check-item.selected .check-box{background:#C2A46F;border-color:#C2A46F}
+.check-tick{display:none;color:#fff;font-size:10px;font-weight:700}
+.check-item.selected .check-tick{display:block}
+.check-label{font-size:13px;color:#2F4F3F;line-height:1.3}
+
+/* Scale */
+.scale-wrap{margin-bottom:8px}
+.scale-track{position:relative;height:4px;background:rgba(47,79,63,0.12);border-radius:99px;margin:20px 0 8px}
+.scale-fill{height:100%;background:linear-gradient(90deg,#C2A46F,#A6B695);border-radius:99px;transition:width 0.15s}
+input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:transparent;outline:none;position:absolute;top:0;left:0;cursor:pointer}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#C2A46F;cursor:pointer;border:3px solid #F2E8D9;box-shadow:0 2px 6px rgba(0,0,0,0.15)}
+.scale-labels{display:flex;justify-content:space-between;font-size:11px;color:#8a9e94}
+.scale-value{text-align:center;font-family:'Playfair Display',serif;font-size:36px;font-weight:300;color:#2F4F3F;margin:8px 0}
+
+/* Buttons */
+.btn-row{display:flex;gap:12px;margin-top:24px}
+.btn-next{flex:1;background:#2F4F3F;color:#F2E8D9;border:none;border-radius:7px;padding:14px;font-size:13px;font-weight:500;letter-spacing:0.3px;cursor:pointer;font-family:'Outfit',sans-serif;transition:opacity 0.2s}
+.btn-next:hover{opacity:0.88}
+.btn-next:disabled{opacity:0.5;cursor:not-allowed}
+.btn-back{background:transparent;color:#8a9e94;border:0.5px solid #D9C9B0;border-radius:7px;padding:14px 20px;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s}
+.btn-back:hover{border-color:#C2A46F;color:#C2A46F}
+
+/* Optional tag */
+.optional{font-size:10px;color:#C2A46F;font-weight:400;margin-left:6px;letter-spacing:0.5px}
+
+/* Loading / error */
+.q-loading{text-align:center;padding:60px 20px;color:rgba(245,240,232,0.5)}
+.q-loading .spinner{width:36px;height:36px;border:2px solid rgba(194,164,111,0.2);border-top-color:#C2A46F;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.q-error{background:rgba(192,57,43,0.1);border:0.5px solid rgba(192,57,43,0.3);border-radius:8px;padding:16px 20px;color:#c0392b;font-size:13px;margin-bottom:20px;display:none}
+
+@media(max-width:480px){
+  .check-grid{grid-template-columns:1fr}
+  .q-card-body{padding:24px 20px}
+  .q-card-head{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="q-logo">
+    <a href="/">Find Your Compass <em>Within</em></a>
+  </div>
+
+  <!-- Loading state -->
+  <div id="loading-state">
+    <div class="q-loading">
+      <div class="spinner"></div>
+      <p>Loading your questionnaire…</p>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div id="error-state" style="display:none;text-align:center;padding:60px 20px">
+    <p style="color:rgba(245,240,232,0.6);font-size:14px;line-height:1.7">
+      This link is invalid or has already been used.<br>
+      If you believe this is an error, please email
+      <a href="mailto:melcooper@findyourcompasswithin.com" style="color:#C2A46F">melcooper@findyourcompasswithin.com</a>
+    </p>
+  </div>
+
+  <!-- Main questionnaire -->
+  <div id="questionnaire" style="display:none">
+
+    <div class="progress-label" id="step-label">Step 1 of 6</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:16%"></div></div>
+
+    <div class="q-card">
+      <div class="q-card-head">
+        <div class="q-card-head-bar"></div>
+        <h2>Pre-Session Questionnaire</h2>
+        <p id="package-label">Loading…</p>
+      </div>
+      <div class="q-card-body">
+
+        <div class="q-error" id="q-error"></div>
+
+        <!-- STEP 1: Welcome -->
+        <div class="step active" id="step-1">
+          <p>Hi <strong id="client-first-name"></strong>, I'm so glad you're here.</p>
+          <p style="margin-top:12px">Before our session, I'd like to understand where you are right now. There are no right or wrong answers — just honest ones. This takes about 5 minutes.</p>
+          <div class="btn-row">
+            <button class="btn-next" onclick="nextStep(1)">Let's begin &rarr;</button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Stuck areas -->
+        <div class="step" id="step-2">
+          <div class="step-q">Which area of your life feels most stuck right now?</div>
+          <div class="step-hint">Select all that apply.</div>
+          <div class="check-grid" id="areas-grid">
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" value="Career Direction">
+              <div class="check-box"><span class="check-tick">✓</span></div>
+              <span class="check-label">Career Direction</span>
+            </label>
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" value="Self-Confidence">
+              <div class="check-box"><span class="check-tick">✓</span></div>
+              <span class="check-label">Self-Confidence</span>
+            </label>
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" value="Purpose & Identity">
+              <div class="check-box"><span class="check-tick">✓</span></div>
+              <span class="check-label">Purpose & Identity</span>
+            </label>
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" value="Money & Financial Mindset">
+              <div class="check-box"><span class="check-tick">✓</span></div>
+              <span class="check-label">Money & Financial Mindset</span>
+            </label>
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" value="Relationships">
+              <div class="check-box"><span class="check-tick">✓</span></div>
+              <span class="check-label">Relationships</span>
+            </label>
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" value="Returning to Work">
+              <div class="check-box"><span class="check-tick">✓</span></div>
+              <span class="check-label">Returning to Work</span>
+            </label>
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" value="Fear & Limiting Beliefs">
+              <div class="check-box"><span class="check-tick">✓</span></div>
+              <span class="check-label">Fear & Limiting Beliefs</span>
+            </label>
+            <label class="check-item" onclick="toggleCheck(this)">
+              <input type="checkbox" value="Life Balance">
+              <div class="check-box"><span class="check-tick">✓</span></div>
+              <span class="check-label">Life Balance</span>
+            </label>
+          </div>
+          <textarea class="sm" id="areas-other" placeholder="Anything else you'd like to mention… (optional)"></textarea>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(2)">Back</button>
+            <button class="btn-next" onclick="nextStep(2)">Continue &rarr;</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: What brought you here + desired outcome -->
+        <div class="step" id="step-3">
+          <div class="step-q">What brought you to coaching today?</div>
+          <div class="step-hint">Share as much or as little as you like.</div>
+          <textarea id="brought-to-coaching" placeholder="What's been happening? What finally made you take this step?"></textarea>
+          <div style="margin-top:20px">
+            <div class="step-q">In one sentence, what would you most like to walk away with?</div>
+            <textarea class="sm" id="desired-outcome" placeholder="e.g. Clarity on which direction to take my career…"></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(3)">Back</button>
+            <button class="btn-next" onclick="nextStep(3)">Continue &rarr;</button>
+          </div>
+        </div>
+
+        <!-- STEP 4: What have you tried -->
+        <div class="step" id="step-4">
+          <div class="step-q">What have you already tried to address this?</div>
+          <div class="step-hint">This helps me avoid going over ground you've already covered.</div>
+          <textarea id="already-tried" placeholder="Books, other coaching, therapy, conversations with people you trust…"></textarea>
+          <div style="margin-top:20px">
+            <div class="step-q">What does success look like for you in 3 to 6 months?</div>
+            <textarea class="sm" id="success-vision" placeholder="Describe your life if we get this right together…"></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(4)">Back</button>
+            <button class="btn-next" onclick="nextStep(4)">Continue &rarr;</button>
+          </div>
+        </div>
+
+        <!-- STEP 5: Readiness -->
+        <div class="step" id="step-5">
+          <div class="step-q">On a scale of 1 to 10, how ready are you to commit to change right now?</div>
+          <div class="scale-wrap">
+            <div class="scale-value" id="scale-display">7</div>
+            <div class="scale-track">
+              <div class="scale-fill" id="scale-fill" style="width:60%"></div>
+              <input type="range" min="1" max="10" value="7" id="readiness-slider" oninput="updateScale(this.value)">
+            </div>
+            <div class="scale-labels"><span>Not ready</span><span>Fully committed</span></div>
+          </div>
+          <div style="margin-top:24px">
+            <div class="step-q">Is there anything that might get in the way?<span class="optional">Optional</span></div>
+            <div class="step-hint">Time, energy, circumstances — anything that could make this harder.</div>
+            <textarea class="sm" id="current-challenges" placeholder="Be honest — this is useful for me to know…"></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(5)">Back</button>
+            <button class="btn-next" onclick="nextStep(5)">Continue &rarr;</button>
+          </div>
+        </div>
+
+        <!-- STEP 6: Final notes -->
+        <div class="step" id="step-6">
+          <div class="step-q">Is there anything else you'd like me to know before our first session?<span class="optional">Optional</span></div>
+          <div class="step-hint">Anything at all — the floor is yours.</div>
+          <textarea id="additional-notes" placeholder="Anything you feel is important for me to know…"></textarea>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(6)">Back</button>
+            <button class="btn-next" id="submit-btn" onclick="submitQuestionnaire()">Submit & Choose a Time &rarr;</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <p style="text-align:center;font-size:11px;color:rgba(245,240,232,0.25);margin-top:20px">
+      Your responses are confidential and used only to prepare for your session.
+    </p>
+
+  </div>
+</div>
+
+<script>
+let currentStep = 1;
+const totalSteps = 6;
+let token = '';
+
+const progressPct = {1:16, 2:32, 3:50, 4:66, 5:82, 6:100};
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(window.location.search);
+  token = params.get('token') || '';
+
+  if (!token) {
+    showError();
+    return;
+  }
+
+  try {
+    const res  = await fetch(`/api/verify-token?token=${encodeURIComponent(token)}`);
+    if (!res.ok) throw new Error('Invalid token');
+    const { booking } = await res.json();
+
+    // If questionnaire already done, go straight to schedule
+    if (booking.questionnaire_completed) {
+      window.location.href = `/schedule?token=${token}`;
+      return;
+    }
+
+    document.getElementById('client-first-name').textContent = booking.client_name.split(' ')[0];
+    document.getElementById('package-label').textContent     = booking.package_name;
+    document.getElementById('loading-state').style.display   = 'none';
+    document.getElementById('questionnaire').style.display   = 'block';
+  } catch {
+    showError();
+  }
+});
+
+function showError() {
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('error-state').style.display   = 'block';
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function nextStep(from) {
+  if (from === 3) {
+    const brought = document.getElementById('brought-to-coaching').value.trim();
+    const outcome = document.getElementById('desired-outcome').value.trim();
+    if (!brought || !outcome) { showErr('Please answer both questions to continue.'); return; }
+  }
+  if (from === 4) {
+    const tried   = document.getElementById('already-tried').value.trim();
+    const success = document.getElementById('success-vision').value.trim();
+    if (!tried || !success) { showErr('Please answer both questions to continue.'); return; }
+  }
+  clearErr();
+  goToStep(from + 1);
+}
+
+function prevStep(from) {
+  clearErr();
+  goToStep(from - 1);
+}
+
+function goToStep(n) {
+  document.getElementById(`step-${currentStep}`).classList.remove('active');
+  currentStep = n;
+  document.getElementById(`step-${currentStep}`).classList.add('active');
+  document.getElementById('step-label').textContent    = `Step ${n} of ${totalSteps}`;
+  document.getElementById('progress-fill').style.width = progressPct[n] + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('selected');
+  el.querySelector('input[type="checkbox"]').checked = el.classList.contains('selected');
+}
+
+function updateScale(val) {
+  document.getElementById('scale-display').textContent     = val;
+  document.getElementById('scale-fill').style.width        = ((val - 1) / 9 * 100) + '%';
+}
+
+function showErr(msg) {
+  const el = document.getElementById('q-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function clearErr() {
+  const el = document.getElementById('q-error');
+  el.textContent   = '';
+  el.style.display = 'none';
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+async function submitQuestionnaire() {
+  clearErr();
+  const btn = document.getElementById('submit-btn');
+
+  const stuckAreas = Array.from(
+    document.querySelectorAll('#areas-grid .check-item.selected input')
+  ).map(i => i.value);
+
+  const areasOther = document.getElementById('areas-other').value.trim();
+  if (areasOther) stuckAreas.push(areasOther);
+
+  const broughtToCoaching = document.getElementById('brought-to-coaching').value.trim();
+  const desiredOutcome     = document.getElementById('desired-outcome').value.trim();
+  const alreadyTried       = document.getElementById('already-tried').value.trim();
+  const successVision      = document.getElementById('success-vision').value.trim();
+  const readinessScore     = parseInt(document.getElementById('readiness-slider').value, 10);
+  const currentChallenges  = document.getElementById('current-challenges').value.trim();
+  const additionalNotes    = document.getElementById('additional-notes').value.trim();
+
+  if (!broughtToCoaching || !desiredOutcome || !alreadyTried || !successVision) {
+    showErr('Please complete all required fields before submitting.');
+    return;
+  }
+
+  btn.textContent = 'Submitting…';
+  btn.disabled    = true;
+
+  try {
+    const res = await fetch('/api/submit-questionnaire', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        token,
+        responses: {
+          broughtToCoaching,
+          stuckAreas,
+          desiredOutcome,
+          alreadyTried,
+          readinessScore,
+          currentChallenges,
+          successVision,
+          additionalNotes,
+        },
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Something went wrong');
+
+    window.location.href = data.scheduleUrl;
+  } catch (err) {
+    showErr(err.message || 'Something went wrong. Please try again.');
+    btn.textContent = 'Submit & Choose a Time →';
+    btn.disabled    = false;
+  }
+}
+</script>
+</body>
+</html>

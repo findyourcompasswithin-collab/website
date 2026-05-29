@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Session Confirmed | Find Your Compass Within</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Allura&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.card{background:#F2E8D9;border-radius:14px;max-width:480px;width:100%;overflow:hidden;text-align:center}
+.card-top{background:#2F4F3F;padding:40px 36px 32px;position:relative}
+.card-top::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#C2A46F,#A6B695,#C2A46F)}
+.script{font-family:'Allura',cursive;font-size:28px;color:rgba(194,164,111,0.8);display:block;margin-bottom:10px}
+.card-top h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:#F5F0E8;line-height:1.2;margin-bottom:8px}
+.card-top h1 em{color:#d9be92}
+.card-top p{font-size:12px;color:rgba(245,240,232,0.4);font-weight:300}
+.card-body{padding:32px 36px}
+
+.detail-box{background:#fff;border:0.5px solid #E6D8C3;border-radius:8px;padding:18px 22px;margin-bottom:24px;text-align:left}
+.detail-box p{font-size:13px;color:#2F4F3F;line-height:1.8}
+.detail-box strong{font-weight:600}
+.detail-eyebrow{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#C2A46F;margin-bottom:10px;display:block}
+
+.card-body > p{font-size:13px;color:#5a7a68;line-height:1.8;margin-bottom:20px}
+
+.btn{display:inline-block;background:#C2A46F;color:#fff;text-decoration:none;padding:13px 28px;border-radius:6px;font-size:13px;font-weight:500;letter-spacing:0.3px;transition:opacity 0.2s;cursor:pointer;border:none}
+.btn:hover{opacity:0.88}
+.btn-outline{background:transparent;border:1px solid rgba(194,164,111,0.6);color:#C2A46F;margin-left:10px}
+
+.footer-note{font-size:11px;color:rgba(47,79,63,0.4);margin-top:20px;margin-bottom:0;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="card-top">
+    <span class="script">You're booked.</span>
+    <h1>Your session is <em>confirmed</em></h1>
+    <p>A confirmation email is on its way to your inbox</p>
+  </div>
+  <div class="card-body">
+
+    <div class="detail-box">
+      <span class="detail-eyebrow">Session Details</span>
+      <p><strong>Date:</strong> <span id="session-date">—</span></p>
+      <p><strong>Time:</strong> <span id="session-time">—</span></p>
+      <p><strong>Duration:</strong> 60 minutes · via Zoom</p>
+    </div>
+
+    <p>Your confirmation email includes your Zoom link and everything you need to know before we meet. Please save it.</p>
+    <p>I have read through your questionnaire and I am already looking forward to our conversation. Come as you are.</p>
+
+    <a href="/" class="btn">Back to the website</a>
+    <a href="mailto:melcooper@findyourcompasswithin.com" class="btn btn-outline">Contact Mélanie</a>
+
+    <p class="footer-note">To cancel or reschedule, please email<br>melcooper@findyourcompasswithin.com at least 24 hours in advance.</p>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const date   = params.get('date') || '—';
+  const time   = params.get('time') || '—';
+  document.getElementById('session-date').textContent = date;
+  document.getElementById('session-time').textContent = time;
+});
+</script>
+</body>
+</html>
