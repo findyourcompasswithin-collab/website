@@ -23,10 +23,21 @@ export const PRODUCTS = {
   'discovery-bundle': {
     name: 'Chart Your Course — Discovery Bundle',
     displayName: 'Chart Your Course Bundle',
-    price: 57.00,
+    price: 54.00,
     type: 'digital',
     files: [
       'find-your-true-north.pdf',
+      'habit-tracker.pdf',
+      'gratitude-journal.pdf',
+      'letters-to-future-self.pdf',
+    ],
+  },
+  'discovery-bundle-upgrade': {
+    name: 'Chart Your Course — Companion Tools Upgrade',
+    displayName: 'Chart Your Course Companion Tools',
+    price: 27.00,
+    type: 'digital',
+    files: [
       'habit-tracker.pdf',
       'gratitude-journal.pdf',
       'letters-to-future-self.pdf',
@@ -37,28 +48,28 @@ export const PRODUCTS = {
   'fear-audit': {
     name: 'The Fear Audit — Deep-Dive Workbook',
     displayName: 'The Fear Audit',
-    price: 37.00,
+    price: 35.00,
     type: 'digital',
     files: ['fear-audit.pdf'],
   },
   'confidence-code': {
     name: 'The Confidence Code — Deep-Dive Workbook',
     displayName: 'The Confidence Code',
-    price: 37.00,
+    price: 35.00,
     type: 'digital',
     files: ['confidence-code.pdf'],
   },
   'money-mindset': {
     name: 'Money Mindset Workbook — Deep-Dive',
     displayName: 'Money Mindset Workbook',
-    price: 37.00,
+    price: 35.00,
     type: 'digital',
     files: ['money-mindset.pdf'],
   },
   'inner-work-trilogy': {
     name: 'The Inner Work Trilogy Bundle',
     displayName: 'The Inner Work Trilogy',
-    price: 97.00,
+    price: 92.00,
     type: 'digital',
     files: [
       'fear-audit.pdf',
@@ -125,7 +136,7 @@ export const PRODUCTS = {
   'compass-reading': {
     name: 'A Compass Reading — Single Session',
     displayName: 'A Compass Reading',
-    price: 97.00,
+    price: 77.00,
     type: 'coaching',
     sessions: 1,
     files: [],
