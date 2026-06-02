@@ -14,8 +14,8 @@ export const PRODUCTS = {
 
   // ── DISCOVERY BUNDLE ────────────────────────────────────────────────────────
   'workbook': {
-    name: 'Find Your True North Workbook',
-    displayName: 'The Workbook',
+    name: 'The Compass Workbook',
+    displayName: 'The Compass Workbook',
     price: 27.00,
     type: 'digital',
     files: ['find-your-true-north.pdf'],

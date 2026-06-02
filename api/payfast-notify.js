@@ -176,7 +176,7 @@ function generateSignature(data, passphrase = '') {
 
 function fileDisplayName(fileName) {
   const map = {
-    'find-your-true-north.pdf':   'Find Your True North Workbook',
+    'find-your-true-north.pdf':   'The Compass Workbook',
     'habit-tracker.pdf':          '90-Day Habit Tracker',
     'gratitude-journal.pdf':      '30-Day Gratitude & Intention Journal',
     'letters-to-future-self.pdf': 'Letters to My Future Self',
