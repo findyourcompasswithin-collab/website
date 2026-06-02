@@ -558,8 +558,11 @@ footer{background:#162b1e;padding:60px 2rem 30px}
   <section class="cta-banner">
     <div class="cta-banner-inner reveal">
       <h2>Ready to find<br>your <em>compass?</em></h2>
-      <p>Book a free 20-minute discovery call. No pressure, just an honest conversation<br>about where you are and where you want to go.</p>
-      <a href="#" class="btn-primary" onclick="showPage('contact')">Book Your Free Call</a>
+      <p>Start with the free Compass Check-In, or go straight to a workbook.<br>Everything begins with one honest look at where you are.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <button onclick="openFwModal()" class="btn-outline" style="font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;">Free Check-In</button>
+        <a href="#" class="btn-primary" onclick="showPage('resources')">Explore Workbooks</a>
+      </div>
     </div>
   </section>
 
@@ -657,9 +660,9 @@ footer{background:#162b1e;padding:60px 2rem 30px}
 
   <section class="cta-banner">
     <div class="cta-banner-inner reveal">
-      <h2>Want to work<br>together? <em>Let's talk.</em></h2>
-      <p>A free 20-minute discovery call. No commitment, just a real conversation.</p>
-      <a href="#" class="btn-primary" onclick="showPage('contact')">Book Your Free Call</a>
+      <h2>Want to go<br>deeper? <em>Let's work together.</em></h2>
+      <p>From self-guided workbooks to personal coaching — choose the level of support that is right for you.</p>
+      <a href="#" class="btn-primary" onclick="showPage('work')">View Coaching Programmes</a>
     </div>
   </section>
 
@@ -981,8 +984,8 @@ footer{background:#162b1e;padding:60px 2rem 30px}
         </div>
         <div class="step reveal">
           <div class="step-num">2</div>
-          <div class="step-title">Discovery Call</div>
-          <p class="step-text">A free 20-minute call to make sure we're the right fit. No pressure, no pitch.</p>
+          <div class="step-title">Discovery Conversation</div>
+          <p class="step-text">A brief conversation to make sure we are the right fit before we begin working together.</p>
         </div>
         <div class="step reveal">
           <div class="step-num">3</div>
@@ -1034,8 +1037,8 @@ footer{background:#162b1e;padding:60px 2rem 30px}
   <section class="cta-banner">
     <div class="cta-banner-inner reveal">
       <h2>Not sure which<br>programme is <em>right?</em></h2>
-      <p>Book a free discovery call and we'll figure it out together.</p>
-      <a href="#" class="btn-primary" onclick="showPage('contact')">Book Your Free Call</a>
+      <p>Start with the free Compass Check-In. It will show you exactly where the real work is waiting.</p>
+      <button onclick="openFwModal()" class="btn-primary" style="font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;border:none;">Get the Free Check-In</button>
     </div>
   </section>
 
@@ -1368,8 +1371,8 @@ footer{background:#162b1e;padding:60px 2rem 30px}
           <polygon points="25,6 27,24 25,26 23,24" fill="#C2A46F" opacity="0.7"/>
           <circle cx="25" cy="25" r="3" fill="#C2A46F"/>
         </svg>
-        <h4>Book a Free Discovery Call</h4>
-        <p>A free 20-minute conversation to see if we're the right fit. No pressure, no pitch. Just an honest chat about where you are and where you want to go.</p>
+        <h4>Book a Discovery Call</h4>
+        <p>A brief conversation to see if we are the right fit. For those who are ready to invest in real, lasting change and want to explore working together personally.</p>
         <a href="https://calendly.com" target="_blank" class="btn-primary">Book via Calendly</a>
         <p style="font-size:11px;color:var(--muted);margin-top:12px;font-style:italic">Replace this link with your Calendly URL once set up</p>
       </div>
@@ -1446,7 +1449,8 @@ footer{background:#162b1e;padding:60px 2rem 30px}
       </div>
       <div class="footer-col">
         <h4>Workbooks &amp; Programmes</h4>
-        <a href="#" onclick="showPage('resources')">The Workbook — $27</a>
+        <a href="#" onclick="openFwModal()">Compass Check-In — Free</a>
+        <a href="#" onclick="showPage('resources')">The Compass Workbook — $27</a>
         <a href="#" onclick="showPage('resources')">Discovery Bundle — $57</a>
         <a href="#" onclick="showPage('resources')">Inner Work Trilogy — $97</a>
         <a href="#" onclick="showPage('resources')">Unapologetic Series — $117</a>
