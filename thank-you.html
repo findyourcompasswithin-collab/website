@@ -6,46 +6,168 @@
 <title>Thank You | Find Your Compass Within</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Allura&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px}
-.card{background:#F2E8D9;border-radius:14px;max-width:500px;width:100%;overflow:hidden;text-align:center}
-.card-top{background:#2F4F3F;padding:40px 36px 32px;position:relative}
-.card-top::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#C2A46F,#A6B695,#C2A46F)}
-.card-top h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:400;color:#F5F0E8;line-height:1.2;margin-bottom:8px}
-.card-top h1 em{color:#d9be92}
-.card-top p{font-size:13px;color:rgba(245,240,232,0.5);font-weight:300}
-.card-body{padding:32px 36px}
-.card-body p{font-size:14px;color:#5a7a68;line-height:1.8;margin-bottom:20px}
-.email-note{background:#fff;border:0.5px solid #E6D8C3;border-radius:8px;padding:16px 20px;margin-bottom:24px;text-align:left}
-.email-note p{font-size:13px;color:#2F4F3F;font-weight:500;margin:0 0 4px}
-.email-note span{font-size:12px;color:#5a7a68;font-weight:300;line-height:1.6}
-.btn{display:inline-block;background:#C2A46F;color:#fff;text-decoration:none;padding:13px 28px;border-radius:6px;font-size:13px;font-weight:500;letter-spacing:0.3px;transition:opacity 0.2s;cursor:pointer;border:none}
-.btn:hover{opacity:0.88}
-.btn-outline{background:transparent;color:#2F4F3F;border:1px solid #C2A46F;color:#C2A46F;margin-left:10px}
-.script{font-family:'Allura',cursive;font-size:26px;color:#C2A46F;margin-bottom:12px;display:block}
-.footer-note{font-size:11px;color:rgba(47,79,63,0.4);margin-top:20px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#C2A46F;--gold-lt:#d9be92;--gold-pale:#F7EFE4;
+  --cream:#F2E8D9;--sage:#A6B695;--sage-pale:#D9E1D4;
+  --brown:#2F4F3F;--brown-lt:#5a7a68;--border:#E6D8C3;
+}
+body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px}
+
+/* ── Card ── */
+.card{width:100%;max-width:560px;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.35)}
+
+/* ── Top / dark header ── */
+.card-top{background:var(--brown);padding:0;position:relative;text-align:center}
+.top-gradient{height:3px;background:linear-gradient(90deg,var(--gold),var(--sage),var(--gold-lt))}
+.top-inner{padding:40px 40px 36px}
+.eyebrow{font-size:9px;letter-spacing:3.5px;text-transform:uppercase;color:rgba(194,164,111,0.6);font-weight:300;margin-bottom:14px}
+.script{font-family:'Allura',cursive;font-size:44px;color:rgba(194,164,111,0.85);line-height:1;margin-bottom:10px;display:block}
+.card-top h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:400;color:#F5F0E8;line-height:1.3;margin-bottom:10px}
+.card-top h1 em{font-style:italic;color:var(--gold-lt)}
+.confirm-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(166,182,149,0.15);border:0.5px solid rgba(166,182,149,0.3);border-radius:20px;padding:5px 14px;margin-top:4px}
+.confirm-badge span{font-size:11px;color:rgba(166,182,149,0.85);letter-spacing:1px;font-weight:300}
+
+/* ── Divider rule ── */
+.gold-rule{width:44px;height:1px;background:var(--gold);margin:0 auto}
+
+/* ── Body ── */
+.card-body{background:var(--cream);padding:36px 40px}
+.intro{font-size:14px;color:var(--brown-lt);line-height:1.8;margin-bottom:28px;font-weight:300}
+.intro strong{color:var(--brown);font-weight:500}
+
+/* ── Steps ── */
+.steps-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:14px}
+.steps{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.step{display:flex;gap:14px;align-items:flex-start;background:#fff;border:0.5px solid var(--border);border-radius:8px;padding:14px 16px}
+.step-num{min-width:28px;height:28px;border-radius:50%;background:var(--brown);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text h4{font-size:13px;font-weight:500;color:var(--brown);margin-bottom:3px}
+.step-text p{font-size:12px;color:var(--brown-lt);font-weight:300;line-height:1.6}
+
+/* ── Email box ── */
+.email-box{background:var(--gold-pale);border:0.5px solid rgba(194,164,111,0.35);border-radius:8px;padding:16px 20px;margin-bottom:28px;display:flex;gap:12px;align-items:flex-start}
+.email-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.email-box h4{font-size:13px;font-weight:500;color:var(--brown);margin-bottom:3px}
+.email-box p{font-size:12px;color:var(--brown-lt);font-weight:300;line-height:1.6}
+
+/* ── Buttons ── */
+.btns{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.btn{display:inline-block;padding:13px 24px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.3px;text-decoration:none;transition:opacity 0.2s;cursor:pointer;border:none;text-align:center;flex:1;min-width:140px}
+.btn-primary{background:var(--brown);color:#F2E8D9}
+.btn-primary:hover{opacity:0.88}
+.btn-outline{background:transparent;color:var(--gold);border:1px solid rgba(194,164,111,0.5)}
+.btn-outline:hover{background:rgba(194,164,111,0.08)}
+
+/* ── Sign-off ── */
+.signoff{border-top:0.5px solid var(--border);padding-top:20px;display:flex;align-items:center;gap:14px}
+.signoff-text p{font-size:13px;font-weight:300;color:var(--brown-lt);line-height:1.7}
+.signoff-text p em{font-family:'Playfair Display',serif;font-style:italic;color:var(--brown);font-size:14px}
+.avatar-circle{width:44px;height:44px;border-radius:50%;background:var(--brown);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(194,164,111,0.4)}
+.avatar-circle span{font-family:'Allura',cursive;font-size:22px;color:var(--gold-lt)}
+
+/* ── Footer ── */
+.card-footer{background:var(--brown);padding:16px 40px;text-align:center}
+.card-footer p{font-size:11px;color:rgba(245,240,232,0.3);font-weight:300;line-height:1.7}
+.card-footer a{color:rgba(194,164,111,0.55);text-decoration:none}
+.card-footer a:hover{color:rgba(194,164,111,0.8)}
+.bottom-gradient{height:3px;background:linear-gradient(90deg,var(--sage),var(--gold),var(--gold-lt))}
+
+/* ── Below card ── */
+.below-card{margin-top:24px;text-align:center}
+.below-card p{font-size:11px;color:rgba(245,240,232,0.25);letter-spacing:1.5px;text-transform:uppercase;font-weight:300}
+
+@media(max-width:480px){
+  .card-body{padding:28px 24px}
+  .top-inner{padding:32px 24px 28px}
+  .card-footer{padding:16px 24px}
+  .btns{flex-direction:column}
+  .btn{min-width:unset}
+}
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="card-top">
-    <span class="script" style="color:rgba(194,164,111,0.8)">Well done.</span>
-    <h1>Your purchase is <em>confirmed</em></h1>
-    <p>Payment processed securely via Payfast</p>
-  </div>
-  <div class="card-body">
-    <p>Your download link is on its way to your inbox. It may take a minute or two to arrive. Please also check your spam folder if you do not see it.</p>
 
-    <div class="email-note">
-      <p>&#9993; Check your email</p>
-      <span>We have sent your download link to the email address you provided at checkout. The links are valid for 48 hours. Please save your files to your device.</span>
+<div class="card">
+
+  <!-- Dark header -->
+  <div class="card-top">
+    <div class="top-gradient"></div>
+    <div class="top-inner">
+      <p class="eyebrow">Find Your Compass Within</p>
+      <span class="script">Well done.</span>
+      <div class="gold-rule" style="margin-bottom:18px"></div>
+      <h1>Your purchase is <em>confirmed</em></h1>
+      <div class="confirm-badge">
+        <span>&#10003;&nbsp; Payment processed securely via PayFast</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="card-body">
+
+    <p class="intro">
+      Thank you for investing in yourself. <strong>Your download link is already on its way</strong> to the email address you provided at checkout. Here is what to expect next.
+    </p>
+
+    <p class="steps-label">What happens now</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h4>Check your inbox</h4>
+          <p>Your download email has been sent. It may take a minute or two to arrive. Please also check your spam or junk folder if you do not see it.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h4>Save your files immediately</h4>
+          <p>Your download links are valid for 48 hours. Save your PDF files to your device or cloud storage as soon as you receive them.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h4>Begin when you are ready</h4>
+          <p>There is no rush and no right way. Open your workbook when you have a quiet moment and give yourself permission to be honest.</p>
+        </div>
+      </div>
     </div>
 
-    <a href="/" class="btn">Back to the website</a>
-    <a href="mailto:melcooper@findyourcompasswithin.com" class="btn btn-outline">Contact us</a>
+    <div class="email-box">
+      <div class="email-icon">&#9993;</div>
+      <div>
+        <h4>Did not receive your email?</h4>
+        <p>If it has not arrived within 10 minutes, email us directly and we will send your files manually. We are always happy to help.</p>
+      </div>
+    </div>
 
-    <p class="footer-note">If you have not received your email within 10 minutes, please email us at melcooper@findyourcompasswithin.com and we will send your files manually.</p>
+    <div class="btns">
+      <a href="/" class="btn btn-primary">Back to the website</a>
+      <a href="mailto:melcooper@findyourcompasswithin.com" class="btn btn-outline">Contact Mélanie</a>
+    </div>
+
+    <div class="signoff">
+      <div class="avatar-circle"><span>M</span></div>
+      <div class="signoff-text">
+        <p>With care,<br><em>Mélanie Cooper</em><br><span style="font-size:11px;color:var(--brown-lt);font-weight:300">Find Your Compass Within</span></p>
+      </div>
+    </div>
+
   </div>
+
+  <!-- Footer -->
+  <div class="card-footer">
+    <p>Download links expire after 48 hours. If yours expire before you save your files,<br>email <a href="mailto:melcooper@findyourcompasswithin.com">melcooper@findyourcompasswithin.com</a> and we will resend them.</p>
+  </div>
+  <div class="bottom-gradient"></div>
+
 </div>
+
+<div class="below-card">
+  <p>findyourcompasswithin.com</p>
+</div>
+
 </body>
 </html>
