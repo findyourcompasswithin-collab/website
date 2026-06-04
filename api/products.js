@@ -20,10 +20,21 @@ export const PRODUCTS = {
     type: 'digital',
     files: ['find-your-true-north.pdf'],
   },
+  'chart-your-course': {
+    name: 'Chart Your Course',
+    displayName: 'Chart Your Course',
+    price: 27.00,
+    type: 'digital',
+    files: [
+      'habit-tracker.pdf',
+      'gratitude-journal.pdf',
+      'letters-to-future-self.pdf',
+    ],
+  },
   'discovery-bundle': {
-    name: 'Chart Your Course — Discovery Bundle',
-    displayName: 'Chart Your Course Bundle',
-    price: 54.00,
+    name: 'The Discovery Bundle',
+    displayName: 'The Discovery Bundle',
+    price: 44.00,
     type: 'digital',
     files: [
       'find-your-true-north.pdf',
