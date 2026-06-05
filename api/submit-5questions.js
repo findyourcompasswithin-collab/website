@@ -107,12 +107,14 @@ export default async function handler(req, res) {
     <div style="font-family:'Georgia',serif;font-size:22px;font-weight:400;color:#F5F0E8;">Thank you, ${firstName}.</div>
   </div>
   <div style="padding:32px;">
-    <p style="font-size:15px;color:#3d5e50;line-height:1.8;">Your answers are with me. I have read them, and I want you to know — what you shared takes honesty. That matters.</p>
+    <p style="font-size:15px;color:#3d5e50;line-height:1.8;">Your answers are with me. I have read them, and I want you to know that what you shared takes honesty. That matters.</p>
     <p style="font-size:15px;color:#3d5e50;line-height:1.8;">This is the beginning. You have already done something most people put off indefinitely. You stopped, you reflected, and you were honest about where you are.</p>
     <p style="font-size:15px;color:#3d5e50;line-height:1.8;">If you are ready to take the next step, you can explore the tools at your own pace, or reach out and we can talk about what working together looks like.</p>
     <div style="text-align:center;margin:32px 0;">
       <a href="https://findyourcompasswithin.com" style="background:#C2A46F;color:#fff;text-decoration:none;padding:14px 32px;border-radius:7px;font-size:14px;font-weight:500;letter-spacing:0.3px;">Explore Your Next Step</a>
     </div>
+    <div style="height:1px;background:#E6D8C3;margin:24px 0;"></div>
+    <p style="font-size:12px;color:#A6A69E;line-height:1.7;text-align:center;">If this email landed in your Promotions or Updates tab, move it to your Primary inbox so you do not miss future messages. You can also add <a href="mailto:melcooper@findyourcompasswithin.com" style="color:#C2A46F;text-decoration:none;">melcooper@findyourcompasswithin.com</a> to your contacts.</p>
     <div style="height:1px;background:#E6D8C3;margin:24px 0;"></div>
     <p style="font-size:13px;color:#3d5e50;line-height:1.8;">With care,<br>
     <strong style="font-family:'Georgia',serif;font-style:normal;color:#2F4F3F;font-size:15px;">Mel</strong><br>
