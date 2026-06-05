@@ -2,7 +2,7 @@
  * POST /api/create-booking
  * ──────────────────────────
  * Books a session slot. Validates availability, saves booking,
- * and sends confirmation emails to both client and Mélanie.
+ * and sends confirmation emails to both client and Mel.
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -121,7 +121,7 @@ export default async function handler(req, res) {
     }),
   });
 
-  // Notification to Mélanie
+  // Notification to Mel
   await resend.emails.send({
     from:    fromAddress,
     to:      process.env.FROM_EMAIL,
@@ -187,7 +187,7 @@ function buildClientConfirmationEmail({ clientName, packageName, displayDate, di
     </p>
     <p style="font-family:Georgia,serif;font-size:13px;font-style:italic;color:#C2A46F;margin:16px 0 0;">
       With care,<br>
-      <strong style="font-family:Georgia,serif;font-style:normal;color:#2F4F3F;font-size:15px;">Mélanie</strong>
+      <strong style="font-family:Georgia,serif;font-style:normal;color:#2F4F3F;font-size:15px;">Mel</strong>
     </p>
   </td></tr>
   <tr><td style="background:#2F4F3F;padding:20px 36px;border-radius:0 0 10px 10px;text-align:center;">

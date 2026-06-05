@@ -2,7 +2,7 @@
  * POST /api/submit-questionnaire
  * ───────────────────────────────
  * Saves questionnaire responses, marks booking as questionnaire_complete,
- * emails responses to Mélanie, and returns the schedule URL to the client.
+ * emails responses to Mel, and returns the schedule URL to the client.
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     .update({ questionnaire_completed: true, status: 'questionnaire_complete' })
     .eq('id', booking.id);
 
-  // Email responses to Mélanie
+  // Email responses to Mel
   const resend      = new Resend(process.env.RESEND_API_KEY);
   const fromAddress = `${process.env.FROM_NAME || 'Find Your Compass Within'} <${process.env.FROM_EMAIL}>`;
 
