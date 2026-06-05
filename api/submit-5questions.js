@@ -62,27 +62,27 @@ export default async function handler(req, res) {
     <div style="height:1px;background:#E6D8C3;margin:20px 0;"></div>
 
     <div style="margin-bottom:18px;">
-      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A6B695;margin-bottom:6px">Q1 — Where are you right now?</div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A6B695;margin-bottom:6px">Q1: Where are you right now?</div>
       <div style="font-size:14px;color:#2F4F3F;background:#F9F5EF;border-left:3px solid #C2A46F;padding:10px 14px;border-radius:0 6px 6px 0;">${q1}</div>
     </div>
 
     <div style="margin-bottom:18px;">
-      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A6B695;margin-bottom:6px">Q2 — What is weighing on you most?</div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A6B695;margin-bottom:6px">Q2: What is weighing on you most?</div>
       <div style="font-size:14px;color:#2F4F3F;background:#F9F5EF;border-left:3px solid #C2A46F;padding:10px 14px;border-radius:0 6px 6px 0;">${q2}</div>
     </div>
 
     <div style="margin-bottom:18px;">
-      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A6B695;margin-bottom:6px">Q3 — What is getting in the way?</div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A6B695;margin-bottom:6px">Q3: What is getting in the way?</div>
       <div style="font-size:14px;color:#2F4F3F;background:#F9F5EF;border-left:3px solid #C2A46F;padding:10px 14px;border-radius:0 6px 6px 0;">${q3}</div>
     </div>
 
     <div style="margin-bottom:18px;">
-      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A6B695;margin-bottom:6px">Q4 — What do you most need right now?</div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A6B695;margin-bottom:6px">Q4: What do you most need right now?</div>
       <div style="font-size:14px;color:#2F4F3F;background:#F9F5EF;border-left:3px solid #C2A46F;padding:10px 14px;border-radius:0 6px 6px 0;">${q4}</div>
     </div>
 
     <div style="margin-bottom:18px;">
-      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A6B695;margin-bottom:6px">Q5 — Commitment to change</div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#A6B695;margin-bottom:6px">Q5: Commitment to change</div>
       <div style="font-size:14px;color:#2F4F3F;background:#F9F5EF;border-left:3px solid #C2A46F;padding:10px 14px;border-radius:0 6px 6px 0;">${q5}</div>
     </div>
 
