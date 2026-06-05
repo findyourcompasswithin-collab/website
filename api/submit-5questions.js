@@ -97,7 +97,7 @@ export default async function handler(req, res) {
     await resend.emails.send({
       from:    fromAddress,
       to:      cleanEmail,
-      subject: `Thank you, ${firstName} — your answers are with me`,
+      subject: `Thank you, ${firstName}. Your answers are with me.`,
       html: `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:'Outfit',sans-serif;background:#F2E8D9;padding:30px 20px;">
 <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;border:0.5px solid #E6D8C3;">
