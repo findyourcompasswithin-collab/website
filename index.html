@@ -310,6 +310,9 @@ footer{background:#162b1e;padding:60px 2rem 30px}
 .fiveq-option{padding:14px 18px;border:0.5px solid var(--warm-border);border-radius:8px;font-size:14px;color:var(--mid);cursor:pointer;transition:all 0.2s;line-height:1.5;background:#fff;user-select:none}
 .fiveq-option:hover{border-color:var(--gold);color:var(--dark);background:rgba(194,164,111,0.05)}
 .fiveq-option.selected{border-color:var(--gold);background:rgba(194,164,111,0.1);color:var(--dark);font-weight:500}
+.fiveq-other-input{display:none;margin-top:8px}
+.fiveq-other-input textarea{width:100%;padding:12px 16px;border:0.5px solid var(--gold);border-radius:8px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--dark);background:rgba(194,164,111,0.04);outline:none;resize:none;line-height:1.6;box-sizing:border-box}
+.fiveq-other-input textarea::placeholder{color:var(--muted);font-style:italic;font-weight:300}
 @media(max-width:600px){.fiveq-block div[style*="grid-template-columns"]{grid-template-columns:1fr!important}}
 
 /* ── WHATSAPP ── */
@@ -1417,6 +1420,8 @@ footer{background:#162b1e;padding:60px 2rem 30px}
             <div class="fiveq-option" data-value="I know something needs to change but I cannot name what it is">I know something needs to change but I cannot name what it is</div>
             <div class="fiveq-option" data-value="I have lost myself somewhere along the way and want to find my way back">I have lost myself somewhere along the way and want to find my way back</div>
             <div class="fiveq-option" data-value="I am at a crossroads and need clarity before I make a big decision">I am at a crossroads and need clarity before I make a big decision</div>
+            <div class="fiveq-option fiveq-other-trigger" data-value="other">Something else. Please tell me in your own words.</div>
+            <div class="fiveq-other-input"><textarea rows="3" placeholder="Share what feels true for you right now..."></textarea></div>
           </div>
         </div>
 
@@ -1429,6 +1434,8 @@ footer{background:#162b1e;padding:60px 2rem 30px}
             <div class="fiveq-option" data-value="My identity. I do not recognise myself anymore.">My identity. I do not recognise myself anymore.</div>
             <div class="fiveq-option" data-value="My energy. I am running on empty and have nothing left for myself.">My energy. I am running on empty and have nothing left for myself.</div>
             <div class="fiveq-option" data-value="My direction. I have options but no clarity on which path is right.">My direction. I have options but no clarity on which path is right.</div>
+            <div class="fiveq-option fiveq-other-trigger" data-value="other">Something else. Please tell me in your own words.</div>
+            <div class="fiveq-other-input"><textarea rows="3" placeholder="Share what feels heaviest right now..."></textarea></div>
           </div>
         </div>
 
@@ -1441,6 +1448,8 @@ footer{background:#162b1e;padding:60px 2rem 30px}
             <div class="fiveq-option" data-value="Not knowing who I am outside of what I do for others">Not knowing who I am outside of what I do for others</div>
             <div class="fiveq-option" data-value="Feeling like my needs always come last">Feeling like my needs always come last</div>
             <div class="fiveq-option" data-value="Overwhelm. Too many thoughts, not enough clarity.">Overwhelm. Too many thoughts, not enough clarity.</div>
+            <div class="fiveq-option fiveq-other-trigger" data-value="other">Something else. Please tell me in your own words.</div>
+            <div class="fiveq-other-input"><textarea rows="3" placeholder="Describe what you think is holding you back..."></textarea></div>
           </div>
         </div>
 
@@ -1453,6 +1462,8 @@ footer{background:#162b1e;padding:60px 2rem 30px}
             <div class="fiveq-option" data-value="To feel like myself again">To feel like myself again</div>
             <div class="fiveq-option" data-value="Permission to prioritise my own needs without guilt">Permission to prioritise my own needs without guilt</div>
             <div class="fiveq-option" data-value="Practical tools I can work through in my own time">Practical tools I can work through in my own time</div>
+            <div class="fiveq-option fiveq-other-trigger" data-value="other">Something else. Please tell me in your own words.</div>
+            <div class="fiveq-other-input"><textarea rows="3" placeholder="Tell me what you most need right now..."></textarea></div>
           </div>
         </div>
 
@@ -1465,6 +1476,8 @@ footer{background:#162b1e;padding:60px 2rem 30px}
             <div class="fiveq-option" data-value="I am open to it but still finding my courage">I am open to it but still finding my courage</div>
             <div class="fiveq-option" data-value="I want to change but I am not sure I know how to start">I want to change but I am not sure I know how to start</div>
             <div class="fiveq-option" data-value="I am exhausted by where I am and that is enough to begin">I am exhausted by where I am and that is enough to begin</div>
+            <div class="fiveq-option fiveq-other-trigger" data-value="other">Something else. Please tell me in your own words.</div>
+            <div class="fiveq-other-input"><textarea rows="3" placeholder="Describe where you are with this honestly..."></textarea></div>
           </div>
         </div>
 
@@ -1757,10 +1770,17 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── 5 QUESTIONS ──
 document.addEventListener('click', function(e) {
   const option = e.target.closest('.fiveq-option');
-  if (!option) return;
+  if (!option || e.target.tagName === 'TEXTAREA') return;
   const group = option.closest('.fiveq-options');
   group.querySelectorAll('.fiveq-option').forEach(o => o.classList.remove('selected'));
   option.classList.add('selected');
+  // Show or hide the "other" text input
+  const otherInput = group.querySelector('.fiveq-other-input');
+  if (otherInput) {
+    const isOther = option.classList.contains('fiveq-other-trigger');
+    otherInput.style.display = isOther ? 'block' : 'none';
+    if (isOther) otherInput.querySelector('textarea').focus();
+  }
   updateFiveQProgress();
 });
 
@@ -1783,8 +1803,15 @@ async function submitFiveQuestions() {
   errEl.style.display = 'none';
 
   const getValue = (name) => {
-    const sel = document.querySelector(`.fiveq-options[data-name="${name}"] .selected`);
-    return sel ? sel.dataset.value : '';
+    const group = document.querySelector(`.fiveq-options[data-name="${name}"]`);
+    if (!group) return '';
+    const sel = group.querySelector('.fiveq-option.selected');
+    if (!sel) return '';
+    if (sel.classList.contains('fiveq-other-trigger')) {
+      const ta = group.querySelector('.fiveq-other-input textarea');
+      return ta ? ta.value.trim() : '';
+    }
+    return sel.dataset.value;
   };
 
   const name  = document.getElementById('fiveq-name').value.trim();

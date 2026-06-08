@@ -186,6 +186,7 @@ function fileDisplayName(fileName) {
     'strength-finder.pdf':        'The Strength Finder',
     'boundary-blueprint.pdf':     'The Boundary Blueprint',
     're-entry.pdf':               'The Re-Entry Workbook',
+    'still-me.pdf':               'Still Me: Finding Your Compass as a Parent',
   };
   return map[fileName] || fileName.replace('.pdf', '').replace(/-/g, ' ');
 }
@@ -214,21 +215,22 @@ function buildCoachingWelcomeEmail({ customerName, product, questionnaireUrl, si
   </td></tr>
   <tr><td style="background:#fff;padding:36px;border:0.5px solid #E6D8C3;border-top:none;">
     <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#2F4F3F;margin:0 0 8px;">Hi ${escapeHtml(customerName)},</p>
-    <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#5a7a68;line-height:1.7;margin:0 0 16px;">
+    <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#2F4F3F;margin:0 0 8px;">Hi ${escapeHtml(customerName.split(' ')[0])},</p>
+    <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#5a7a68;line-height:1.7;margin:0 0 20px;">
       Thank you for investing in <strong style="color:#2F4F3F;">${escapeHtml(product.displayName)}</strong>. I am looking forward to working with you.
     </p>
-    <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#5a7a68;line-height:1.7;margin:0 0 24px;">
-      Before we meet, please complete your short pre-session questionnaire. It helps me arrive fully prepared so every minute of our time together counts.
-    </p>
-    <div style="text-align:center;margin:28px 0;">
-      <a href="${questionnaireUrl}" style="display:inline-block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:16px 32px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.3px;">
-        Complete Your Questionnaire &rarr;
-      </a>
+    <p style="font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:#2F4F3F;margin:0 0 12px;letter-spacing:0.3px;text-transform:uppercase;">Before your first session, please complete two short steps:</p>
+
+    <div style="background:#F7EFE4;border-left:3px solid #C2A46F;border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 12px;">
+      <p style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:#2F4F3F;margin:0 0 4px;">Step 1: The 5 Questions</p>
+      <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0 0 10px;line-height:1.6;">If you have not already answered the 5 Questions on the website, please take 2 minutes to do that now. Your answers give me important context before we even speak.</p>
+      <a href="${siteUrl}/#5questions" style="font-family:'Outfit',sans-serif;font-size:12px;color:#C2A46F;text-decoration:none;font-weight:500;">Answer the 5 Questions &rarr;</a>
     </div>
-    <div style="background:#F7EFE4;border:0.5px solid #E6D8C3;border-radius:6px;padding:14px 18px;margin:0 0 24px;">
-      <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0;line-height:1.6;">
-        After submitting, you will be taken directly to the booking calendar to choose your session date and time. The entire process takes about 5 minutes.
-      </p>
+
+    <div style="background:#F7EFE4;border-left:3px solid #2F4F3F;border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 24px;">
+      <p style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:#2F4F3F;margin:0 0 4px;">Step 2: Pre-Session Questionnaire and Calendar Booking</p>
+      <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0 0 10px;line-height:1.6;">Complete your short pre-session questionnaire. Once submitted, you will be taken directly to the booking calendar to choose your session date and time.</p>
+      <a href="${questionnaireUrl}" style="display:inline-block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:12px 24px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.3px;">Complete Your Questionnaire &rarr;</a>
     </div>
     <p style="font-family:Georgia,serif;font-size:13px;font-style:italic;color:#C2A46F;margin:16px 0 0;">
       With care,<br>
