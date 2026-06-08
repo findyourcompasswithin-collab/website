@@ -123,6 +123,15 @@ export const PRODUCTS = {
     ],
   },
 
+  // ── STILL ME ────────────────────────────────────────────────────────────────
+  'still-me': {
+    name: 'Still Me: Finding Your Compass as a Parent',
+    displayName: 'Still Me',
+    price: 35.00,
+    type: 'digital',
+    files: ['still-me.pdf'],
+  },
+
   // ── COMPLETE COMPASS COLLECTION ─────────────────────────────────────────────
   'complete-collection': {
     name: 'The Complete Compass Collection',
@@ -140,6 +149,7 @@ export const PRODUCTS = {
       'strength-finder.pdf',
       'boundary-blueprint.pdf',
       're-entry.pdf',
+      'still-me.pdf',
     ],
   },
 
