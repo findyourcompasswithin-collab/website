@@ -44,7 +44,7 @@ export const PRODUCTS = {
     ],
   },
   'discovery-bundle-upgrade': {
-    name: 'Chart Your Course — Companion Tools Upgrade',
+    name: 'Chart Your Course: Companion Tools Upgrade',
     displayName: 'Chart Your Course Companion Tools',
     price: 27.00,
     type: 'digital',
@@ -57,21 +57,21 @@ export const PRODUCTS = {
 
   // ── INNER WORK TRILOGY ──────────────────────────────────────────────────────
   'fear-audit': {
-    name: 'The Fear Audit — Deep-Dive Workbook',
+    name: 'The Fear Audit: Deep-Dive Workbook',
     displayName: 'The Fear Audit',
     price: 35.00,
     type: 'digital',
     files: ['fear-audit.pdf'],
   },
   'confidence-code': {
-    name: 'The Confidence Code — Deep-Dive Workbook',
+    name: 'The Confidence Code: Deep-Dive Workbook',
     displayName: 'The Confidence Code',
     price: 35.00,
     type: 'digital',
     files: ['confidence-code.pdf'],
   },
   'money-mindset': {
-    name: 'Money Mindset Workbook — Deep-Dive',
+    name: 'Money Mindset Workbook: Deep-Dive',
     displayName: 'Money Mindset Workbook',
     price: 35.00,
     type: 'digital',
@@ -91,21 +91,21 @@ export const PRODUCTS = {
 
   // ── THE UNAPOLOGETIC SERIES ─────────────────────────────────────────────────
   'strength-finder': {
-    name: 'The Strength Finder — Specialist Workbook',
+    name: 'The Strength Finder: Specialist Workbook',
     displayName: 'The Strength Finder',
     price: 47.00,
     type: 'digital',
     files: ['strength-finder.pdf'],
   },
   'boundary-blueprint': {
-    name: 'The Boundary Blueprint — Specialist Workbook',
+    name: 'The Boundary Blueprint: Specialist Workbook',
     displayName: 'The Boundary Blueprint',
     price: 47.00,
     type: 'digital',
     files: ['boundary-blueprint.pdf'],
   },
   're-entry': {
-    name: 'The Re-Entry Workbook — Specialist',
+    name: 'The Re-Entry Workbook: Specialist',
     displayName: 'The Re-Entry Workbook',
     price: 47.00,
     type: 'digital',
@@ -123,7 +123,7 @@ export const PRODUCTS = {
     ],
   },
 
-  // ── STILL ME ────────────────────────────────────────────────────────────────
+  // ── STILL ME SERIES ─────────────────────────────────────────────────────────
   'still-me': {
     name: 'Still Me: Finding Your Compass as a Parent',
     displayName: 'Still Me',
@@ -131,12 +131,37 @@ export const PRODUCTS = {
     type: 'digital',
     files: ['still-me.pdf'],
   },
+  'mother-behind-the-role': {
+    name: 'The Mother Behind the Role: Understanding Your Child From the Womb to the World',
+    displayName: 'The Mother Behind the Role',
+    price: 35.00,
+    type: 'digital',
+    files: ['mother-behind-the-role.pdf'],
+  },
+  'perimenopause-pivot': {
+    name: 'The Perimenopause Pivot: Navigating the Shift Nobody Warned You About',
+    displayName: 'The Perimenopause Pivot',
+    price: 35.00,
+    type: 'digital',
+    files: ['perimenopause-pivot.pdf'],
+  },
+  'still-me-series': {
+    name: 'The Still Me Series Bundle',
+    displayName: 'The Still Me Series',
+    price: 92.00,
+    type: 'digital',
+    files: [
+      'still-me.pdf',
+      'mother-behind-the-role.pdf',
+      'perimenopause-pivot.pdf',
+    ],
+  },
 
   // ── COMPLETE COMPASS COLLECTION ─────────────────────────────────────────────
   'complete-collection': {
     name: 'The Complete Compass Collection',
     displayName: 'The Complete Compass Collection',
-    price: 197.00,
+    price: 233.00,
     type: 'digital',
     files: [
       'find-your-true-north.pdf',
@@ -150,12 +175,14 @@ export const PRODUCTS = {
       'boundary-blueprint.pdf',
       're-entry.pdf',
       'still-me.pdf',
+      'mother-behind-the-role.pdf',
+      'perimenopause-pivot.pdf',
     ],
   },
 
   // ── COACHING SESSIONS ───────────────────────────────────────────────────────
   'compass-reading': {
-    name: 'A Compass Reading — Single Session',
+    name: 'A Compass Reading: Single Session',
     displayName: 'A Compass Reading',
     price: 77.00,
     type: 'coaching',
@@ -163,7 +190,7 @@ export const PRODUCTS = {
     files: [],
   },
   'expedition': {
-    name: 'The Expedition — 3-Session Programme',
+    name: 'The Expedition: 3-Session Programme',
     displayName: 'The Expedition',
     price: 297.00,
     type: 'coaching',
@@ -171,7 +198,7 @@ export const PRODUCTS = {
     files: [],
   },
   'guided-navigation': {
-    name: 'Guided Navigation — 5-Session Programme',
+    name: 'Guided Navigation: 5-Session Programme',
     displayName: 'Guided Navigation',
     price: 397.00,
     type: 'coaching',

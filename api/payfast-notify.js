@@ -105,21 +105,21 @@ export default async function handler(req, res) {
       await resend.emails.send({
         from:    fromAddress,
         to:      customerEmail,
-        subject: `Welcome to ${product.displayName} — your first step`,
+        subject: `Welcome to ${product.displayName}: your first step`,
         html:    buildCoachingWelcomeEmail({ customerName, product, questionnaireUrl, siteUrl }),
       });
 
       await resend.emails.send({
         from:    fromAddress,
         to:      process.env.FROM_EMAIL,
-        subject: `New booking: ${product.displayName} — ${customerName}`,
+        subject: `New booking: ${product.displayName}, ${customerName}`,
         html:    `<p style="font-family:sans-serif"><strong>Client:</strong> ${escapeHtml(customerName)} (${escapeHtml(customerEmail)})</p>
-                  <p style="font-family:sans-serif"><strong>Package:</strong> ${escapeHtml(product.displayName)} — $${product.price}</p>
+                  <p style="font-family:sans-serif"><strong>Package:</strong> ${escapeHtml(product.displayName)} · $${product.price}</p>
                   <p style="font-family:sans-serif"><strong>Sessions:</strong> ${product.sessions}</p>
                   <p style="font-family:sans-serif">Questionnaire link sent. You will be notified once completed and a session is booked.</p>`,
       });
 
-      console.log(`[ITN] Coaching booking created for ${customerEmail} — ${productId}`);
+      console.log(`[ITN] Coaching booking created for ${customerEmail} - ${productId}`);
       return res.status(200).send('OK');
     }
 
@@ -145,7 +145,7 @@ export default async function handler(req, res) {
     await resend.emails.send({
       from:    fromAddress,
       to:      customerEmail,
-      subject: `Your download is ready — ${product.displayName}`,
+      subject: `Your download is ready: ${product.displayName}`,
       html:    buildDownloadEmail({ customerName, product, downloadLinks, siteUrl }),
     });
 
@@ -187,6 +187,8 @@ function fileDisplayName(fileName) {
     'boundary-blueprint.pdf':     'The Boundary Blueprint',
     're-entry.pdf':               'The Re-Entry Workbook',
     'still-me.pdf':               'Still Me: Finding Your Compass as a Parent',
+    'mother-behind-the-role.pdf': 'The Mother Behind the Role',
+    'perimenopause-pivot.pdf':    'The Perimenopause Pivot',
   };
   return map[fileName] || fileName.replace('.pdf', '').replace(/-/g, ' ');
 }
@@ -214,8 +216,7 @@ function buildCoachingWelcomeEmail({ customerName, product, questionnaireUrl, si
     </div>
   </td></tr>
   <tr><td style="background:#fff;padding:36px;border:0.5px solid #E6D8C3;border-top:none;">
-    <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#2F4F3F;margin:0 0 8px;">Hi ${escapeHtml(customerName)},</p>
-    <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#2F4F3F;margin:0 0 8px;">Hi ${escapeHtml(customerName.split(' ')[0])},</p>
+    <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#2F4F3F;margin:0 0 8px;">Hi ${firstName},</p>
     <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#5a7a68;line-height:1.7;margin:0 0 20px;">
       Thank you for investing in <strong style="color:#2F4F3F;">${escapeHtml(product.displayName)}</strong>. I am looking forward to working with you.
     </p>
@@ -249,7 +250,7 @@ function buildDownloadEmail({ customerName, product, downloadLinks, siteUrl }) {
   const linkRows = downloadLinks.map(link => `
     <tr><td style="padding:0 0 12px 0;">
       <a href="${link.url}" style="display:block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:14px 20px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:400;">
-        &#8659;&nbsp; Download — ${link.name}
+        &#8659;&nbsp; Download: ${link.name}
       </a>
     </td></tr>`).join('');
 
