@@ -2069,7 +2069,7 @@ document.addEventListener('keydown', function(e) {
       </div>
     </div>
     <div class="co-body">
-      <p>Enter your details below. You will be redirected to Payfast to complete your secure payment. Prices are in US dollars; your card is charged the South African rand equivalent, or you can choose your own currency on the payment page. Your download link will be emailed to you immediately after.</p>
+      <p>Enter your details below. You will be redirected to Payfast to complete your secure payment. Your download link will be emailed to you immediately after.</p>
       <form onsubmit="submitCheckout(event)" novalidate>
         <input type="hidden" id="co-product-id" value="">
         <div class="co-row">
@@ -2087,6 +2087,9 @@ document.addEventListener('keydown', function(e) {
           <input type="email" id="co-email" name="email" autocomplete="email" placeholder="jane@example.com" required>
         </div>
         <div class="co-error" id="co-error"></div>
+        <div style="background:#F7EFE4;border-left:3px solid #C2A46F;border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:10px">
+          <p style="font-size:11px;color:#5a7a68;line-height:1.6;margin:0"><strong style="color:#2F4F3F;font-weight:500">A note on currency:</strong> Payfast is our South African payment partner, so the final amount on their page shows in rand (R). It is the same price converted, not an extra charge, and you can switch to your own currency right on the payment page.</p>
+        </div>
         <button type="submit" class="co-submit" id="co-btn">Proceed to Payment</button>
         <p class="co-note">&#128274;&nbsp; Secured by Payfast &nbsp;·&nbsp; Your details are never stored</p>
       </form>
