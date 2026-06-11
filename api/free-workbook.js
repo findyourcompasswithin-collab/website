@@ -5,7 +5,7 @@
  * Generates a Supabase signed URL for compass-checkin.pdf
  * and emails it to the user via Resend.
  *
- * Optionally saves to a `leads` table — silent fail if it doesn't exist yet.
+ * Optionally saves to a `leads` table - silent fail if it doesn't exist yet.
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -13,7 +13,7 @@ import { Resend } from 'resend';
 
 const BUCKET      = 'workbooks';
 const FILE        = 'compass-checkin.pdf';
-const URL_EXPIRY  = 604800; // 7 days (generous — it's free)
+const URL_EXPIRY  = 604800; // 7 days (generous - it's free)
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
         created_at: new Date().toISOString(),
       });
     } catch (_) {
-      // Non-blocking — table may not exist yet
+      // Non-blocking - table may not exist yet
     }
 
     // ── Send download email ───────────────────────────────────────────────────
@@ -104,7 +104,7 @@ function buildEmail({ firstName, downloadUrl, siteUrl }) {
   <tr><td style="background:#fff;padding:36px;border:0.5px solid #E6D8C3;border-top:none;">
     <p style="font-family:'Outfit',sans-serif;font-size:15px;color:#2F4F3F;margin:0 0 8px;font-weight:400;">Hi ${first},</p>
     <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#5a7a68;line-height:1.75;margin:0 0 20px;font-weight:300;">
-      Your <strong style="color:#2F4F3F;font-weight:500;">Compass Check-In</strong> is ready to download. This is your starting point — an honest look at where you are across eight areas of life, and a visual map of what you discover.
+      Your <strong style="color:#2F4F3F;font-weight:500;">Compass Check-In</strong> is ready to download. This is your starting point: an honest look at where you are across eight areas of life, and a visual map of what you discover.
     </p>
 
     <!-- Download button -->
@@ -124,10 +124,10 @@ function buildEmail({ firstName, downloadUrl, siteUrl }) {
     <!-- What to do next -->
     <p style="font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:#2F4F3F;margin:0 0 10px;">What to do with your map</p>
     <p style="font-family:'Outfit',sans-serif;font-size:13px;color:#5a7a68;line-height:1.75;margin:0 0 20px;font-weight:300;">
-      Once you have scored each area and plotted your Compass Map, sit with the three reflection questions on the final page. They will show you not just where you are — but where the real work is waiting.
+      Once you have scored each area and plotted your Compass Map, sit with the three reflection questions on the final page. They will show you not just where you are, but where the real work is waiting.
     </p>
     <p style="font-family:'Outfit',sans-serif;font-size:13px;color:#5a7a68;line-height:1.75;margin:0 0 24px;font-weight:300;">
-      When you are ready to go deeper, each area of your map has a workbook built specifically around it — designed to take you from awareness into real, lasting change. You can find the full collection at <a href="${siteUrl}" style="color:#2F4F3F;font-weight:500;">findyourcompasswithin.com</a>.
+      When you are ready to go deeper, each area of your map has a workbook built specifically around it, designed to take you from awareness into real, lasting change. You can find the full collection at <a href="${siteUrl}" style="color:#2F4F3F;font-weight:500;">findyourcompasswithin.com</a>.
     </p>
 
     <!-- Sign-off -->

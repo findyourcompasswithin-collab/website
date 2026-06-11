@@ -11,6 +11,7 @@ import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import { PRODUCTS } from './products.js';
+import { convertToZar } from './fx.js';
 
 const BUCKET = 'workbooks';
 const URL_EXPIRY_SECONDS = 172800; // 48 hours
@@ -66,9 +67,13 @@ export default async function handler(req, res) {
       return res.status(200).send('OK');
     }
 
+    // Payfast charges the ZAR conversion of the USD catalogue price. Allow
+    // headroom for exchange-rate updates between checkout and notification;
+    // the signature check above already blocks tampering.
     const receivedAmount = parseFloat(data.amount_gross);
-    if (Math.abs(receivedAmount - product.price) > 0.01) {
-      console.error('[ITN] Amount mismatch', { receivedAmount, expected: product.price });
+    const expectedZar = convertToZar(product.price, 'USD');
+    if (receivedAmount < expectedZar * 0.9) {
+      console.error('[ITN] Amount mismatch', { receivedAmount, expectedZar });
       return res.status(400).send('Amount mismatch');
     }
 

@@ -7,7 +7,9 @@
  * type: 'coaching' → Session package, triggers booking + questionnaire flow
  *
  * File names must match exactly what you upload to Supabase bucket "workbooks".
- * Prices are in USD. Payfast converts for SA cardholders automatically.
+ * Prices are in USD. api/fx.js converts them to ZAR at checkout, because
+ * Payfast settles only in rand; foreign buyers can pay the equivalent in
+ * their own currency via Payfast multi-currency.
  */
 
 export const PRODUCTS = {

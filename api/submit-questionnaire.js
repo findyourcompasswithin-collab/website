@@ -28,7 +28,7 @@ export default async function handler(req, res) {
   }
 
   if (booking.questionnaire_completed) {
-    // Already submitted — just return the schedule URL
+    // Already submitted - just return the schedule URL
     const siteUrl = process.env.SITE_URL || 'https://findyourcompasswithin.com';
     return res.status(200).json({ scheduleUrl: `${siteUrl}/schedule?token=${token}` });
   }
@@ -72,7 +72,7 @@ export default async function handler(req, res) {
   await resend.emails.send({
     from:    fromAddress,
     to:      process.env.FROM_EMAIL,
-    subject: `Questionnaire received: ${booking.client_name} — ${booking.package_name}`,
+    subject: `Questionnaire received: ${booking.client_name}, ${booking.package_name}`,
     html: `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:'Outfit',sans-serif;background:#F2E8D9;padding:30px 20px;">
 <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;border:0.5px solid #E6D8C3;">

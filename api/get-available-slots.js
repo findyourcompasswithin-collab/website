@@ -2,7 +2,7 @@
  * GET /api/get-available-slots?month=YYYY-MM
  * ──────────────────────────────────────────
  * Returns available dates and time slots for a given month.
- * Schedule: Mon–Fri, 09:00–12:00 SAST (UTC+2)
+ * Schedule: Mon-Fri, 09:00-12:00 SAST (UTC+2)
  * Min notice: 60 minutes. Preferred notice: 24 hours (flagged, not blocked).
  * Max horizon: 8 weeks ahead.
  */

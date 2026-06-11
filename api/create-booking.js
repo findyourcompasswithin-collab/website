@@ -52,7 +52,7 @@ export default async function handler(req, res) {
   const slotUtcH = h - SAST_OFFSET;
   const slotMs   = new Date(`${date}T${String(slotUtcH).padStart(2, '0')}:00:00Z`).getTime();
   if (slotMs - Date.now() < MIN_NOTICE_MS) {
-    return res.status(400).json({ error: 'This slot is no longer available — please choose another time' });
+    return res.status(400).json({ error: 'This slot is no longer available, please choose another time' });
   }
 
   // Check slot not blocked
@@ -63,7 +63,7 @@ export default async function handler(req, res) {
     .maybeSingle();
 
   if (blocked) {
-    return res.status(400).json({ error: 'This date is not available — please choose another' });
+    return res.status(400).json({ error: 'This date is not available, please choose another' });
   }
 
   // Check slot not already booked
@@ -76,7 +76,7 @@ export default async function handler(req, res) {
     .maybeSingle();
 
   if (existing) {
-    return res.status(409).json({ error: 'This slot was just taken — please choose another time' });
+    return res.status(409).json({ error: 'This slot was just taken, please choose another time' });
   }
 
   // Confirm booking
@@ -92,7 +92,7 @@ export default async function handler(req, res) {
 
   if (updateError) {
     console.error('[Booking] Update error:', updateError);
-    return res.status(500).json({ error: 'Could not confirm booking — please try again' });
+    return res.status(500).json({ error: 'Could not confirm booking, please try again' });
   }
 
   // Format display date/time
@@ -110,7 +110,7 @@ export default async function handler(req, res) {
   await resend.emails.send({
     from:    fromAddress,
     to:      booking.client_email,
-    subject: `Your session is confirmed — ${displayDate}`,
+    subject: `Your session is confirmed: ${displayDate}`,
     html:    buildClientConfirmationEmail({
       clientName: booking.client_name,
       packageName: booking.package_name,
@@ -125,7 +125,7 @@ export default async function handler(req, res) {
   await resend.emails.send({
     from:    fromAddress,
     to:      process.env.FROM_EMAIL,
-    subject: `Session booked: ${booking.client_name} — ${displayDate} at ${time}`,
+    subject: `Session booked: ${booking.client_name}, ${displayDate} at ${time}`,
     html: `<div style="font-family:'Outfit',sans-serif;padding:20px;">
       <h3 style="color:#2F4F3F;">New session booked</h3>
       <p><strong>Client:</strong> ${escapeHtml(booking.client_name)} (${escapeHtml(booking.client_email)})</p>

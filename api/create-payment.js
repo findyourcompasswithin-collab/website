@@ -10,6 +10,7 @@
 
 import crypto from 'crypto';
 import { PRODUCTS } from './products.js';
+import { convertToZar } from './fx.js';
 
 const PAYFAST_SANDBOX_URL = 'https://sandbox.payfast.co.za/eng/process';
 const PAYFAST_LIVE_URL    = 'https://www.payfast.co.za/eng/process';
@@ -35,6 +36,9 @@ export default async function handler(req, res) {
   const isSandbox = process.env.PAYFAST_SANDBOX === 'true';
   const siteUrl   = process.env.SITE_URL || 'https://findyourcompasswithin.com';
 
+  // Payfast settles only in ZAR. Catalogue prices are USD, so convert first.
+  const amountZar = convertToZar(product.price, 'USD');
+
   // Build Payfast data object (order matters for signature)
   const payfastData = {
     // Merchant details
@@ -53,9 +57,9 @@ export default async function handler(req, res) {
 
     // Transaction details
     m_payment_id:  `FYCW-${productId}-${Date.now()}`, // unique reference
-    amount:        product.price.toFixed(2),
+    amount:        amountZar.toFixed(2),
     item_name:     product.name,
-    item_description: `Digital download — ${product.displayName}`,
+    item_description: `Digital download: ${product.displayName}`,
 
     // Pass the product ID through so the notify handler knows what to deliver
     custom_str1:   productId,
@@ -94,7 +98,7 @@ export default async function handler(req, res) {
   <div class="msg">
     <div class="spinner"></div>
     <h2>Taking you to secure payment</h2>
-    <p>You are being redirected to Payfast.<br>This should only take a moment.</p>
+    <p>You are being redirected to Payfast to pay <strong>R${amountZar.toFixed(2)}</strong>,<br>the South African rand equivalent of $${product.price.toFixed(2)}.<br>You can also choose your own currency on the payment page.<br>This should only take a moment.</p>
   </div>
   <form id="pf" method="post" action="${payfastUrl}">
     ${formFields}
