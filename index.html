@@ -1962,8 +1962,10 @@ function openCheckout(productId) {
   document.getElementById('co-last').value = '';
   document.getElementById('co-email').value = '';
   document.getElementById('co-error').textContent = '';
-  document.getElementById('co-btn').textContent = 'Proceed to Payment';
+  document.getElementById('co-btn').textContent = 'Pay in Rand · Payfast';
   document.getElementById('co-btn').disabled = false;
+  const ppBtn = document.getElementById('co-btn-pp');
+  if (ppBtn) { ppBtn.textContent = 'Pay in Dollars · PayPal'; ppBtn.disabled = false; }
 
   const modal = document.getElementById('checkout-modal');
   modal.style.display = 'flex';
@@ -1978,14 +1980,16 @@ function closeCheckout() {
   setTimeout(() => { modal.style.display = 'none'; document.body.style.overflow = ''; }, 280);
 }
 
-async function submitCheckout(e) {
+async function submitCheckout(e, method) {
   e.preventDefault();
+  method = method || 'payfast';
   const productId = document.getElementById('co-product-id').value;
   const firstName = document.getElementById('co-first').value.trim();
   const lastName  = document.getElementById('co-last').value.trim();
   const email     = document.getElementById('co-email').value.trim();
   const errEl     = document.getElementById('co-error');
   const btn       = document.getElementById('co-btn');
+  const btnPp     = document.getElementById('co-btn-pp');
 
   errEl.textContent = '';
   if (!email || !email.includes('@')) {
@@ -1993,10 +1997,26 @@ async function submitCheckout(e) {
     return;
   }
 
-  btn.textContent = 'Redirecting to payment…';
   btn.disabled = true;
+  if (btnPp) btnPp.disabled = true;
 
   try {
+    if (method === 'paypal') {
+      if (btnPp) btnPp.textContent = 'Redirecting to PayPal…';
+      const res = await fetch('/api/paypal-create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, email, firstName, lastName }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.approvalUrl) {
+        throw new Error(data.error || 'Something went wrong. Please try again.');
+      }
+      window.location.href = data.approvalUrl;
+      return;
+    }
+
+    btn.textContent = 'Redirecting to payment…';
     const res = await fetch('/api/create-payment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2013,8 +2033,9 @@ async function submitCheckout(e) {
     document.close();
   } catch (err) {
     errEl.textContent = err.message || 'Something went wrong. Please try again.';
-    btn.textContent = 'Proceed to Payment';
+    btn.textContent = 'Pay in Rand · Payfast';
     btn.disabled = false;
+    if (btnPp) { btnPp.textContent = 'Pay in Dollars · PayPal'; btnPp.disabled = false; }
   }
 }
 
@@ -2088,9 +2109,10 @@ document.addEventListener('keydown', function(e) {
         </div>
         <div class="co-error" id="co-error"></div>
         <div style="background:#F7EFE4;border-left:3px solid #C2A46F;border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:10px">
-          <p style="font-size:11px;color:#5a7a68;line-height:1.6;margin:0"><strong style="color:#2F4F3F;font-weight:500">A note on currency:</strong> Payfast is our South African payment partner, so the final amount on their page shows in rand (R). It is the same price converted, not an extra charge, and you can switch to your own currency right on the payment page.</p>
+          <p style="font-size:11px;color:#5a7a68;line-height:1.6;margin:0"><strong style="color:#2F4F3F;font-weight:500">Choose how to pay:</strong> Payfast is our South African partner, with cards, Instant EFT, SnapScan and more. The amount there shows in rand (R), the same price converted, not an extra charge. PayPal charges exactly the listed dollar price, anywhere in the world.</p>
         </div>
-        <button type="submit" class="co-submit" id="co-btn">Proceed to Payment</button>
+        <button type="submit" class="co-submit" id="co-btn">Pay in Rand · Payfast</button>
+        <button type="button" class="co-submit" id="co-btn-pp" onclick="submitCheckout(event,'paypal')" style="background:#C2A46F;color:#2F4F3F;margin-top:8px">Pay in Dollars · PayPal</button>
         <p class="co-note">&#128274;&nbsp; Secured by Payfast &nbsp;·&nbsp; Your details are never stored</p>
       </form>
     </div>
