@@ -37,7 +37,7 @@ export default async function handler(req, res) {
   const siteUrl   = process.env.SITE_URL || 'https://findyourcompasswithin.com';
 
   // Payfast settles only in ZAR. Catalogue prices are USD, so convert first.
-  const amountZar = convertToZar(product.price, 'USD');
+  const amountZar = await convertToZar(product.price, 'USD');
 
   // Build Payfast data object (order matters for signature)
   const payfastData = {

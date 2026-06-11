@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     // headroom for exchange-rate updates between checkout and notification;
     // the signature check above already blocks tampering.
     const receivedAmount = parseFloat(data.amount_gross);
-    const expectedZar = convertToZar(product.price, 'USD');
+    const expectedZar = await convertToZar(product.price, 'USD');
     if (receivedAmount < expectedZar * 0.9) {
       console.error('[ITN] Amount mismatch', { receivedAmount, expectedZar });
       return res.status(400).send('Amount mismatch');
