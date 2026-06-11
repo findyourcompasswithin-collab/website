@@ -6,9 +6,9 @@
  * the shared module, then sends the buyer to the thank-you page.
  */
 
-import { PRODUCTS } from './products.js';
-import { capturePayPalOrder } from './paypal.js';
-import { fulfillOrder } from './fulfill.js';
+import { PRODUCTS } from './_products.js';
+import { capturePayPalOrder } from './_paypal.js';
+import { fulfillOrder } from './_fulfill.js';
 
 export default async function handler(req, res) {
   const siteUrl = process.env.SITE_URL || 'https://findyourcompasswithin.com';

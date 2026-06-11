@@ -9,8 +9,8 @@
  */
 
 import crypto from 'crypto';
-import { PRODUCTS } from './products.js';
-import { convertToZar } from './fx.js';
+import { PRODUCTS } from './_products.js';
+import { convertToZar } from './_fx.js';
 
 const PAYFAST_SANDBOX_URL = 'https://sandbox.payfast.co.za/eng/process';
 const PAYFAST_LIVE_URL    = 'https://www.payfast.co.za/eng/process';

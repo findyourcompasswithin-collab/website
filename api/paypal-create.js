@@ -6,8 +6,8 @@
  * the approval URL the browser should redirect to.
  */
 
-import { PRODUCTS } from './products.js';
-import { createPayPalOrder } from './paypal.js';
+import { PRODUCTS } from './_products.js';
+import { createPayPalOrder } from './_paypal.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

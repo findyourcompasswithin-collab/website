@@ -9,9 +9,9 @@
  */
 
 import crypto from 'crypto';
-import { PRODUCTS } from './products.js';
-import { convertToZar } from './fx.js';
-import { fulfillOrder } from './fulfill.js';
+import { PRODUCTS } from './_products.js';
+import { convertToZar } from './_fx.js';
+import { fulfillOrder } from './_fulfill.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).send('Method not allowed');
