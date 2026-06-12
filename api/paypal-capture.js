@@ -65,6 +65,7 @@ export default async function handler(req, res) {
       customerEmail,
       customerName,
       paymentId: cap?.id || orderId,
+      paymentMethod: 'paypal',
     });
 
     if (result.ok) {

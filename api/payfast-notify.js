@@ -82,6 +82,7 @@ export default async function handler(req, res) {
       customerEmail,
       customerName,
       paymentId: data.m_payment_id,
+      paymentMethod: 'payfast',
     });
 
     if (result.ok) {

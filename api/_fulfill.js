@@ -9,11 +9,12 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { PRODUCTS } from './_products.js';
 
 const BUCKET = 'workbooks';
 const URL_EXPIRY_SECONDS = 31536000; // 12 months
 
-export async function fulfillOrder({ product, productId, customerEmail, customerName, paymentId }) {
+export async function fulfillOrder({ product, productId, customerEmail, customerName, paymentId, paymentMethod }) {
   const resend      = new Resend(process.env.RESEND_API_KEY);
   const supabase    = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
   const siteUrl     = process.env.SITE_URL || 'https://www.findyourcompasswithin.com';
@@ -88,6 +89,75 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
     to:      customerEmail,
     subject: `Your download is ready: ${product.displayName}`,
     html:    buildDownloadEmail({ customerName: name, product, downloadLinks, siteUrl }),
+  });
+
+  // Remember the purchase so the customer can re-request links any time via
+  // the My Downloads page. Never blocks delivery if it fails.
+  const { error: recordError } = await supabase.from('purchases').insert({
+    email:          customerEmail,
+    customer_name:  name,
+    product_id:     productId,
+    product_name:   product.displayName,
+    payment_id:     paymentId,
+    payment_method: paymentMethod || null,
+  });
+  if (recordError) console.error('[Fulfill] Could not record purchase:', recordError);
+
+  return { ok: true };
+}
+
+/**
+ * My Downloads: look up every purchase for an email address and send fresh
+ * signed links for all of it. Links are only ever emailed to the original
+ * purchase address, never returned to the browser, so owning the inbox is
+ * the proof of ownership.
+ */
+export async function sendLibraryEmail(email) {
+  const resend      = new Resend(process.env.RESEND_API_KEY);
+  const supabase    = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+  const siteUrl     = process.env.SITE_URL || 'https://www.findyourcompasswithin.com';
+  const fromAddress = `${process.env.FROM_NAME || 'Find Your Compass Within'} <${process.env.FROM_EMAIL}>`;
+
+  const { data: purchases, error } = await supabase
+    .from('purchases')
+    .select('product_id, customer_name')
+    .ilike('email', email);
+
+  if (error) {
+    console.error('[Library] Purchase lookup failed:', error);
+    return { ok: false };
+  }
+  if (!purchases || purchases.length === 0) return { ok: false };
+
+  // Collect the unique files across everything they have bought, using the
+  // live catalogue so bundle contents stay current.
+  const fileSet = new Set();
+  for (const p of purchases) {
+    const prod = PRODUCTS[p.product_id];
+    if (prod && Array.isArray(prod.files)) prod.files.forEach((f) => fileSet.add(f));
+  }
+  if (fileSet.size === 0) return { ok: false };
+
+  const downloadLinks = [];
+  for (const fileName of fileSet) {
+    const { data: urlData, error: urlError } = await supabase.storage
+      .from(BUCKET)
+      .createSignedUrl(fileName, URL_EXPIRY_SECONDS);
+    if (urlError) {
+      console.error(`[Library] Signed URL error for ${fileName}:`, urlError);
+      continue;
+    }
+    downloadLinks.push({ name: fileDisplayName(fileName), url: urlData.signedUrl });
+  }
+  if (downloadLinks.length === 0) return { ok: false };
+
+  const customerName = purchases.find((p) => p.customer_name)?.customer_name || 'there';
+
+  await resend.emails.send({
+    from:    fromAddress,
+    to:      email,
+    subject: 'Your fresh download links: Find Your Compass Within',
+    html:    buildLibraryEmail({ customerName, downloadLinks, siteUrl }),
   });
 
   return { ok: true };
@@ -168,6 +238,7 @@ function buildCoachingWelcomeEmail({ customerName, product, questionnaireUrl, si
 }
 
 function buildDownloadEmail({ customerName, product, downloadLinks, siteUrl }) {
+  const firstName = escapeHtml(String(customerName).split(' ')[0]);
   const linkRows = downloadLinks.map(link => `
     <tr><td style="padding:0 0 12px 0;">
       <a href="${link.url}" style="display:block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:14px 20px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:400;">
@@ -188,14 +259,59 @@ function buildDownloadEmail({ customerName, product, downloadLinks, siteUrl }) {
     </div>
   </td></tr>
   <tr><td style="background:#fff;padding:36px;border:0.5px solid #E6D8C3;border-top:none;">
-    <p style="font-family:'Outfit',sans-serif;font-size:15px;color:#2F4F3F;margin:0 0 8px;">Hi ${escapeHtml(customerName)},</p>
+    <p style="font-family:'Outfit',sans-serif;font-size:15px;color:#2F4F3F;margin:0 0 8px;">Hi ${firstName},</p>
     <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#5a7a68;line-height:1.7;margin:0 0 24px;">
       Thank you for purchasing <strong style="color:#2F4F3F;">${escapeHtml(product.displayName)}</strong>. Your file${downloadLinks.length > 1 ? 's are' : ' is'} ready below.
     </p>
     <table width="100%" cellpadding="0" cellspacing="0">${linkRows}</table>
     <div style="background:#F7EFE4;border:0.5px solid #E6D8C3;border-radius:6px;padding:14px 18px;margin:8px 0 24px;">
       <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0;line-height:1.6;">
-        &#9651; Your links are valid for <strong>12 months</strong>, so you can return to your workbook whenever you need it. If a link ever stops working, reply to this email and we will send a fresh one, always.
+        &#9651; Your links are valid for <strong>12 months</strong>, so you can return to your workbook whenever you need it. If a link ever stops working, you can request fresh links for everything you own at <a href="${siteUrl}/downloads" style="color:#2F4F3F;font-weight:500;">${siteUrl.replace('https://','')}/downloads</a>, or simply reply to this email.
+      </p>
+    </div>
+    <p style="font-family:Georgia,serif;font-size:13px;font-style:italic;color:#C2A46F;margin:16px 0 0;">
+      With care,<br>
+      <strong style="font-family:Georgia,serif;font-style:normal;color:#2F4F3F;font-size:15px;">Mel</strong>
+    </p>
+  </td></tr>
+  <tr><td style="background:#2F4F3F;padding:20px 36px;border-radius:0 0 10px 10px;text-align:center;">
+    <p style="font-family:'Outfit',sans-serif;font-size:11px;color:rgba(245,240,232,0.3);margin:0;">
+      <a href="${siteUrl}" style="color:rgba(194,164,111,0.6);text-decoration:none;">findyourcompasswithin.com</a>
+    </p>
+  </td></tr>
+</table></td></tr></table></body></html>`;
+}
+
+function buildLibraryEmail({ customerName, downloadLinks, siteUrl }) {
+  const firstName = escapeHtml(String(customerName).split(' ')[0]);
+  const linkRows = downloadLinks.map(link => `
+    <tr><td style="padding:0 0 12px 0;">
+      <a href="${link.url}" style="display:block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:14px 20px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:400;">
+        &#8659;&nbsp; Download: ${link.name}
+      </a>
+    </td></tr>`).join('');
+
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#F2E8D9;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F2E8D9;padding:40px 20px;">
+<tr><td align="center">
+<table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+  <tr><td style="background:#2F4F3F;border-radius:10px 10px 0 0;overflow:hidden;">
+    <div style="height:3px;background:linear-gradient(90deg,#C2A46F,#A6B695,#C2A46F);"></div>
+    <div style="padding:32px 36px 28px;text-align:center;">
+      <p style="font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(194,164,111,0.7);margin:0 0 10px;">Find Your Compass Within</p>
+      <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:400;color:#F5F0E8;margin:0;">Welcome <em style="color:#d9be92;">back</em></h1>
+    </div>
+  </td></tr>
+  <tr><td style="background:#fff;padding:36px;border:0.5px solid #E6D8C3;border-top:none;">
+    <p style="font-family:'Outfit',sans-serif;font-size:15px;color:#2F4F3F;margin:0 0 8px;">Hi ${firstName},</p>
+    <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#5a7a68;line-height:1.7;margin:0 0 24px;">
+      Here are fresh download links for everything you have purchased from Find Your Compass Within. Your workbooks are yours: come back to them as often as you need.
+    </p>
+    <table width="100%" cellpadding="0" cellspacing="0">${linkRows}</table>
+    <div style="background:#F7EFE4;border:0.5px solid #E6D8C3;border-radius:6px;padding:14px 18px;margin:8px 0 24px;">
+      <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0;line-height:1.6;">
+        &#9651; These links are valid for <strong>12 months</strong>, and you can request fresh ones any time at <a href="${siteUrl}/downloads" style="color:#2F4F3F;font-weight:500;">${siteUrl.replace('https://','')}/downloads</a>.
       </p>
     </div>
     <p style="font-family:Georgia,serif;font-size:13px;font-style:italic;color:#C2A46F;margin:16px 0 0;">
