@@ -39,6 +39,12 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
       .single();
 
     if (bookingError || !booking) {
+      // Unique payment_id: the other delivery path already created this
+      // booking, so stay silent instead of double-emailing.
+      if (bookingError && bookingError.code === '23505') {
+        console.log(`[Fulfill] Booking for payment ${paymentId} already exists; skipping duplicate`);
+        return { ok: true, duplicate: true };
+      }
       console.error('[Fulfill] Error creating booking:', bookingError);
       return { ok: false, error: 'booking_failed' };
     }
@@ -65,7 +71,27 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
     return { ok: true };
   }
 
-  // ── DIGITAL: generate Supabase signed URLs + send download email ─────────────
+  // ── DIGITAL: record first, then deliver ──────────────────────────────────────
+  // Recording before sending makes delivery idempotent: the unique
+  // payment_id means that when the buyer's return redirect and the webhook
+  // race to fulfil the same order, only the one that records first emails.
+  const { error: recordError } = await supabase.from('purchases').insert({
+    email:          customerEmail,
+    customer_name:  name,
+    product_id:     productId,
+    product_name:   product.displayName,
+    payment_id:     paymentId,
+    payment_method: paymentMethod || null,
+  });
+  if (recordError) {
+    if (recordError.code === '23505') {
+      console.log(`[Fulfill] Payment ${paymentId} already fulfilled; skipping duplicate email`);
+      return { ok: true, duplicate: true };
+    }
+    // A bookkeeping failure must never block delivery
+    console.error('[Fulfill] Could not record purchase:', recordError);
+  }
+
   const downloadLinks = [];
   for (const fileName of product.files) {
     const { data: urlData, error } = await supabase.storage
@@ -90,18 +116,6 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
     subject: `Your download is ready: ${product.displayName}`,
     html:    buildDownloadEmail({ customerName: name, product, downloadLinks, siteUrl }),
   });
-
-  // Remember the purchase so the customer can re-request links any time via
-  // the My Downloads page. Never blocks delivery if it fails.
-  const { error: recordError } = await supabase.from('purchases').insert({
-    email:          customerEmail,
-    customer_name:  name,
-    product_id:     productId,
-    product_name:   product.displayName,
-    payment_id:     paymentId,
-    payment_method: paymentMethod || null,
-  });
-  if (recordError) console.error('[Fulfill] Could not record purchase:', recordError);
 
   return { ok: true };
 }
