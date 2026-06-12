@@ -2010,7 +2010,7 @@ async function submitCheckout(e, method) {
   try {
     if (method === 'paypal') {
       if (btnPp) btnPp.textContent = 'Redirecting to PayPal…';
-      const res = await fetch('/api/paypal-create', {
+      const res = await fetch('/api/paypal-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId, email, firstName, lastName }),
