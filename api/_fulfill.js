@@ -11,7 +11,7 @@ import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
 const BUCKET = 'workbooks';
-const URL_EXPIRY_SECONDS = 2592000; // 30 days
+const URL_EXPIRY_SECONDS = 31536000; // 12 months
 
 export async function fulfillOrder({ product, productId, customerEmail, customerName, paymentId }) {
   const resend      = new Resend(process.env.RESEND_API_KEY);
@@ -195,7 +195,7 @@ function buildDownloadEmail({ customerName, product, downloadLinks, siteUrl }) {
     <table width="100%" cellpadding="0" cellspacing="0">${linkRows}</table>
     <div style="background:#F7EFE4;border:0.5px solid #E6D8C3;border-radius:6px;padding:14px 18px;margin:8px 0 24px;">
       <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0;line-height:1.6;">
-        &#9651; Your links are valid for <strong>30 days</strong>. Save your files to your device when convenient. If they ever expire, reply to this email and we will send fresh ones.
+        &#9651; Your links are valid for <strong>12 months</strong>, so you can return to your workbook whenever you need it. If a link ever stops working, reply to this email and we will send a fresh one, always.
       </p>
     </div>
     <p style="font-family:Georgia,serif;font-size:13px;font-style:italic;color:#C2A46F;margin:16px 0 0;">
