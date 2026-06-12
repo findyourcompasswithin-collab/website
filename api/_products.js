@@ -182,6 +182,17 @@ export const PRODUCTS = {
     ],
   },
 
+  // ── HIDDEN TEST PRODUCT (remove before go-live) ──────────────────────────────
+  // Reachable only via findyourcompasswithin.com/?test=1 for end-to-end
+  // payment testing at $1. Delivers the free Check-In PDF.
+  'test-1': {
+    name: 'Connection Test',
+    displayName: 'Connection Test',
+    price: 1.00,
+    type: 'digital',
+    files: ['compass-checkin.pdf'],
+  },
+
   // ── COACHING SESSIONS ───────────────────────────────────────────────────────
   'compass-reading': {
     name: 'A Compass Reading: Single Session',

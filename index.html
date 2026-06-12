@@ -1949,7 +1949,13 @@ const PRODUCT_INFO = {
   'compass-reading':       { name: 'A Compass Reading: Single Session',   price: '$77'  },
   'expedition':            { name: 'The Expedition: 3-Session Programme', price: '$297' },
   'guided-navigation':     { name: 'Guided Navigation: 5-Session Programme', price: '$397' },
+  'test-1':                { name: 'Connection Test',                       price: '$1'   },
 };
+
+// Hidden end-to-end payment test: visit findyourcompasswithin.com/?test=1
+if (window.location.search.indexOf('test=1') !== -1) {
+  window.addEventListener('load', function() { openCheckout('test-1'); });
+}
 
 function openCheckout(productId) {
   const product = PRODUCT_INFO[productId];
