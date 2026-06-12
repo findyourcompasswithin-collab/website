@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
     const { signature: _sig, ...dataWithoutSig } = data;
     const queryString = Object.entries(dataWithoutSig)
-      .map(([k, v]) => `${k}=${encodeURIComponent(String(v ?? '')).replace(/%20/g, '+')}`)
+      .map(([k, v]) => `${k}=${pfEncode(v)}`)
       .join('&');
 
     const validationResponse = await fetch(validationUrl, {
@@ -97,14 +97,25 @@ export default async function handler(req, res) {
 
 // ── Signature ─────────────────────────────────────────────────────────────────
 
+// PHP urlencode-compatible encoding, which Payfast's signatures are built on.
+function pfEncode(value) {
+  return encodeURIComponent(String(value ?? ''))
+    .replace(/%20/g, '+')
+    .replace(/!/g, '%21').replace(/'/g, '%27')
+    .replace(/\(/g, '%28').replace(/\)/g, '%29')
+    .replace(/\*/g, '%2A').replace(/~/g, '%7E');
+}
+
+// Unlike the checkout-form signature (which omits blank fields), the ITN
+// signature covers every posted field except `signature`, in the order
+// received, INCLUDING empty ones.
 function generateSignature(data, passphrase = '') {
   const { signature: _sig, ...fields } = data;
   const queryString = Object.entries(fields)
-    .filter(([, v]) => v !== '' && v !== null && v !== undefined)
-    .map(([k, v]) => `${k}=${encodeURIComponent(String(v)).replace(/%20/g, '+')}`)
+    .map(([k, v]) => `${k}=${pfEncode(v)}`)
     .join('&');
   const toHash = passphrase
-    ? `${queryString}&passphrase=${encodeURIComponent(passphrase).replace(/%20/g, '+')}`
+    ? `${queryString}&passphrase=${pfEncode(passphrase)}`
     : queryString;
   return crypto.createHash('md5').update(toHash).digest('hex');
 }
