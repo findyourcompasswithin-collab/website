@@ -11,7 +11,7 @@ import { capturePayPalOrder } from './_paypal.js';
 import { fulfillOrder } from './_fulfill.js';
 
 export default async function handler(req, res) {
-  const siteUrl = process.env.SITE_URL || 'https://findyourcompasswithin.com';
+  const siteUrl = process.env.SITE_URL || 'https://www.findyourcompasswithin.com';
   const redirect = (url) => {
     res.statusCode = 302;
     res.setHeader('Location', url);

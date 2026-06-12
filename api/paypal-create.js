@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Valid email is required' });
   }
 
-  const siteUrl = process.env.SITE_URL || 'https://findyourcompasswithin.com';
+  const siteUrl = process.env.SITE_URL || 'https://www.findyourcompasswithin.com';
 
   try {
     const order = await createPayPalOrder({ product, productId, email, siteUrl });

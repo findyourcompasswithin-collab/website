@@ -11,12 +11,12 @@ import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
 const BUCKET = 'workbooks';
-const URL_EXPIRY_SECONDS = 172800; // 48 hours
+const URL_EXPIRY_SECONDS = 2592000; // 30 days
 
 export async function fulfillOrder({ product, productId, customerEmail, customerName, paymentId }) {
   const resend      = new Resend(process.env.RESEND_API_KEY);
   const supabase    = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-  const siteUrl     = process.env.SITE_URL || 'https://findyourcompasswithin.com';
+  const siteUrl     = process.env.SITE_URL || 'https://www.findyourcompasswithin.com';
   const fromAddress = `${process.env.FROM_NAME || 'Find Your Compass Within'} <${process.env.FROM_EMAIL}>`;
   const name        = customerName || 'there';
 
@@ -195,7 +195,7 @@ function buildDownloadEmail({ customerName, product, downloadLinks, siteUrl }) {
     <table width="100%" cellpadding="0" cellspacing="0">${linkRows}</table>
     <div style="background:#F7EFE4;border:0.5px solid #E6D8C3;border-radius:6px;padding:14px 18px;margin:8px 0 24px;">
       <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0;line-height:1.6;">
-        &#9651; Links expire in <strong>48 hours</strong>. Please save your files immediately. If links expire, reply to this email for new ones.
+        &#9651; Your links are valid for <strong>30 days</strong>. Save your files to your device when convenient. If they ever expire, reply to this email and we will send fresh ones.
       </p>
     </div>
     <p style="font-family:Georgia,serif;font-size:13px;font-style:italic;color:#C2A46F;margin:16px 0 0;">

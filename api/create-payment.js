@@ -34,7 +34,7 @@ export default async function handler(req, res) {
   }
 
   const isSandbox = process.env.PAYFAST_SANDBOX === 'true';
-  const siteUrl   = process.env.SITE_URL || 'https://findyourcompasswithin.com';
+  const siteUrl   = process.env.SITE_URL || 'https://www.findyourcompasswithin.com';
 
   // Payfast settles only in ZAR. Catalogue prices are USD, so convert first.
   const amountZar = await convertToZar(product.price, 'USD');
