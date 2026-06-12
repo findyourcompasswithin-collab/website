@@ -53,6 +53,8 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;padding
 .slot-btn.selected .slot-time{color:#F2E8D9}
 .slot-label{font-size:10px;color:#8a9e94;display:block;margin-top:2px}
 .slot-btn.selected .slot-label{color:rgba(242,232,217,0.6)}
+.slot-local{font-size:10px;color:#C2A46F;display:block;margin-top:2px;font-weight:500}
+.slot-btn.selected .slot-local{color:rgba(217,190,146,0.9)}
 .slot-short{font-size:9px;color:#C2A46F;display:block;margin-top:3px}
 
 /* Confirm panel */
@@ -104,7 +106,7 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;padding
       <div class="card-head">
         <div class="card-head-bar"></div>
         <h2>Book Your Session</h2>
-        <p id="booking-sub">Choose a date and time that works for you — Monday to Friday, 09:00–13:00 SAST</p>
+        <p id="booking-sub">Choose a date and time that works for you: Monday to Friday, 09:00 to 12:00 SAST</p>
       </div>
       <div class="card-body">
 
@@ -148,8 +150,10 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;padding
           Confirm This Session &rarr;
         </button>
 
-        <p class="notice">Sessions run Monday to Friday, 09:00–13:00 South African Standard Time.<br>
-        All times shown are SAST (UTC+2). You will receive a Google Meet link in your confirmation email.</p>
+        <p class="notice">Sessions run Monday to Friday, 09:00 to 12:00 South African Standard Time.<br>
+        All times shown are SAST (UTC+2), with your own local time shown beneath each slot.<br>
+        You will receive a Google Meet link in your confirmation email.<br>
+        If none of these times suit your time zone, email <a href="mailto:melcooper@findyourcompasswithin.com" style="color:#C2A46F">melcooper@findyourcompasswithin.com</a> and we will find a time that does.</p>
 
       </div>
     </div>
@@ -298,15 +302,17 @@ function renderSlots(dateStr, slots) {
     weekday:'long', day:'numeric', month:'long', timeZone:'Africa/Johannesburg'
   });
 
-  label.textContent = `Available times — ${dateDisp}`;
+  label.textContent = `Available times: ${dateDisp}`;
   grid.innerHTML    = '';
 
   slots.forEach(slot => {
     const btn = document.createElement('div');
     btn.className = 'slot-btn';
+    const localHint = localTimeHint(dateStr, slot.time);
     btn.innerHTML = `
       <span class="slot-time">${slot.time}</span>
       <span class="slot-label">SAST · 60 min</span>
+      ${localHint ? `<span class="slot-local">${localHint}</span>` : ''}
       ${slot.shortNotice ? '<span class="slot-short">Short notice</span>' : ''}
     `;
     btn.onclick = () => selectSlot(slot.time, btn);
@@ -314,6 +320,15 @@ function renderSlots(dateStr, slots) {
   });
 
   section.style.display = 'block';
+}
+
+// If the visitor is not on South African time, show each slot in their own
+// local time too, so nobody books a 3am call by accident.
+function localTimeHint(dateStr, time) {
+  const d = new Date(`${dateStr}T${time}:00+02:00`);
+  if (d.getTimezoneOffset() === -120) return '';
+  const local = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return `${local} your time`;
 }
 
 function selectSlot(time, btn) {
