@@ -222,7 +222,7 @@ async function loadMonth(year, month) {
   renderCalendar(year, month);
   resetSlots();
 
-  // Prev month nav — can't go before current month
+  // Prev month nav - can't go before current month
   const now = new Date();
   document.getElementById('prev-month').disabled =
     (year === now.getFullYear() && month <= now.getMonth() + 1);
