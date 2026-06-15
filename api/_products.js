@@ -182,6 +182,15 @@ export const PRODUCTS = {
     ],
   },
 
+  // ── HIDDEN TEST PRODUCT (temporary: verifying new PayPal account) ────────────
+  'test-1': {
+    name: 'Connection Test',
+    displayName: 'Connection Test',
+    price: 1.00,
+    type: 'digital',
+    files: ['compass-checkin.pdf'],
+  },
+
   // ── COACHING SESSIONS ───────────────────────────────────────────────────────
   'compass-reading': {
     name: 'A Compass Reading: Single Session',
