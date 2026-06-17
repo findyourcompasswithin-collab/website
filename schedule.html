@@ -106,7 +106,7 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;padding
       <div class="card-head">
         <div class="card-head-bar"></div>
         <h2>Book Your Session</h2>
-        <p id="booking-sub">Choose a date and time that works for you: Monday to Friday, mornings from 09:00 and evenings at 21:00 or 22:00 SAST</p>
+        <p id="booking-sub">Choose a date and time that works for you: Monday to Friday, mornings from 09:00 and evenings at 21:00 or 22:00 SAST. The evening times suit working clients across South Africa, the UK and Europe.</p>
       </div>
       <div class="card-body">
 
@@ -150,10 +150,26 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;padding
           Confirm This Session &rarr;
         </button>
 
-        <p class="notice">Sessions run Monday to Friday: mornings from 09:00, and evenings at 21:00 and 22:00 South African Standard Time.<br>
-        All times shown are SAST (UTC+2), with your own local time shown beneath each slot.<br>
-        You will receive a Google Meet link in your confirmation email.<br>
-        If none of these times suit your time zone, email <a href="mailto:melcooper@findyourcompasswithin.com" style="color:#C2A46F">melcooper@findyourcompasswithin.com</a> and we will find a time that does.</p>
+        <p class="notice">Sessions run Monday to Friday: mornings from 09:00, and evenings at 21:00 and 22:00 South African Standard Time (SAST, UTC+2). The evening times are chosen to suit working clients across South Africa, the UK and Europe.<br>
+        All times shown are SAST, with your own local time shown beneath each slot.<br>
+        You will receive a Google Meet link in your confirmation email.</p>
+
+        <div style="text-align:center;margin-top:18px">
+          <button type="button" onclick="toggleRequest()" id="req-toggle" style="background:none;border:none;color:#C2A46F;font-size:13px;font-family:'Outfit',sans-serif;cursor:pointer;text-decoration:underline;letter-spacing:0.2px">In a different timezone? Request another time</button>
+        </div>
+
+        <div id="request-panel" style="display:none;margin-top:16px;background:#F7EFE4;border:0.5px solid #E6D8C3;border-radius:10px;padding:20px 22px;text-align:left">
+          <div id="req-form">
+            <p style="font-size:13px;color:#5a7a68;line-height:1.7;margin-bottom:14px">If none of the times above work where you are, tell me your timezone and a few times that would suit you. I will personally find a time and email you to confirm it.</p>
+            <div id="req-err" style="display:none;background:rgba(192,57,43,0.1);border:0.5px solid rgba(192,57,43,0.3);border-radius:8px;padding:10px 14px;color:#c0392b;font-size:12px;margin-bottom:12px"></div>
+            <label style="font-size:11px;letter-spacing:0.5px;text-transform:uppercase;color:#8a9e94;display:block;margin-bottom:5px">Your timezone or city</label>
+            <input id="req-tz" type="text" placeholder="e.g. Sydney, Australia" style="width:100%;border:0.5px solid #D9C9B0;border-radius:8px;padding:11px 13px;font-size:14px;font-family:'Outfit',sans-serif;color:#2F4F3F;margin-bottom:14px">
+            <label style="font-size:11px;letter-spacing:0.5px;text-transform:uppercase;color:#8a9e94;display:block;margin-bottom:5px">Times that would suit you</label>
+            <textarea id="req-times" placeholder="e.g. Weekday evenings after 7pm my time, or Saturday mornings" style="width:100%;border:0.5px solid #D9C9B0;border-radius:8px;padding:11px 13px;font-size:14px;font-family:'Outfit',sans-serif;color:#2F4F3F;min-height:90px;line-height:1.6"></textarea>
+            <button type="button" class="btn-confirm show" id="req-submit" onclick="submitRequest()" style="margin-top:14px">Send My Request &rarr;</button>
+          </div>
+          <div id="req-success" style="display:none;text-align:center;padding:12px 4px;color:#2F4F3F;font-size:14px;line-height:1.7"></div>
+        </div>
 
       </div>
     </div>
@@ -362,6 +378,56 @@ function resetSlots() {
 function resetConfirm() {
   document.getElementById('confirm-panel').classList.remove('show');
   document.getElementById('confirm-btn').classList.remove('show');
+}
+
+// ── Request another time (out-of-zone clients) ──────────────────────────────────
+function toggleRequest() {
+  const panel = document.getElementById('request-panel');
+  const opening = panel.style.display === 'none' || panel.style.display === '';
+  panel.style.display = opening ? 'block' : 'none';
+  const tz = document.getElementById('req-tz');
+  if (opening && !tz.value) {
+    try { tz.value = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch {}
+  }
+  if (opening) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function submitRequest() {
+  const tz    = document.getElementById('req-tz').value.trim();
+  const times = document.getElementById('req-times').value.trim();
+  const err   = document.getElementById('req-err');
+  err.style.display = 'none';
+
+  if (!times) {
+    err.textContent = 'Please tell me a few times that would suit you.';
+    err.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('req-submit');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('/api/create-booking', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ token, timezone: tz, preferredTimes: times }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Could not send your request');
+
+    document.getElementById('req-form').style.display = 'none';
+    const ok = document.getElementById('req-success');
+    ok.innerHTML = 'Thank you. Your request is in.<br>I will email you personally to confirm a time that works for you.';
+    ok.style.display = 'block';
+    document.getElementById('req-toggle').style.display = 'none';
+  } catch (e) {
+    err.textContent = e.message || 'Something went wrong. Please try again.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Send My Request →';
+  }
 }
 
 // ── Confirm booking ───────────────────────────────────────────────────────────

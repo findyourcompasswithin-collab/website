@@ -3,15 +3,15 @@
  * ──────────────────────────────────────────
  * Returns available dates and time slots for a given month.
  * Schedule: Mon-Fri, mornings 09:00-12:00 and evenings 21:00-22:00 SAST
- * (UTC+2). The evening slots serve US and European time zones.
+ * (UTC+2). The evening slots serve working clients across SA, the UK and
+ * Europe. Times and slots come from the shared _schedule.js source.
  * Min notice: 60 minutes. Preferred notice: 24 hours (flagged, not blocked).
  * Max horizon: 8 weeks ahead.
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { TIME_SLOTS, SAST_OFFSET_HOURS } from './_schedule.js';
 
-const SAST_OFFSET_HOURS = 2;
-const TIME_SLOTS        = ['09:00', '10:00', '11:00', '12:00', '21:00', '22:00'];
 const MIN_NOTICE_MS     = 60 * 60 * 1000;       // 60 minutes
 const MAX_WEEKS_AHEAD   = 8;
 

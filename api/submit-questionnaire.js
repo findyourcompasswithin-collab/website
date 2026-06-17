@@ -7,6 +7,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { PRODUCTS } from './_products.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -19,7 +20,7 @@ export default async function handler(req, res) {
   // Validate token and get booking
   const { data: booking, error: bookingError } = await supabase
     .from('bookings')
-    .select('id, client_name, client_email, package_name, sessions_total, questionnaire_completed')
+    .select('id, client_name, client_email, package_id, package_name, sessions_total, questionnaire_completed')
     .eq('questionnaire_token', token)
     .single();
 
@@ -27,10 +28,17 @@ export default async function handler(req, res) {
     return res.status(404).json({ error: 'Invalid token' });
   }
 
+  const siteUrl = process.env.SITE_URL || 'https://findyourcompasswithin.com';
+  // Group rounds (Compass Circles) have fixed dates: skip the 1:1 calendar and
+  // send them straight to the cohort confirmation page.
+  const isGroup  = PRODUCTS[booking.package_id]?.format === 'group';
+  const nextUrl  = isGroup
+    ? `${siteUrl}/circle-confirmed?token=${token}`
+    : `${siteUrl}/schedule?token=${token}`;
+
   if (booking.questionnaire_completed) {
-    // Already submitted - just return the schedule URL
-    const siteUrl = process.env.SITE_URL || 'https://findyourcompasswithin.com';
-    return res.status(200).json({ scheduleUrl: `${siteUrl}/schedule?token=${token}` });
+    // Already submitted - just return the next URL
+    return res.status(200).json({ scheduleUrl: nextUrl });
   }
 
   // Save responses
@@ -92,14 +100,15 @@ export default async function handler(req, res) {
     ${buildResponseRow('Additional notes', responses.additionalNotes)}
   </div>
   <div style="background:#F7EFE4;padding:16px 32px;border-top:0.5px solid #E6D8C3;">
-    <p style="font-size:12px;color:#5a7a68;margin:0;">Client will schedule their session shortly. You will receive a booking confirmation once they choose a date and time.</p>
+    <p style="font-size:12px;color:#5a7a68;margin:0;">${isGroup
+      ? 'This is a group round member. No 1:1 booking needed: confirm they have the cohort dates and the private group link.'
+      : 'Client will schedule their session shortly. You will receive a booking confirmation once they choose a date and time.'}</p>
   </div>
 </div>
 </body></html>`,
   });
 
-  const siteUrl = process.env.SITE_URL || 'https://findyourcompasswithin.com';
-  return res.status(200).json({ scheduleUrl: `${siteUrl}/schedule?token=${token}` });
+  return res.status(200).json({ scheduleUrl: nextUrl });
 }
 
 function escapeHtml(str) {

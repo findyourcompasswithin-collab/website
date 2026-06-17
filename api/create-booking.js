@@ -7,30 +7,35 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { TIME_SLOTS, SAST_OFFSET_HOURS as SAST_OFFSET } from './_schedule.js';
 
-const TIME_SLOTS      = ['09:00', '10:00', '11:00', '12:00'];
 const MIN_NOTICE_MS   = 60 * 60 * 1000; // 60 minutes
-const SAST_OFFSET     = 2;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { token, date, time } = req.body;
-  if (!token || !date || !time) {
-    return res.status(400).json({ error: 'Token, date and time are required' });
+  const { token, date, time, preferredTimes, timezone } = req.body;
+  if (!token) return res.status(400).json({ error: 'Token is required' });
+
+  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+  // Branch: a client outside the listed time zones requesting a custom time.
+  // Handled inside this endpoint (rather than its own) to stay within Vercel's
+  // 12-function limit.
+  if (preferredTimes && preferredTimes.trim()) {
+    return handleTimeRequest({ supabase, res, token, timezone, preferredTimes });
   }
 
-  // Validate date format
+  // Otherwise this is a normal slot booking.
+  if (!date || !time) {
+    return res.status(400).json({ error: 'Date and time are required' });
+  }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return res.status(400).json({ error: 'Invalid date format' });
   }
-
-  // Validate time is one of the allowed slots
   if (!TIME_SLOTS.includes(time)) {
     return res.status(400).json({ error: 'Invalid time slot' });
   }
-
-  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
   // Validate token
   const { data: booking, error: bookingError } = await supabase
@@ -139,12 +144,61 @@ export default async function handler(req, res) {
   return res.status(200).json({ success: true, date: displayDate, time: displayTime });
 }
 
-function escapeHtml(str) {
+// Custom-time request: a client whose timezone is outside SA/UK/Europe, or who
+// cannot make any listed slot, sends their timezone and preferred times. We flag
+// the booking 'time_requested' and email Mel to approve a time from admin.
+async function handleTimeRequest({ supabase, res, token, timezone = '', preferredTimes }) {
+  const { data: booking, error } = await supabase
+    .from('bookings')
+    .select('id, client_name, client_email, package_name, questionnaire_completed')
+    .eq('questionnaire_token', token)
+    .single();
+
+  if (error || !booking) return res.status(404).json({ error: 'Invalid token' });
+  if (!booking.questionnaire_completed) {
+    return res.status(400).json({ error: 'Please complete the questionnaire first' });
+  }
+
+  const { error: updateError } = await supabase
+    .from('bookings')
+    .update({
+      custom_time_request: preferredTimes.trim(),
+      client_timezone:     (timezone || '').trim() || null,
+      status:              'time_requested',
+    })
+    .eq('id', booking.id);
+
+  if (updateError) {
+    console.error('[Booking] Time request error:', updateError);
+    return res.status(500).json({ error: 'Could not send your request, please try again' });
+  }
+
+  const resend      = new Resend(process.env.RESEND_API_KEY);
+  const fromAddress = `${process.env.FROM_NAME || 'Find Your Compass Within'} <${process.env.FROM_EMAIL}>`;
+
+  await resend.emails.send({
+    from:    fromAddress,
+    to:      process.env.FROM_EMAIL,
+    subject: `Time request: ${booking.client_name}, ${booking.package_name}`,
+    html: `<div style="font-family:'Outfit',sans-serif;padding:20px;color:#2F4F3F">
+      <h3 style="color:#2F4F3F;">A client has requested another time</h3>
+      <p><strong>Client:</strong> ${escapeHtml(booking.client_name)} (${escapeHtml(booking.client_email)})</p>
+      <p><strong>Package:</strong> ${escapeHtml(booking.package_name)}</p>
+      <p><strong>Their timezone:</strong> ${escapeHtml(timezone || 'Not given')}</p>
+      <p><strong>Times that suit them:</strong><br>${escapeHtml(preferredTimes).replace(/\n/g, '<br>')}</p>
+      <p style="margin-top:16px;color:#5a7a68">Open your admin dashboard to approve a time. Confirming it there will email them automatically.</p>
+    </div>`,
+  });
+
+  return res.status(200).json({ success: true });
+}
+
+export function escapeHtml(str) {
   return String(str ?? '')
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function buildClientConfirmationEmail({ clientName, packageName, displayDate, displayTime, meetLink, siteUrl }) {
+export function buildClientConfirmationEmail({ clientName, packageName, displayDate, displayTime, meetLink, siteUrl }) {
   const firstName = escapeHtml(clientName.split(' ')[0]);
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#F2E8D9;">

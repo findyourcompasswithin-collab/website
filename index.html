@@ -1050,6 +1050,33 @@ footer{background:#162b1e;padding:60px 2rem 30px}
 
       </div>
 
+      <!-- DIVIDER: GUIDED CIRCLE -->
+      <div class="pkg-divider-row" style="margin-top:50px"><span>or walk it together in a small circle</span></div>
+
+      <!-- COMPASS CIRCLE: FOUNDING ROUND -->
+      <p class="pkg-category-label">&#8595; &nbsp; Compass Circles &nbsp;·&nbsp; a small group round, six weekly calls via Google Meet</p>
+      <div class="packages-grid" style="grid-template-columns:1fr;max-width:520px;margin:0 auto">
+
+        <div class="package-card sage-featured reveal">
+          <div class="package-badge sage">Founding Circle · 5 seats</div>
+          <div class="package-name">Guided Round · Group Coaching</div>
+          <div class="package-title">The Perimenopause Pivot: A Guided Round</div>
+          <div class="package-desc">Six weeks through The Perimenopause Pivot workbook, in a small circle of women navigating the same shift. Weekly live calls, a private group space between them, and a steady rhythm so you actually finish. You will not be doing this alone.</div>
+          <div class="package-price">$97</div>
+          <div class="package-price-note">Founding-round seat · workbook included</div>
+          <div class="package-divider"></div>
+          <ul class="package-includes">
+            <li>Six weekly 60-minute live circles with Mel</li>
+            <li>The full Perimenopause Pivot workbook</li>
+            <li>A private group space for support between calls</li>
+            <li>Replays, so a hard week never means falling behind</li>
+            <li>A small founding group: just five seats</li>
+          </ul>
+          <a href="/perimenopause-pivot-round" class="pkg-btn pkg-btn-gold">See the Round &amp; Save Your Seat</a>
+        </div>
+
+      </div>
+
       <!-- MEGA BUNDLE: THE COMPLETE COMPASS COLLECTION -->
       <div class="pkg-divider-row" style="margin-top:50px"><span>or take the complete journey</span></div>
       <div style="background:linear-gradient(135deg,rgba(194,164,111,0.08) 0%,rgba(47,79,63,0.15) 100%);border:0.5px solid rgba(194,164,111,0.3);border-radius:14px;padding:40px;margin-top:0;position:relative;overflow:hidden">
@@ -1950,6 +1977,7 @@ const PRODUCT_INFO = {
   'compass-reading':       { name: 'A Compass Reading: Single Session',   price: '$77'  },
   'expedition':            { name: 'The Expedition: 3-Session Programme', price: '$297' },
   'guided-navigation':     { name: 'Guided Navigation: 5-Session Programme', price: '$397' },
+  'compass-circle-perimenopause': { name: 'The Perimenopause Pivot: A Guided Round (Founding Circle)', price: '$97' },
   'test-1':                { name: 'Connection Test',                       price: '$1'   },
 };
 
@@ -1957,6 +1985,15 @@ const PRODUCT_INFO = {
 if (window.location.search.indexOf('test=1') !== -1) {
   window.addEventListener('load', function() { openCheckout('test-1'); });
 }
+
+// Deep link to checkout from another page, e.g. the Compass Circle landing
+// page links to /?buy=compass-circle-perimenopause
+(function() {
+  var buyId = new URLSearchParams(window.location.search).get('buy');
+  if (buyId && PRODUCT_INFO[buyId]) {
+    window.addEventListener('load', function() { openCheckout(buyId); });
+  }
+})();
 
 function openCheckout(productId) {
   const product = PRODUCT_INFO[productId];

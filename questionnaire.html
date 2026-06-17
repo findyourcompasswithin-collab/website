@@ -128,7 +128,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
         <!-- STEP 1: Welcome -->
         <div class="step active" id="step-1">
           <p>Hi <strong id="client-first-name"></strong>, I'm so glad you're here.</p>
-          <p style="margin-top:12px">Before our session, I'd like to understand where you are right now. There are no right or wrong answers — just honest ones. This takes about 5 minutes.</p>
+          <p style="margin-top:12px" id="before-session-line">Before our session, I'd like to understand where you are right now. There are no right or wrong answers, just honest ones. This takes about 5 minutes.</p>
           <div class="btn-row">
             <button class="btn-next" onclick="nextStep(1)">Let's begin &rarr;</button>
           </div>
@@ -230,8 +230,8 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
           </div>
           <div style="margin-top:24px">
             <div class="step-q">Is there anything that might get in the way?<span class="optional">Optional</span></div>
-            <div class="step-hint">Time, energy, circumstances — anything that could make this harder.</div>
-            <textarea class="sm" id="current-challenges" placeholder="Be honest — this is useful for me to know…"></textarea>
+            <div class="step-hint">Time, energy, circumstances: anything that could make this harder.</div>
+            <textarea class="sm" id="current-challenges" placeholder="Be honest, this is useful for me to know…"></textarea>
           </div>
           <div class="btn-row">
             <button class="btn-back" onclick="prevStep(5)">Back</button>
@@ -242,7 +242,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
         <!-- STEP 6: Final notes -->
         <div class="step" id="step-6">
           <div class="step-q">Is there anything else you'd like me to know before our first session?<span class="optional">Optional</span></div>
-          <div class="step-hint">Anything at all — the floor is yours.</div>
+          <div class="step-hint">Anything at all. The floor is yours.</div>
           <textarea id="additional-notes" placeholder="Anything you feel is important for me to know…"></textarea>
           <div class="btn-row">
             <button class="btn-back" onclick="prevStep(6)">Back</button>
@@ -264,6 +264,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 let currentStep = 1;
 const totalSteps = 6;
 let token = '';
+let format = 'individual';   // 'group' for Compass Circle rounds
 
 const progressPct = {1:16, 2:32, 3:50, 4:66, 5:82, 6:100};
 
@@ -281,15 +282,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     const res  = await fetch(`/api/verify-token?token=${encodeURIComponent(token)}`);
     if (!res.ok) throw new Error('Invalid token');
     const { booking } = await res.json();
+    format = booking.format || 'individual';
 
-    // If questionnaire already done, go straight to schedule
+    // If questionnaire already done, go straight to the next step.
+    // Group rounds (Compass Circles) skip the 1:1 calendar.
     if (booking.questionnaire_completed) {
-      window.location.href = `/schedule?token=${token}`;
+      window.location.href = format === 'group'
+        ? `/circle-confirmed?token=${token}`
+        : `/schedule?token=${token}`;
       return;
     }
 
     document.getElementById('client-first-name').textContent = booking.client_name.split(' ')[0];
     document.getElementById('package-label').textContent     = booking.package_name;
+
+    // For a group round there is no time to choose: adjust the wording.
+    if (format === 'group') {
+      document.getElementById('before-session-line').textContent =
+        'Before our first call, I would like to understand where you are right now. There are no right or wrong answers, just honest ones. This takes about 5 minutes.';
+      document.getElementById('submit-btn').textContent = 'Submit & Save My Seat →';
+    }
+
     document.getElementById('loading-state').style.display   = 'none';
     document.getElementById('questionnaire').style.display   = 'block';
   } catch {

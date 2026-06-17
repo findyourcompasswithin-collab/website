@@ -216,4 +216,28 @@ export const PRODUCTS = {
     sessions: 5,
     files: [],
   },
+
+  // ── GROUP ROUNDS (COMPASS CIRCLES) ──────────────────────────────────────────
+  // A Circle is a small, time-bound group round built on an existing workbook.
+  // It is a 'coaching' product so it still creates a booking and sends the intake
+  // questionnaire, but format:'group' means it skips the 1:1 self-serve calendar:
+  // the dates are fixed for the whole cohort (see cohort.dates below).
+  'compass-circle-perimenopause': {
+    name: 'The Perimenopause Pivot: A Guided Round (Founding Circle)',
+    displayName: 'The Perimenopause Pivot Guided Round',
+    price: 97.00,
+    type: 'coaching',
+    format: 'group',
+    sessions: 6,            // six weekly live calls
+    seats: 5,               // founding round cap: stop promoting once 5 are taken
+    cohort: {
+      name: 'Founding Circle',
+      // FILL IN when dates are set, e.g.:
+      //   'Wednesday 16 July 2026, 19:00 SAST'
+      // Until this list has entries, the confirmation page and welcome email tell
+      // members their call dates will be emailed personally. One source of truth.
+      dates: [],
+    },
+    files: [],
+  },
 };

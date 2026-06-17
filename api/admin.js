@@ -6,12 +6,17 @@
  *
  * GET  /api/admin?action=bookings          → upcoming bookings list
  * GET  /api/admin?action=blocked           → all blocked dates
- * POST /api/admin  { action:'block',   date, reason }  → block a date
- * POST /api/admin  { action:'unblock', date }          → unblock a date
- * POST /api/admin  { action:'cancel',  bookingId }     → cancel a booking
+ * POST /api/admin  { action:'block',   date, reason }       → block a date
+ * POST /api/admin  { action:'unblock', date }               → unblock a date
+ * POST /api/admin  { action:'cancel',  bookingId }          → cancel a booking
+ * POST /api/admin  { action:'approveTime', bookingId, date, time }
+ *                                          → confirm a custom-time request and
+ *                                            email the client automatically
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { Resend } from 'resend';
+import { buildClientConfirmationEmail } from './create-booking.js';
 
 function checkAuth(req) {
   const auth = req.headers['authorization'] || '';
@@ -36,7 +41,8 @@ export default async function handler(req, res) {
         .from('bookings')
         .select(`
           id, client_name, client_email, package_name, sessions_total, sessions_booked,
-          session_date, session_time, status, questionnaire_completed, created_at
+          session_date, session_time, status, questionnaire_completed, created_at,
+          custom_time_request, client_timezone
         `)
         .not('status', 'eq', 'cancelled')
         .order('session_date', { ascending: true, nullsFirst: false })
@@ -113,6 +119,67 @@ export default async function handler(req, res) {
 
       if (error) return res.status(500).json({ error: error.message });
       return res.status(200).json({ success: true });
+    }
+
+    // Approve a custom time request: set the agreed date/time, confirm, and
+    // email the client. The time is whatever Mel agreed, so it is not limited
+    // to the standard slots.
+    if (action === 'approveTime') {
+      const { bookingId, date, time } = req.body;
+      if (!bookingId || !date || !time) {
+        return res.status(400).json({ error: 'bookingId, date and time are required' });
+      }
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) {
+        return res.status(400).json({ error: 'Invalid date or time format' });
+      }
+
+      const { data: booking, error: fetchError } = await supabase
+        .from('bookings')
+        .select('id, client_name, client_email, package_name, sessions_booked')
+        .eq('id', bookingId)
+        .single();
+
+      if (fetchError || !booking) return res.status(404).json({ error: 'Booking not found' });
+
+      const { error: updateError } = await supabase
+        .from('bookings')
+        .update({
+          session_date:    date,
+          session_time:    time,
+          sessions_booked: (booking.sessions_booked || 0) + 1,
+          status:          'confirmed',
+        })
+        .eq('id', bookingId);
+
+      if (updateError) return res.status(500).json({ error: updateError.message });
+
+      const displayDate = new Date(`${date}T12:00:00+02:00`).toLocaleDateString('en-ZA', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Africa/Johannesburg',
+      });
+      const displayTime = `${time} SAST`;
+      const resend      = new Resend(process.env.RESEND_API_KEY);
+      const fromAddress = `${process.env.FROM_NAME || 'Find Your Compass Within'} <${process.env.FROM_EMAIL}>`;
+      const siteUrl     = process.env.SITE_URL || 'https://findyourcompasswithin.com';
+      const meetLink    = process.env.MEET_LINK || '#';
+
+      try {
+        await resend.emails.send({
+          from:    fromAddress,
+          to:      booking.client_email,
+          subject: `Your session is confirmed: ${displayDate}`,
+          html:    buildClientConfirmationEmail({
+            clientName:  booking.client_name,
+            packageName: booking.package_name,
+            displayDate, displayTime, meetLink, siteUrl,
+          }),
+        });
+      } catch (mailErr) {
+        // The booking is confirmed; a mail failure should not undo that.
+        console.error('[Admin] approveTime email failed:', mailErr);
+        return res.status(200).json({ success: true, emailed: false });
+      }
+
+      return res.status(200).json({ success: true, emailed: true, date: displayDate, time: displayTime });
     }
 
     return res.status(400).json({ error: 'Unknown action' });

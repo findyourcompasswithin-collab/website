@@ -50,22 +50,29 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
     }
 
     const questionnaireUrl = `${siteUrl}/questionnaire?token=${booking.questionnaire_token}`;
+    const isGroup = product.format === 'group';
 
     await resend.emails.send({
       from:    fromAddress,
       to:      customerEmail,
-      subject: `Welcome to ${product.displayName}: your first step`,
-      html:    buildCoachingWelcomeEmail({ customerName: name, product, questionnaireUrl, siteUrl }),
+      subject: isGroup
+        ? `Welcome to ${product.displayName}: your seat is saved`
+        : `Welcome to ${product.displayName}: your first step`,
+      html:    isGroup
+        ? buildCircleWelcomeEmail({ customerName: name, product, questionnaireUrl, siteUrl })
+        : buildCoachingWelcomeEmail({ customerName: name, product, questionnaireUrl, siteUrl }),
     });
 
     await resend.emails.send({
       from:    fromAddress,
       to:      process.env.FROM_EMAIL,
-      subject: `New booking: ${product.displayName}, ${name}`,
+      subject: `New ${isGroup ? 'Circle seat' : 'booking'}: ${product.displayName}, ${name}`,
       html:    `<p style="font-family:sans-serif"><strong>Client:</strong> ${escapeHtml(name)} (${escapeHtml(customerEmail)})</p>
-                <p style="font-family:sans-serif"><strong>Package:</strong> ${escapeHtml(product.displayName)} · $${product.price}</p>
-                <p style="font-family:sans-serif"><strong>Sessions:</strong> ${product.sessions}</p>
-                <p style="font-family:sans-serif">Questionnaire link sent. You will be notified once completed and a session is booked.</p>`,
+                <p style="font-family:sans-serif"><strong>${isGroup ? 'Round' : 'Package'}:</strong> ${escapeHtml(product.displayName)} · $${product.price}</p>
+                <p style="font-family:sans-serif"><strong>${isGroup ? 'Live calls' : 'Sessions'}:</strong> ${product.sessions}</p>
+                <p style="font-family:sans-serif">${isGroup
+                  ? 'Group round seat taken. Intake questionnaire sent. Remember to email this member the cohort dates and private group link.'
+                  : 'Questionnaire link sent. You will be notified once completed and a session is booked.'}</p>`,
     });
 
     return { ok: true };
@@ -237,6 +244,60 @@ function buildCoachingWelcomeEmail({ customerName, product, questionnaireUrl, si
       <p style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:#2F4F3F;margin:0 0 4px;">Step 2: Pre-Session Questionnaire and Calendar Booking</p>
       <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0 0 10px;line-height:1.6;">Complete your short pre-session questionnaire. Once submitted, you will be taken directly to the booking calendar to choose your session date and time.</p>
       <a href="${questionnaireUrl}" style="display:inline-block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:12px 24px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.3px;">Complete Your Questionnaire &rarr;</a>
+    </div>
+    <p style="font-family:Georgia,serif;font-size:13px;font-style:italic;color:#C2A46F;margin:16px 0 0;">
+      With care,<br>
+      <strong style="font-family:Georgia,serif;font-style:normal;color:#2F4F3F;font-size:15px;">Mel</strong>
+    </p>
+  </td></tr>
+  <tr><td style="background:#2F4F3F;padding:20px 36px;border-radius:0 0 10px 10px;text-align:center;">
+    <p style="font-family:'Outfit',sans-serif;font-size:11px;color:rgba(245,240,232,0.3);margin:0;">
+      <a href="${siteUrl}" style="color:rgba(194,164,111,0.6);text-decoration:none;">findyourcompasswithin.com</a>
+    </p>
+  </td></tr>
+</table></td></tr></table></body></html>`;
+}
+
+function buildCircleWelcomeEmail({ customerName, product, questionnaireUrl, siteUrl }) {
+  const firstName = escapeHtml(customerName.split(' ')[0]);
+  const cohort = product.cohort || {};
+  const dates  = Array.isArray(cohort.dates) ? cohort.dates : [];
+  const calls  = product.sessions || dates.length || 6;
+
+  const datesBlock = dates.length
+    ? `<p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0 0 8px;line-height:1.6;">Here are our ${calls} weekly calls. Pop them in your calendar now:</p>
+       <ul style="font-family:'Outfit',sans-serif;font-size:12px;color:#2F4F3F;margin:0;padding-left:18px;line-height:1.9;">
+         ${dates.map((d) => `<li>${escapeHtml(d)}</li>`).join('')}
+       </ul>`
+    : `<p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0;line-height:1.6;">I will email you the ${calls} weekly call dates and your private group space shortly, so you can set them aside. Nothing for you to book: the whole circle moves together.</p>`;
+
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#F2E8D9;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F2E8D9;padding:40px 20px;">
+<tr><td align="center">
+<table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+  <tr><td style="background:#2F4F3F;border-radius:10px 10px 0 0;overflow:hidden;">
+    <div style="height:3px;background:linear-gradient(90deg,#C2A46F,#A6B695,#C2A46F);"></div>
+    <div style="padding:32px 36px 28px;text-align:center;">
+      <p style="font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(194,164,111,0.7);margin:0 0 10px;">Find Your Compass Within</p>
+      <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:400;color:#F5F0E8;margin:0;line-height:1.3;">Your seat is <em style="color:#d9be92;">saved</em>, ${firstName}</h1>
+    </div>
+  </td></tr>
+  <tr><td style="background:#fff;padding:36px;border:0.5px solid #E6D8C3;border-top:none;">
+    <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#2F4F3F;margin:0 0 8px;">Hi ${firstName},</p>
+    <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#5a7a68;line-height:1.7;margin:0 0 20px;">
+      Welcome to <strong style="color:#2F4F3F;">${escapeHtml(product.displayName)}</strong>. You are one of a small circle of women walking through this together, and I am really glad you are here. You will not be doing this alone.
+    </p>
+
+    <div style="background:#F7EFE4;border-left:3px solid #C2A46F;border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 12px;">
+      <p style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:#2F4F3F;margin:0 0 8px;">Your weekly calls</p>
+      ${datesBlock}
+    </div>
+
+    <div style="background:#F7EFE4;border-left:3px solid #2F4F3F;border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 24px;">
+      <p style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:#2F4F3F;margin:0 0 4px;">One thing to do now: your short intake</p>
+      <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0 0 10px;line-height:1.6;">It takes about 5 minutes and helps me shape the circle around what you and the others actually need. There are no right answers, just honest ones.</p>
+      <a href="${questionnaireUrl}" style="display:inline-block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:12px 24px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.3px;">Complete Your Intake &rarr;</a>
     </div>
     <p style="font-family:Georgia,serif;font-size:13px;font-style:italic;color:#C2A46F;margin:16px 0 0;">
       With care,<br>
