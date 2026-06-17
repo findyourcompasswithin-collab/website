@@ -229,7 +229,7 @@ export const PRODUCTS = {
     type: 'coaching',
     format: 'group',
     sessions: 6,            // six weekly live calls
-    seats: 5,               // founding round cap: stop promoting once 5 are taken
+    seats: null,            // soft cap, not shown to clients; Mel keeps it a small group (her call, e.g. up to ~10)
     cohort: {
       name: 'Founding Circle',
       // FILL IN when dates are set, e.g.:
