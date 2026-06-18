@@ -95,28 +95,28 @@ export const PRODUCTS = {
   'strength-finder': {
     name: 'The Strength Finder: Specialist Workbook',
     displayName: 'The Strength Finder',
-    price: 47.00,
+    price: 35.00,
     type: 'digital',
     files: ['strength-finder.pdf'],
   },
   'boundary-blueprint': {
     name: 'The Boundary Blueprint: Specialist Workbook',
     displayName: 'The Boundary Blueprint',
-    price: 47.00,
+    price: 35.00,
     type: 'digital',
     files: ['boundary-blueprint.pdf'],
   },
   're-entry': {
     name: 'The Re-Entry Workbook: Specialist',
     displayName: 'The Re-Entry Workbook',
-    price: 47.00,
+    price: 35.00,
     type: 'digital',
     files: ['re-entry.pdf'],
   },
   'unapologetic-series': {
     name: 'The Unapologetic Series Bundle',
     displayName: 'The Unapologetic Series',
-    price: 117.00,
+    price: 92.00,
     type: 'digital',
     files: [
       'strength-finder.pdf',
@@ -136,21 +136,21 @@ export const PRODUCTS = {
   'mother-behind-the-role': {
     name: 'The Mother Behind the Role: Understanding Your Child From the Womb to the World',
     displayName: 'The Mother Behind the Role',
-    price: 35.00,
+    price: 44.00,
     type: 'digital',
     files: ['mother-behind-the-role.pdf'],
   },
   'perimenopause-pivot': {
     name: 'The Perimenopause Pivot: Navigating the Shift Nobody Warned You About',
     displayName: 'The Perimenopause Pivot',
-    price: 35.00,
+    price: 44.00,
     type: 'digital',
     files: ['perimenopause-pivot.pdf'],
   },
   'still-me-series': {
     name: 'The Still Me Series Bundle',
     displayName: 'The Still Me Series',
-    price: 92.00,
+    price: 107.00,
     type: 'digital',
     files: [
       'still-me.pdf',
