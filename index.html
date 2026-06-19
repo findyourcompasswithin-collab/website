@@ -1774,6 +1774,15 @@ footer{background:#162b1e;padding:60px 2rem 30px}
         <div class="footer-creds">
           <span class="footer-cred">✦ ICR Certified Life Coach</span>
         </div>
+        <div style="margin-top:24px;max-width:300px">
+          <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(194,164,111,0.7);margin-bottom:8px;font-weight:500">Join the list</p>
+          <p style="font-size:12.5px;color:rgba(245,240,232,0.45);line-height:1.6;margin-bottom:12px;font-weight:300">A warm note when there is a new workbook, a Circle opening, or something worth pausing for. Occasional, honest, easy to leave.</p>
+          <div id="nlForm" style="display:flex;gap:8px;flex-wrap:wrap">
+            <input type="email" id="nlEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')submitNewsletter()" style="flex:1;min-width:150px;padding:10px 12px;border:0.5px solid rgba(230,216,195,0.25);border-radius:6px;background:rgba(255,255,255,0.04);color:#f5f0e8;font-family:'Outfit',sans-serif;font-size:13px;outline:none">
+            <button onclick="submitNewsletter()" id="nlBtn" style="background:var(--gold);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap">Join</button>
+          </div>
+          <p id="nlMsg" style="font-size:11.5px;color:rgba(245,240,232,0.4);line-height:1.5;margin-top:9px;font-weight:300"></p>
+        </div>
       </div>
       <div class="footer-col">
         <h4>Navigate</h4>
@@ -2081,6 +2090,17 @@ async function submitCheckout(e, method) {
     return;
   }
 
+  // If they ticked the newsletter box, subscribe them now (fire-and-forget,
+  // independent of whether the payment completes - the consent stands on its own).
+  const coNews = document.getElementById('co-news');
+  if (coNews && coNews.checked) {
+    fetch('/api/free-workbook', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: (firstName + ' ' + lastName).trim(), email: email, mode: 'newsletter', source: 'checkout' }),
+    }).catch(function(){});
+  }
+
   btn.disabled = true;
   if (btnPp) btnPp.disabled = true;
 
@@ -2195,6 +2215,10 @@ document.addEventListener('keydown', function(e) {
         <div style="background:#F7EFE4;border-left:3px solid #C2A46F;border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:10px">
           <p style="font-size:11px;color:#5a7a68;line-height:1.6;margin:0"><strong style="color:#2F4F3F;font-weight:500">Choose how to pay:</strong> Payfast is our South African partner, with cards, Instant EFT, SnapScan and more. The amount there shows in rand (R), the same price converted, not an extra charge. PayPal charges exactly the listed dollar price, anywhere in the world.</p>
         </div>
+        <label style="display:flex;align-items:flex-start;gap:9px;margin:0 0 14px;cursor:pointer">
+          <input type="checkbox" id="co-news" style="margin-top:2px;flex-shrink:0;width:15px;height:15px;accent-color:#2F4F3F;cursor:pointer">
+          <span style="font-size:11.5px;color:#5a7a68;line-height:1.55;font-weight:300">Keep me posted: the occasional note on new workbooks and Circle openings. No spam, unsubscribe any time.</span>
+        </label>
         <button type="submit" class="co-submit" id="co-btn">Pay in Rand · Payfast</button>
         <button type="button" class="co-submit" id="co-btn-pp" onclick="submitCheckout(event,'paypal')" style="background:#C2A46F;color:#2F4F3F;margin-top:8px">Pay in Dollars · PayPal</button>
         <p class="co-note">&#128274;&nbsp; Secured by Payfast and PayPal &nbsp;·&nbsp; Your details are never stored</p>
@@ -2253,9 +2277,13 @@ document.addEventListener('keydown', function(e) {
           <label for="fwEmail">Your email address</label>
           <input type="email" id="fwEmail" class="fw-input" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')submitFwForm()">
         </div>
+        <label style="display:flex;align-items:flex-start;gap:9px;margin:2px 0 14px;cursor:pointer">
+          <input type="checkbox" id="fwNews" style="margin-top:2px;flex-shrink:0;width:15px;height:15px;accent-color:#2F4F3F;cursor:pointer">
+          <span style="font-size:12px;color:#5a7a68;line-height:1.55;font-weight:300;font-family:'Outfit',sans-serif">Yes, send me the occasional note from Mel too: new workbooks, Circle dates, and a little encouragement. Unsubscribe any time.</span>
+        </label>
         <button class="fw-btn" id="fwSubmitBtn" onclick="submitFwForm()">Send Me the Free Check-In &rarr;</button>
         <div class="fw-error" id="fwError"></div>
-        <p class="fw-note">No spam, ever. Unsubscribe any time.</p>
+        <p class="fw-note">We email your Check-In straight away. The note is optional, and only if you tick the box.</p>
       </div>
 
       <!-- Success state -->
@@ -2295,6 +2323,7 @@ document.addEventListener('keydown', function(e){
 async function submitFwForm() {
   var name  = document.getElementById('fwName').value.trim();
   var email = document.getElementById('fwEmail').value.trim();
+  var news  = document.getElementById('fwNews') ? document.getElementById('fwNews').checked : false;
   var btn   = document.getElementById('fwSubmitBtn');
   var errEl = document.getElementById('fwError');
   errEl.style.display = 'none';
@@ -2306,7 +2335,7 @@ async function submitFwForm() {
     var res  = await fetch('/api/free-workbook', {
       method:  'POST',
       headers: {'Content-Type':'application/json'},
-      body:    JSON.stringify({ name: name, email: email })
+      body:    JSON.stringify({ name: name, email: email, newsletter: news })
     });
     var data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Something went wrong.');
@@ -2322,6 +2351,37 @@ function showFwErr(msg) {
   var el = document.getElementById('fwError');
   el.textContent  = msg;
   el.style.display = 'block';
+}
+
+// ── Footer "Join the list" newsletter signup ──
+async function submitNewsletter() {
+  var email = document.getElementById('nlEmail').value.trim();
+  var btn   = document.getElementById('nlBtn');
+  var msg   = document.getElementById('nlMsg');
+  if (!email || email.indexOf('@') === -1) {
+    msg.style.color = 'rgba(230,170,150,0.95)';
+    msg.textContent = 'Please enter a valid email address.';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = '…';
+  try {
+    var res  = await fetch('/api/free-workbook', {
+      method:  'POST',
+      headers: {'Content-Type':'application/json'},
+      body:    JSON.stringify({ email: email, mode: 'newsletter', source: 'footer' })
+    });
+    var data = await res.json().catch(function(){ return {}; });
+    if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+    document.getElementById('nlForm').style.display = 'none';
+    msg.style.color = 'rgba(166,182,149,0.95)';
+    msg.textContent = 'You are on the list. Thank you.';
+  } catch (err) {
+    msg.style.color = 'rgba(230,170,150,0.95)';
+    msg.textContent = err.message || 'Something went wrong. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Join';
+  }
 }
 </script>
 
