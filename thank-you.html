@@ -147,6 +147,7 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;display
       <h4 style="font-size:13px;font-weight:500;color:var(--brown);margin-bottom:4px">Want to know what is next?</h4>
       <p style="font-size:12px;color:var(--brown-lt);font-weight:300;line-height:1.6;margin-bottom:12px">I share new workbooks and Circle dates with my list first. Occasional, honest, easy to leave.</p>
       <div id="tyForm" style="display:flex;gap:8px;flex-wrap:wrap">
+        <input type="text" id="tyName" placeholder="First name" onkeydown="if(event.key==='Enter')tySubscribe()" style="flex:1;min-width:120px;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--brown);font-family:'Outfit',sans-serif;font-size:13px;outline:none">
         <input type="email" id="tyEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')tySubscribe()" style="flex:1;min-width:150px;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--brown);font-family:'Outfit',sans-serif;font-size:13px;outline:none">
         <button onclick="tySubscribe()" id="tyBtn" style="background:var(--brown);color:#F2E8D9;border:none;border-radius:6px;padding:10px 20px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap">Join the list</button>
       </div>
@@ -181,6 +182,7 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;display
 
 <script>
 async function tySubscribe() {
+  var name  = document.getElementById('tyName') ? document.getElementById('tyName').value.trim() : '';
   var email = document.getElementById('tyEmail').value.trim();
   var btn   = document.getElementById('tyBtn');
   var msg   = document.getElementById('tyMsg');
@@ -195,13 +197,13 @@ async function tySubscribe() {
     var res  = await fetch('/api/free-workbook', {
       method:  'POST',
       headers: {'Content-Type':'application/json'},
-      body:    JSON.stringify({ email: email, mode: 'newsletter', source: 'thankyou' })
+      body:    JSON.stringify({ name: name, email: email, mode: 'newsletter', source: 'thankyou' })
     });
     var data = await res.json().catch(function(){ return {}; });
     if (!res.ok) throw new Error(data.error || 'Something went wrong.');
     document.getElementById('tyForm').style.display = 'none';
     msg.style.color = '#5a7a68';
-    msg.textContent = 'You are on the list. Thank you.';
+    msg.textContent = 'You are on the list, thank you. Your welcome note may land in Promotions or Spam, so do drag it to your inbox.';
   } catch (err) {
     msg.style.color = '#c0392b';
     msg.textContent = err.message || 'Something went wrong. Please try again.';

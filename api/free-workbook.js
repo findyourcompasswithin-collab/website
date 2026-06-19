@@ -145,6 +145,7 @@ export default async function handler(req, res) {
 
 function buildWelcomeEmail({ firstName, siteUrl }) {
   const first = escapeHtml(firstName);
+  const greeting = (firstName && firstName !== 'there') ? `Hi ${first}` : 'Hello';
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#F2E8D9;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2E8D9;padding:40px 20px;">
@@ -158,7 +159,7 @@ function buildWelcomeEmail({ firstName, siteUrl }) {
     </div>
   </td></tr>
   <tr><td style="background:#fff;padding:36px;border:0.5px solid #E6D8C3;border-top:none;">
-    <p style="font-family:'Outfit',sans-serif;font-size:15px;color:#2F4F3F;margin:0 0 8px;">Hi ${first},</p>
+    <p style="font-family:'Outfit',sans-serif;font-size:15px;color:#2F4F3F;margin:0 0 8px;">${greeting},</p>
     <p style="font-family:'Outfit',sans-serif;font-size:14px;color:#5a7a68;line-height:1.75;margin:0 0 18px;font-weight:300;">
       Thank you for joining me. I will send you the occasional note, when there is a new workbook, a Circle opening, or something genuinely worth pausing for. No noise, no spam, and you can unsubscribe from any email in one click.
     </p>

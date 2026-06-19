@@ -1778,6 +1778,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
           <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(194,164,111,0.7);margin-bottom:8px;font-weight:500">Join the list</p>
           <p style="font-size:12.5px;color:rgba(245,240,232,0.45);line-height:1.6;margin-bottom:12px;font-weight:300">A warm note when there is a new workbook, a Circle opening, or something worth pausing for. Occasional, honest, easy to leave.</p>
           <div id="nlForm" style="display:flex;gap:8px;flex-wrap:wrap">
+            <input type="text" id="nlName" placeholder="First name" onkeydown="if(event.key==='Enter')submitNewsletter()" style="flex:1;min-width:120px;padding:10px 12px;border:0.5px solid rgba(230,216,195,0.25);border-radius:6px;background:rgba(255,255,255,0.04);color:#f5f0e8;font-family:'Outfit',sans-serif;font-size:13px;outline:none">
             <input type="email" id="nlEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')submitNewsletter()" style="flex:1;min-width:150px;padding:10px 12px;border:0.5px solid rgba(230,216,195,0.25);border-radius:6px;background:rgba(255,255,255,0.04);color:#f5f0e8;font-family:'Outfit',sans-serif;font-size:13px;outline:none">
             <button onclick="submitNewsletter()" id="nlBtn" style="background:var(--gold);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap">Join</button>
           </div>
@@ -2290,7 +2291,7 @@ document.addEventListener('keydown', function(e) {
       <div class="fw-success" id="fwSuccess">
         <div style="width:52px;height:52px;background:#2F4F3F;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:22px;color:#A6B695">&#10003;</div>
         <h4 style="font-family:'Playfair Display',serif;font-size:19px;font-weight:400;color:#2F4F3F;margin-bottom:10px">Check your inbox</h4>
-        <p style="font-size:13px;color:#5a7a68;line-height:1.75;font-weight:300;font-family:'Outfit',sans-serif;margin-bottom:8px">Your Compass Check-In is on its way. If it doesn't arrive within a few minutes, check your spam folder.</p>
+        <p style="font-size:13px;color:#5a7a68;line-height:1.75;font-weight:300;font-family:'Outfit',sans-serif;margin-bottom:8px">Your Compass Check-In is on its way. If it doesn't arrive within a few minutes, check your Promotions or Spam folder, and dragging it to your inbox helps future emails land there.</p>
         <p style="font-size:12px;color:#9aaa96;font-weight:300;font-family:'Outfit',sans-serif">Enjoy the journey.</p>
       </div>
 
@@ -2355,6 +2356,7 @@ function showFwErr(msg) {
 
 // ── Footer "Join the list" newsletter signup ──
 async function submitNewsletter() {
+  var name  = document.getElementById('nlName') ? document.getElementById('nlName').value.trim() : '';
   var email = document.getElementById('nlEmail').value.trim();
   var btn   = document.getElementById('nlBtn');
   var msg   = document.getElementById('nlMsg');
@@ -2369,13 +2371,13 @@ async function submitNewsletter() {
     var res  = await fetch('/api/free-workbook', {
       method:  'POST',
       headers: {'Content-Type':'application/json'},
-      body:    JSON.stringify({ email: email, mode: 'newsletter', source: 'footer' })
+      body:    JSON.stringify({ name: name, email: email, mode: 'newsletter', source: 'footer' })
     });
     var data = await res.json().catch(function(){ return {}; });
     if (!res.ok) throw new Error(data.error || 'Something went wrong.');
     document.getElementById('nlForm').style.display = 'none';
     msg.style.color = 'rgba(166,182,149,0.95)';
-    msg.textContent = 'You are on the list. Thank you.';
+    msg.textContent = 'You are on the list, thank you. Your welcome note may land in Promotions or Spam, so do drag it to your inbox.';
   } catch (err) {
     msg.style.color = 'rgba(230,170,150,0.95)';
     msg.textContent = err.message || 'Something went wrong. Please try again.';
