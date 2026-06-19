@@ -26,6 +26,22 @@ const BUCKET      = 'workbooks';
 const FILE        = 'compass-checkin.pdf';
 const URL_EXPIRY  = 604800; // 7 days (generous - it's free)
 
+// The marketing audience to add opted-in subscribers to. Prefer an explicit
+// RESEND_AUDIENCE_ID env var; otherwise auto-discover the account's first
+// audience (so no manual ID lookup is needed). Cached across warm invocations.
+let cachedAudienceId = process.env.RESEND_AUDIENCE_ID || null;
+async function resolveAudienceId(resend) {
+  if (cachedAudienceId) return cachedAudienceId;
+  try {
+    const result = await resend.audiences.list();
+    const list   = result?.data?.data || result?.data || [];
+    if (Array.isArray(list) && list.length) cachedAudienceId = list[0].id;
+  } catch (e) {
+    console.error('[Lead] Could not list Resend audiences:', e);
+  }
+  return cachedAudienceId;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -68,17 +84,20 @@ export default async function handler(req, res) {
       // Non-blocking - table may not exist yet
     }
 
-    // ── Add to the Resend Audience if they opted in (and it's configured) ────
-    if (consented && process.env.RESEND_AUDIENCE_ID) {
-      try {
-        await resend.contacts.create({
-          email:        cleanEmail,
-          firstName:    firstName === 'there' ? undefined : firstName,
-          unsubscribed: false,
-          audienceId:   process.env.RESEND_AUDIENCE_ID,
-        });
-      } catch (e) {
-        console.error('[Lead] Resend audience add failed (non-blocking):', e);
+    // ── Add to the Resend Audience if they opted in ─────────────────────────
+    if (consented) {
+      const audienceId = await resolveAudienceId(resend);
+      if (audienceId) {
+        try {
+          await resend.contacts.create({
+            email:        cleanEmail,
+            firstName:    firstName === 'there' ? undefined : firstName,
+            unsubscribed: false,
+            audienceId,
+          });
+        } catch (e) {
+          console.error('[Lead] Resend audience add failed (non-blocking):', e);
+        }
       }
     }
 
