@@ -383,7 +383,7 @@ async function viewQuestionnaire(bookingId, clientName) {
   const q = data.questionnaire;
   const rows = [
     ['What brought them to coaching', q.brought_to_coaching],
-    ['Areas feeling most stuck',      Array.isArray(q.stuck_areas) ? q.stuck_areas.join(', ') : q.stuck_areas],
+    ['Areas feeling most stuck',      formatList(q.stuck_areas)],
     ['Desired outcome',               q.desired_outcome],
     ['What they have already tried',  q.already_tried],
     ['Readiness to change (1–10)',    q.readiness_score],
@@ -546,6 +546,22 @@ function showToast(msg) {
 function escHtml(str) {
   return String(str ?? '')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Render a multi-select value whatever shape it arrives in: a real array,
+// a JSON string ('["a","b"]'), or a Postgres array literal ('{"a","b"}').
+function formatList(val) {
+  if (val == null) return '';
+  if (Array.isArray(val)) return val.join(', ');
+  if (typeof val === 'string') {
+    var s = val.trim();
+    try { var p = JSON.parse(s); if (Array.isArray(p)) return p.join(', '); } catch (e) {}
+    if (s.charAt(0) === '{' && s.charAt(s.length - 1) === '}') {
+      return s.slice(1, -1).replace(/"/g, '').split(',').map(function (x) { return x.trim(); }).filter(Boolean).join(', ');
+    }
+    return s;
+  }
+  return String(val);
 }
 </script>
 </body>
