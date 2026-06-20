@@ -17,13 +17,17 @@ export default async function handler(req, res) {
   const { token, date, time, preferredTimes, timezone } = req.body;
   if (!token) return res.status(400).json({ error: 'Token is required' });
 
+  // Reusable, no-payment test link (?token=test) maps to a fixed test booking.
+  const TEST_TOKEN  = '00000000-0000-0000-0000-000000000000';
+  const lookupToken = token === 'test' ? TEST_TOKEN : token;
+
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
   // Branch: a client outside the listed time zones requesting a custom time.
   // Handled inside this endpoint (rather than its own) to stay within Vercel's
   // 12-function limit.
   if (preferredTimes && preferredTimes.trim()) {
-    return handleTimeRequest({ supabase, res, token, timezone, preferredTimes });
+    return handleTimeRequest({ supabase, res, token: lookupToken, timezone, preferredTimes });
   }
 
   // Otherwise this is a normal slot booking.
@@ -41,7 +45,7 @@ export default async function handler(req, res) {
   const { data: booking, error: bookingError } = await supabase
     .from('bookings')
     .select('id, client_name, client_email, package_name, sessions_total, sessions_booked, questionnaire_completed')
-    .eq('questionnaire_token', token)
+    .eq('questionnaire_token', lookupToken)
     .single();
 
   if (bookingError || !booking) {

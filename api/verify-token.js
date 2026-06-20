@@ -38,10 +38,11 @@ export default async function handler(req, res) {
         questionnaire_completed: false,
       }).select(COLS).single();
       tb = ins.data;
-    } else if (tb.questionnaire_completed) {
-      await supabase.from('bookings').update({ questionnaire_completed: false }).eq('id', tb.id);
-      tb.questionnaire_completed = false;
     }
+    // Note: we do NOT reset questionnaire_completed here. The questionnaire page
+    // re-shows the form for the test booking regardless (see questionnaire.html),
+    // and resetting would make the schedule step reject booking ("complete the
+    // questionnaire first").
     if (tb) {
       const tp = PRODUCTS['test-consult'] || {};
       tb.format = tp.format || 'individual';

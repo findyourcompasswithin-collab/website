@@ -286,7 +286,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // If questionnaire already done, go straight to the next step.
     // Group rounds (Compass Circles) skip the 1:1 calendar.
-    if (booking.questionnaire_completed) {
+    // The reusable test booking always re-shows the form so it can be re-tested.
+    if (booking.questionnaire_completed && booking.package_id !== 'test-consult') {
       window.location.href = format === 'group'
         ? `/circle-confirmed?token=${token}`
         : `/schedule?token=${token}`;
