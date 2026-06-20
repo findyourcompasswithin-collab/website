@@ -2033,10 +2033,15 @@ const PRODUCT_INFO = {
   'guided-navigation':     { name: 'Guided Navigation: 5-Session Programme', price: '$397' },
   'compass-circle-perimenopause': { name: 'The Perimenopause Pivot: A Guided Round (Founding Circle)', price: '$97' },
   'test-1':                { name: 'Connection Test',                       price: '$1'   },
+  'test-consult':          { name: 'Consult Connection Test',               price: '$1'   },
 };
 
-// Temporary end-to-end payment test: visit findyourcompasswithin.com/?test=1
-if (window.location.search.indexOf('test=1') !== -1) {
+// Temporary end-to-end payment tests:
+//   findyourcompasswithin.com/?test=1        → $1 digital workbook (delivery flow)
+//   findyourcompasswithin.com/?test=consult  → $1 coaching consult (booking flow)
+if (window.location.search.indexOf('test=consult') !== -1) {
+  window.addEventListener('load', function() { openCheckout('test-consult'); });
+} else if (window.location.search.indexOf('test=1') !== -1) {
   window.addEventListener('load', function() { openCheckout('test-1'); });
 }
 
