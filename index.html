@@ -2054,6 +2054,17 @@ if (window.location.search.indexOf('test=consult') !== -1) {
   }
 })();
 
+// Deep link to the 5 Questions form (used by the coaching welcome email)
+if (new URLSearchParams(window.location.search).get('questions') === '1') {
+  window.addEventListener('load', function() {
+    showPage('resources');
+    setTimeout(function() {
+      var el = document.getElementById('five-questions-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
+  });
+}
+
 function openCheckout(productId) {
   const product = PRODUCT_INFO[productId];
   if (!product) return;
@@ -2087,6 +2098,9 @@ async function submitCheckout(e, method) {
   e.preventDefault();
   method = method || 'payfast';
   const productId = document.getElementById('co-product-id').value;
+  // Remember the purchase kind so /thank-you shows booking copy (not download copy) for coaching.
+  const COACHING_IDS = ['compass-reading','expedition','guided-navigation','compass-circle-perimenopause','test-consult'];
+  try { localStorage.setItem('fycw_purchase_type', COACHING_IDS.indexOf(productId) !== -1 ? 'coaching' : 'digital'); } catch (e) {}
   const firstName = document.getElementById('co-first').value.trim();
   const lastName  = document.getElementById('co-last').value.trim();
   const email     = document.getElementById('co-email').value.trim();

@@ -245,7 +245,7 @@ function buildCoachingWelcomeEmail({ customerName, product, questionnaireUrl, si
     <div style="background:#F7EFE4;border-left:3px solid #C2A46F;border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 12px;">
       <p style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:#2F4F3F;margin:0 0 4px;">Step 1: The 5 Questions</p>
       <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0 0 10px;line-height:1.6;">If you have not already answered the 5 Questions on the website, please take 2 minutes to do that now. Your answers give me important context before we even speak.</p>
-      <a href="${siteUrl}/#5questions" style="font-family:'Outfit',sans-serif;font-size:12px;color:#C2A46F;text-decoration:none;font-weight:500;">Answer the 5 Questions &rarr;</a>
+      <a href="${siteUrl}/?questions=1" style="font-family:'Outfit',sans-serif;font-size:12px;color:#C2A46F;text-decoration:none;font-weight:500;">Answer the 5 Questions &rarr;</a>
     </div>
 
     <div style="background:#F7EFE4;border-left:3px solid #2F4F3F;border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 24px;">

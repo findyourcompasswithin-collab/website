@@ -106,12 +106,12 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;display
   <!-- Body -->
   <div class="card-body">
 
-    <p class="intro">
+    <p class="intro" id="ty-intro">
       Thank you for investing in yourself. <strong>Your download link is already on its way</strong> to the email address you provided at checkout. Here is what to expect next.
     </p>
 
     <p class="steps-label">What happens now</p>
-    <div class="steps">
+    <div class="steps" id="ty-steps">
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-text">
@@ -139,7 +139,7 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;display
       <div class="email-icon">&#9993;</div>
       <div>
         <h4>Did not receive your email?</h4>
-        <p>If it has not arrived within 10 minutes, email us directly and we will send your files manually. We are always happy to help. You can also request fresh links for everything you own, at any time, on the <a href="/downloads" style="color:var(--brown);font-weight:500">My Downloads</a> page.</p>
+        <p id="ty-emailbox">If it has not arrived within 10 minutes, email us directly and we will send your files manually. We are always happy to help. You can also request fresh links for everything you own, at any time, on the <a href="/downloads" style="color:var(--brown);font-weight:500">My Downloads</a> page.</p>
       </div>
     </div>
 
@@ -170,7 +170,7 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;display
 
   <!-- Footer -->
   <div class="card-footer">
-    <p>Download links are valid for 12 months. If yours ever stop working,<br>email <a href="mailto:melcooper@findyourcompasswithin.com">melcooper@findyourcompasswithin.com</a> and we will resend them.</p>
+    <p id="ty-footer">Download links are valid for 12 months. If yours ever stop working,<br>email <a href="mailto:melcooper@findyourcompasswithin.com">melcooper@findyourcompasswithin.com</a> and we will resend them.</p>
   </div>
   <div class="bottom-gradient"></div>
 
@@ -181,6 +181,25 @@ body{font-family:'Outfit',sans-serif;background:#2F4F3F;min-height:100vh;display
 </div>
 
 <script>
+// If this was a coaching/consult purchase, swap the download copy for booking copy.
+(function () {
+  try {
+    if (localStorage.getItem('fycw_purchase_type') !== 'coaching') return;
+    localStorage.removeItem('fycw_purchase_type');
+    var intro = document.getElementById('ty-intro');
+    if (intro) intro.innerHTML = 'Thank you for investing in yourself. <strong>Your booking is confirmed and a welcome email is on its way</strong> to the address you provided at checkout. Here is what to expect next.';
+    var steps = document.getElementById('ty-steps');
+    if (steps) steps.innerHTML =
+        '<div class="step"><div class="step-num">1</div><div class="step-text"><h4>Check your inbox</h4><p>Your welcome email has been sent. It may take a minute or two to arrive. Please also check your spam or junk folder if you do not see it.</p></div></div>'
+      + '<div class="step"><div class="step-num">2</div><div class="step-text"><h4>Complete your questionnaire</h4><p>Inside that email is a short pre-session questionnaire. Once you submit it, you will be taken straight to the calendar to choose your session time.</p></div></div>'
+      + '<div class="step"><div class="step-num">3</div><div class="step-text"><h4>Come as you are</h4><p>There is nothing to prepare. Bring yourself honestly, that is the only thing the work asks of you.</p></div></div>';
+    var eb = document.getElementById('ty-emailbox');
+    if (eb) eb.innerHTML = 'If it has not arrived within 10 minutes, email us directly and we will resend it. We are always happy to help.';
+    var ft = document.getElementById('ty-footer');
+    if (ft) ft.innerHTML = 'Your welcome email has everything you need to book your session. If it does not arrive,<br>email <a href="mailto:melcooper@findyourcompasswithin.com">melcooper@findyourcompasswithin.com</a> and we will resend it.';
+  } catch (e) {}
+})();
+
 async function tySubscribe() {
   var name  = document.getElementById('tyName') ? document.getElementById('tyName').value.trim() : '';
   var email = document.getElementById('tyEmail').value.trim();
