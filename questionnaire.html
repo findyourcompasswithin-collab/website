@@ -139,42 +139,42 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
           <div class="step-q">Which area of your life feels most stuck right now?</div>
           <div class="step-hint">Select all that apply.</div>
           <div class="check-grid" id="areas-grid">
-            <label class="check-item" onclick="toggleCheck(this)">
+            <label class="check-item" onclick="toggleCheck(event, this)">
               <input type="checkbox" value="Career Direction">
               <div class="check-box"><span class="check-tick">✓</span></div>
               <span class="check-label">Career Direction</span>
             </label>
-            <label class="check-item" onclick="toggleCheck(this)">
+            <label class="check-item" onclick="toggleCheck(event, this)">
               <input type="checkbox" value="Self-Confidence">
               <div class="check-box"><span class="check-tick">✓</span></div>
               <span class="check-label">Self-Confidence</span>
             </label>
-            <label class="check-item" onclick="toggleCheck(this)">
+            <label class="check-item" onclick="toggleCheck(event, this)">
               <input type="checkbox" value="Purpose & Identity">
               <div class="check-box"><span class="check-tick">✓</span></div>
               <span class="check-label">Purpose & Identity</span>
             </label>
-            <label class="check-item" onclick="toggleCheck(this)">
+            <label class="check-item" onclick="toggleCheck(event, this)">
               <input type="checkbox" value="Money & Financial Mindset">
               <div class="check-box"><span class="check-tick">✓</span></div>
               <span class="check-label">Money & Financial Mindset</span>
             </label>
-            <label class="check-item" onclick="toggleCheck(this)">
+            <label class="check-item" onclick="toggleCheck(event, this)">
               <input type="checkbox" value="Relationships">
               <div class="check-box"><span class="check-tick">✓</span></div>
               <span class="check-label">Relationships</span>
             </label>
-            <label class="check-item" onclick="toggleCheck(this)">
+            <label class="check-item" onclick="toggleCheck(event, this)">
               <input type="checkbox" value="Returning to Work">
               <div class="check-box"><span class="check-tick">✓</span></div>
               <span class="check-label">Returning to Work</span>
             </label>
-            <label class="check-item" onclick="toggleCheck(this)">
+            <label class="check-item" onclick="toggleCheck(event, this)">
               <input type="checkbox" value="Fear & Limiting Beliefs">
               <div class="check-box"><span class="check-tick">✓</span></div>
               <span class="check-label">Fear & Limiting Beliefs</span>
             </label>
-            <label class="check-item" onclick="toggleCheck(this)">
+            <label class="check-item" onclick="toggleCheck(event, this)">
               <input type="checkbox" value="Life Balance">
               <div class="check-box"><span class="check-tick">✓</span></div>
               <span class="check-label">Life Balance</span>
@@ -345,7 +345,11 @@ function goToStep(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function toggleCheck(el) {
+function toggleCheck(e, el) {
+  // The option is a <label> wrapping a hidden checkbox. Without this, clicking
+  // the label also fires the label's native click on the checkbox, which bubbles
+  // back and runs this handler a second time, toggling the selection off again.
+  if (e) e.preventDefault();
   el.classList.toggle('selected');
   el.querySelector('input[type="checkbox"]').checked = el.classList.contains('selected');
 }
