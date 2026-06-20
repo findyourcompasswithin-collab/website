@@ -317,10 +317,6 @@ footer{background:#162b1e;padding:60px 2rem 30px}
 .fiveq-other-input textarea::placeholder{color:var(--muted);font-style:italic;font-weight:300}
 @media(max-width:600px){.fiveq-block div[style*="grid-template-columns"]{grid-template-columns:1fr!important}}
 
-/* ── WHATSAPP ── */
-.whatsapp-btn{position:fixed;bottom:28px;right:28px;width:54px;height:54px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,0.3);z-index:500;transition:transform 0.2s}
-.whatsapp-btn:hover{transform:scale(1.08)}
-.whatsapp-btn svg{width:28px;height:28px;fill:white}
 
 /* ── PAGE SYSTEM ── */
 .page{display:none}
@@ -362,7 +358,6 @@ footer{background:#162b1e;padding:60px 2rem 30px}
       <a href="#" onclick="showPage('about')">About</a>
       <a href="#" onclick="showPage('work')">Work With Me</a>
       <a href="#" onclick="showPage('resources')">Resources</a>
-      <a href="#" onclick="showPage('contact')">Contact</a>
       <a href="#" class="nav-cta" onclick="showPage('contact')">Get in Touch</a>
     </nav>
     <div class="hamburger" onclick="toggleMenu()" id="hamburger">
@@ -377,7 +372,6 @@ footer{background:#162b1e;padding:60px 2rem 30px}
   <a href="#" onclick="showPage('about');toggleMenu()">About</a>
   <a href="#" onclick="showPage('work');toggleMenu()">Work With Me</a>
   <a href="#" onclick="showPage('resources');toggleMenu()">Resources</a>
-  <a href="#" onclick="showPage('contact');toggleMenu()">Contact</a>
   <a href="#" class="nav-cta" onclick="showPage('contact');toggleMenu()">Get in Touch</a>
 </div>
 
@@ -502,7 +496,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
   <section class="workbook">
     <div class="workbook-inner">
       <div class="reveal">
-        <div class="section-eyebrow">Free Resource</div>
+        <div class="section-eyebrow">Start Your Journey</div>
         <h2 class="section-title">Find Your <em>True North</em></h2>
         <div class="gold-divider"></div>
         <p class="section-sub" style="margin-bottom:24px">A beautifully designed career clarity workbook: values mapping, strengths discovery, the Ikigai framework, a 90-day action plan, and an insider's guide to what recruiters actually want to know.</p>
@@ -811,7 +805,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
       <div class="pkg-series-bundle">
         <h4>The Discovery Bundle</h4>
         <p>The Workbook and Chart Your Course together: everything you need to find your direction and build the daily habits to get there.</p>
-        <div class="bundle-price">$44</div>
+        <div class="bundle-price"><span style="text-decoration:line-through;opacity:0.4;font-size:0.5em;font-weight:300;margin-right:9px">$54</span>$44</div>
         <div class="bundle-note">4 PDF downloads · Save $10 vs buying separately</div>
         <a href="#" onclick="openCheckout('discovery-bundle')" class="pkg-btn pkg-btn-outline" style="max-width:280px;margin:0 auto">Get the Bundle: $44</a>
       </div>
@@ -875,7 +869,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
       <div class="pkg-series-bundle">
         <h4>The Still Me Series Bundle</h4>
         <p>Get all three: Still Me, The Mother Behind the Role &amp; The Perimenopause Pivot. Together they save you $16.</p>
-        <div class="bundle-price">$107</div>
+        <div class="bundle-price"><span style="text-decoration:line-through;opacity:0.4;font-size:0.5em;font-weight:300;margin-right:9px">$123</span>$107</div>
         <div class="bundle-note">3 PDF downloads · Save $16 vs buying separately</div>
         <a href="#" onclick="openCheckout('still-me-series')" class="pkg-btn pkg-btn-outline" style="max-width:280px;margin:0 auto">Get the Still Me Series: $107</a>
       </div>
@@ -940,7 +934,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
       <div class="pkg-series-bundle" style="border-color:rgba(139,74,107,0.25)">
         <h4>The Inner Work Trilogy Bundle</h4>
         <p>Get all three Deep-Dive Workbooks: Fear, Confidence &amp; Money Mindset. Together they save you $13.</p>
-        <div class="bundle-price" style="color:rgba(184,122,154,0.9)">$92</div>
+        <div class="bundle-price" style="color:rgba(184,122,154,0.9)"><span style="text-decoration:line-through;opacity:0.4;font-size:0.5em;font-weight:300;margin-right:9px">$105</span>$92</div>
         <div class="bundle-note">3 PDF downloads · Save $13 vs buying separately</div>
         <a href="#" onclick="openCheckout('inner-work-trilogy')" class="pkg-btn pkg-btn-outline" style="max-width:280px;margin:0 auto;border-color:rgba(139,74,107,0.4);color:rgba(184,122,154,0.9)">Get the Trilogy: $92</a>
       </div>
@@ -1005,7 +999,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
       <div class="pkg-series-bundle" style="border-color:rgba(139,106,58,0.25)">
         <h4>The Unapologetic Series Bundle</h4>
         <p>Get all three Specialist Workbooks: Strength Finder, Boundary Blueprint &amp; Re-Entry. Together they save you $13.</p>
-        <div class="bundle-price" style="color:rgba(184,151,90,0.9)">$92</div>
+        <div class="bundle-price" style="color:rgba(184,151,90,0.9)"><span style="text-decoration:line-through;opacity:0.4;font-size:0.5em;font-weight:300;margin-right:9px">$105</span>$92</div>
         <div class="bundle-note">3 PDF downloads · Save $13 vs buying separately</div>
         <a href="#" onclick="openCheckout('unapologetic-series')" class="pkg-btn pkg-btn-outline" style="max-width:280px;margin:0 auto;border-color:rgba(139,106,58,0.4);color:rgba(184,151,90,0.9)">Get the Series: $92</a>
       </div>
@@ -1126,7 +1120,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
           </div>
         </div>
         <div style="text-align:center">
-          <div style="font-family:'Playfair Display',serif;font-size:56px;font-weight:300;color:var(--gold-light);line-height:1;margin-bottom:4px">$233</div>
+          <div style="font-family:'Playfair Display',serif;font-size:56px;font-weight:300;color:var(--gold-light);line-height:1;margin-bottom:4px"><span style="text-decoration:line-through;opacity:0.4;font-size:0.45em;font-weight:300;margin-right:10px">$387</span>$233</div>
           <p style="font-size:11px;color:rgba(245,240,232,0.35);margin-bottom:20px">13 PDF downloads · Save $102 vs buying by bundle · Start anywhere, go at your own pace</p>
           <a href="#" onclick="openCheckout('complete-collection')" class="pkg-btn pkg-btn-gold" style="max-width:320px;margin:0 auto;display:block;font-size:14px;padding:15px 28px">Get the Complete Collection: $233</a>
           <p style="font-size:11px;color:rgba(245,240,232,0.25);margin-top:10px;font-weight:300">Or start with a single workbook and add more as you go. Each one is available individually above.</p>
@@ -1285,7 +1279,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
       <div class="pkg-series-bundle">
         <h4>The Discovery Bundle</h4>
         <p>The Workbook and Chart Your Course together: everything you need to find your direction and build the daily habits to get there.</p>
-        <div class="bundle-price">$44</div>
+        <div class="bundle-price"><span style="text-decoration:line-through;opacity:0.4;font-size:0.5em;font-weight:300;margin-right:9px">$54</span>$44</div>
         <div class="bundle-note">4 PDF downloads · Save $10 vs buying separately</div>
         <a href="#" onclick="openCheckout('discovery-bundle')" class="pkg-btn pkg-btn-outline" style="max-width:280px;margin:0 auto">Get the Bundle: $44</a>
       </div>
@@ -1349,7 +1343,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
       <div class="pkg-series-bundle">
         <h4>The Still Me Series Bundle</h4>
         <p>Get all three: Still Me, The Mother Behind the Role &amp; The Perimenopause Pivot. Together they save you $16.</p>
-        <div class="bundle-price">$107</div>
+        <div class="bundle-price"><span style="text-decoration:line-through;opacity:0.4;font-size:0.5em;font-weight:300;margin-right:9px">$123</span>$107</div>
         <div class="bundle-note">3 PDF downloads · Save $16 vs buying separately</div>
         <a href="#" onclick="openCheckout('still-me-series')" class="pkg-btn pkg-btn-outline" style="max-width:280px;margin:0 auto">Get the Still Me Series: $107</a>
       </div>
@@ -1431,7 +1425,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
           <p style="font-size:11px;color:rgba(245,240,232,0.3);margin-top:8px;font-weight:300">Save $13 · 3 PDF downloads</p>
         </div>
         <div style="text-align:center">
-          <div class="trilogy-bundle-price" style="color:rgba(184,122,154,0.9)">$92<span>3 workbooks · instant download</span></div>
+          <div class="trilogy-bundle-price" style="color:rgba(184,122,154,0.9)"><span style="text-decoration:line-through;opacity:0.4;font-size:0.5em;font-weight:300;margin-right:8px">$105</span>$92<span>3 workbooks · instant download</span></div>
         </div>
       </div>
     </div>
@@ -1509,7 +1503,7 @@ footer{background:#162b1e;padding:60px 2rem 30px}
           <p style="font-size:11px;color:rgba(245,240,232,0.3);margin-top:8px;font-weight:300">Save $13 · 3 PDF downloads</p>
         </div>
         <div style="text-align:center">
-          <div class="trilogy-bundle-price" style="color:rgba(184,151,90,0.9)">$92<span>3 workbooks · instant download</span></div>
+          <div class="trilogy-bundle-price" style="color:rgba(184,151,90,0.9)"><span style="text-decoration:line-through;opacity:0.4;font-size:0.5em;font-weight:300;margin-right:8px">$105</span>$92<span>3 workbooks · instant download</span></div>
         </div>
       </div>
     </div>
@@ -1754,7 +1748,6 @@ footer{background:#162b1e;padding:60px 2rem 30px}
           <h4>Follow along</h4>
           <div class="social-links">
             <a href="https://www.instagram.com/findyourcompasswithin/" target="_blank" class="social-link" title="Instagram">in</a>
-            <a href="#" class="social-link" title="LinkedIn">li</a>
             <a href="https://www.facebook.com/share/1BB2Shr9yK/" target="_blank" class="social-link" title="Facebook">fb</a>
           </div>
         </div>
@@ -1813,7 +1806,6 @@ footer{background:#162b1e;padding:60px 2rem 30px}
       <div class="footer-col">
         <h4>Connect</h4>
         <a href="https://www.instagram.com/findyourcompasswithin/" target="_blank">Instagram</a>
-        <a href="#">LinkedIn</a>
         <a href="https://www.facebook.com/share/1BB2Shr9yK/" target="_blank">Facebook</a>
         <a href="#" onclick="showPage('contact')">Get in Touch</a>
       </div>
@@ -1827,13 +1819,6 @@ footer{background:#162b1e;padding:60px 2rem 30px}
     </div>
   </div>
 </footer>
-
-<!-- WHATSAPP FLOATING BUTTON -->
-<a href="https://wa.me/27000000000" target="_blank" class="whatsapp-btn" title="Chat on WhatsApp">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
-</a>
 
 <script>
 // ── PAGE NAVIGATION ──
