@@ -44,6 +44,16 @@ export default async function handler(req, res) {
       });
     } catch (_) {}
 
+    // Save the full submission so it shows in the admin dashboard
+    try {
+      await supabase.from('question_submissions').insert({
+        name:       cleanName,
+        email:      cleanEmail,
+        q1, q2, q3, q4, q5,
+        created_at: new Date().toISOString(),
+      });
+    } catch (_) {}
+
     // Email to Mel with full responses
     await resend.emails.send({
       from:    fromAddress,

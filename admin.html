@@ -143,6 +143,8 @@ nav{flex:1;padding:8px 0}
     </div>
     <nav>
       <div class="nav-item active" onclick="showTab('bookings')">&#128197; Bookings</div>
+      <div class="nav-item" onclick="showTab('questions')">&#128221; Submitted Questions</div>
+      <div class="nav-item" onclick="showTab('support')">&#9993;&#65039; Submitted Support</div>
       <div class="nav-item" onclick="showTab('blocked')">&#128683; Blocked Dates</div>
     </nav>
     <div class="sidebar-foot">
@@ -158,15 +160,15 @@ nav{flex:1;padding:8px 0}
       <div class="page-sub">All upcoming and pending coaching sessions</div>
       <div class="stats-row">
         <div class="stat">
-          <div class="stat-num" id="stat-confirmed">—</div>
+          <div class="stat-num" id="stat-confirmed">&middot;</div>
           <div class="stat-label">Confirmed sessions</div>
         </div>
         <div class="stat">
-          <div class="stat-num" id="stat-pending">—</div>
+          <div class="stat-num" id="stat-pending">&middot;</div>
           <div class="stat-label">Awaiting questionnaire</div>
         </div>
         <div class="stat">
-          <div class="stat-num" id="stat-qcomplete">—</div>
+          <div class="stat-num" id="stat-qcomplete">&middot;</div>
           <div class="stat-label">Questionnaire done, unscheduled</div>
         </div>
       </div>
@@ -194,6 +196,24 @@ nav{flex:1;padding:8px 0}
         </div>
       </div>
       <div class="blocked-list" id="blocked-list">
+        <div style="text-align:center;padding:32px"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- Submitted Questions tab -->
+    <div class="tab-pane" id="tab-questions">
+      <div class="page-title">Submitted Questions</div>
+      <div class="page-sub">Reflections sent through the 5 Questions form</div>
+      <div class="booking-list" id="questions-list">
+        <div style="text-align:center;padding:32px"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- Submitted Support tab -->
+    <div class="tab-pane" id="tab-support">
+      <div class="page-title">Submitted Support</div>
+      <div class="page-sub">Messages sent through the Get in Touch form</div>
+      <div class="booking-list" id="support-list">
         <div style="text-align:center;padding:32px"><div class="spinner"></div></div>
       </div>
     </div>
@@ -244,6 +264,8 @@ async function doLogin() {
   document.getElementById('dashboard').style.display  = 'block';
   loadBookings();
   loadBlocked();
+  loadQuestions();
+  loadSupport();
 }
 
 function signOut() {
@@ -262,6 +284,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('dashboard').style.display  = 'block';
     loadBookings();
     loadBlocked();
+    loadQuestions();
+    loadSupport();
   }
 });
 
@@ -344,7 +368,7 @@ async function cancelBooking(id) {
 
 // ── Questionnaire viewer ──────────────────────────────────────────────────────
 async function viewQuestionnaire(bookingId, clientName) {
-  document.getElementById('modal-client-name').textContent = clientName + ' — Questionnaire';
+  document.getElementById('modal-client-name').textContent = clientName + ' · Questionnaire';
   document.getElementById('modal-body').innerHTML = '<div style="text-align:center;padding:20px"><div class="spinner"></div></div>';
   document.getElementById('q-modal').classList.add('open');
 
@@ -439,6 +463,76 @@ async function unblockDate(date) {
   });
   if (res.ok) { showToast('Date unblocked'); loadBlocked(); }
   else showToast('Error unblocking date');
+}
+
+// ── Submitted Questions ───────────────────────────────────────────────────────
+let questionsData = [];
+const QUESTION_LABELS = [
+  'Where are you right now?',
+  'What is weighing on you most?',
+  'What is getting in the way?',
+  'What do you most need right now?',
+  'Commitment to change',
+];
+async function loadQuestions() {
+  const res = await fetch('/api/admin?action=questions', { headers: authHeader() });
+  const { questions } = await res.json();
+  questionsData = questions || [];
+  const list = document.getElementById('questions-list');
+  if (!questionsData.length) {
+    list.innerHTML = '<div class="empty-state">No submissions yet</div>';
+    return;
+  }
+  list.innerHTML = questionsData.map((q, i) => {
+    const dateDisp = new Date(q.created_at).toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric',timeZone:'Africa/Johannesburg'});
+    return `<div class="booking-item">
+      <div class="booking-info">
+        <div class="booking-name">${escHtml(q.name)}</div>
+        <div class="booking-meta">${escHtml(q.email)} &nbsp;&middot;&nbsp; ${escHtml(dateDisp)}</div>
+      </div>
+      <div class="booking-actions">
+        <button class="action-btn" onclick="viewQuestionSubmission(${i})">View answers</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function viewQuestionSubmission(i) {
+  const q = questionsData[i];
+  if (!q) return;
+  document.getElementById('modal-client-name').textContent = q.name + ' · 5 Questions';
+  const answers = [q.q1, q.q2, q.q3, q.q4, q.q5];
+  document.getElementById('modal-body').innerHTML = answers.map((a, idx) => `
+    <div class="q-row">
+      <div class="q-row-label">Q${idx+1}: ${escHtml(QUESTION_LABELS[idx])}</div>
+      <div class="q-row-value">${escHtml(String(a ?? ''))}</div>
+    </div>`).join('')
+    + `<div style="margin-top:20px"><a href="mailto:${escHtml(q.email)}" class="action-btn" style="text-decoration:none;display:inline-block">Reply by email</a></div>`;
+  document.getElementById('q-modal').classList.add('open');
+}
+
+// ── Submitted Support ─────────────────────────────────────────────────────────
+async function loadSupport() {
+  const res = await fetch('/api/admin?action=support', { headers: authHeader() });
+  const { support } = await res.json();
+  const list = document.getElementById('support-list');
+  if (!support || !support.length) {
+    list.innerHTML = '<div class="empty-state">No messages yet</div>';
+    return;
+  }
+  list.innerHTML = support.map(s => {
+    const dateDisp = new Date(s.created_at).toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric',timeZone:'Africa/Johannesburg'});
+    return `<div class="booking-item" style="flex-direction:column;align-items:stretch;gap:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div class="booking-info">
+          <div class="booking-name">${escHtml(s.name)}</div>
+          <div class="booking-meta">${escHtml(s.email)} &nbsp;&middot;&nbsp; ${escHtml(dateDisp)}</div>
+        </div>
+        <a href="mailto:${escHtml(s.email)}" class="action-btn" style="text-decoration:none;white-space:nowrap">Reply</a>
+      </div>
+      <div class="q-row-value" style="background:rgba(255,255,255,0.03);border-left:2px solid rgba(194,164,111,0.4);padding:12px 14px;border-radius:0 6px 6px 0;white-space:pre-wrap">${escHtml(s.message)}</div>
+    </div>`;
+  }).join('');
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

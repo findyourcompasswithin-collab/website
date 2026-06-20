@@ -70,6 +70,34 @@ export default async function handler(req, res) {
     const siteUrl     = process.env.SITE_URL || 'https://findyourcompasswithin.com';
     const fromAddress = `${process.env.FROM_NAME || 'Find Your Compass Within'} <${process.env.FROM_EMAIL}>`;
 
+    // ── CONTACT: save the Get in Touch message + notify Mel, then done ────────
+    // Folded into this endpoint (not a new one) to stay within the Vercel limit.
+    if (mode === 'contact') {
+      const cleanMessage = String(req.body.message || '').trim();
+      if (!cleanMessage) {
+        return res.status(400).json({ error: 'Please enter a message.' });
+      }
+      try {
+        await supabase.from('support_messages').insert({
+          name:       cleanName || null,
+          email:      cleanEmail,
+          message:    cleanMessage,
+          created_at: new Date().toISOString(),
+        });
+      } catch (_) {
+        // Non-blocking - table may not exist yet
+      }
+      await resend.emails.send({
+        from:    fromAddress,
+        to:      process.env.FROM_EMAIL,
+        replyTo: cleanEmail,
+        subject: `New message from ${cleanName || cleanEmail}`,
+        html:    buildSupportEmail({ name: cleanName, email: cleanEmail, message: cleanMessage }),
+      });
+      console.log(`[Support] Message from ${cleanEmail}`);
+      return res.status(200).json({ success: true });
+    }
+
     // ── Save lead (silent fail if table doesn't exist yet) ───────────────────
     try {
       await supabase.from('leads').insert({
@@ -178,6 +206,27 @@ function buildWelcomeEmail({ firstName, siteUrl }) {
     </p>
   </td></tr>
 </table></td></tr></table></body></html>`;
+}
+
+function buildSupportEmail({ name, email, message }) {
+  const safe = (s) => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="font-family:'Outfit',sans-serif;background:#F2E8D9;padding:30px 20px;">
+<div style="max-width:600px;margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;border:0.5px solid #E6D8C3;">
+  <div style="background:#2F4F3F;padding:24px 32px;">
+    <div style="height:3px;background:linear-gradient(90deg,#C2A46F,#A6B695,#C2A46F);margin-bottom:16px;border-radius:2px;"></div>
+    <div style="font-family:'Georgia',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(194,164,111,0.7);margin-bottom:6px">Find Your Compass Within</div>
+    <div style="font-family:'Georgia',serif;font-size:22px;font-weight:400;color:#F5F0E8;">New Contact Message</div>
+  </div>
+  <div style="padding:32px;">
+    <p style="font-size:14px;color:#3d5e50;margin-bottom:4px"><strong>${safe(name)}</strong> &nbsp;&middot;&nbsp; <a href="mailto:${safe(email)}" style="color:#C2A46F">${safe(email)}</a></p>
+    <div style="height:1px;background:#E6D8C3;margin:20px 0;"></div>
+    <div style="font-size:14px;color:#2F4F3F;background:#F9F5EF;border-left:3px solid #C2A46F;padding:14px 16px;border-radius:0 6px 6px 0;line-height:1.7;white-space:pre-wrap;">${safe(message)}</div>
+    <div style="height:1px;background:#E6D8C3;margin:24px 0;"></div>
+    <p style="font-size:12px;color:#888;text-align:center">Submitted via findyourcompasswithin.com. Reply directly to respond.</p>
+  </div>
+</div>
+</body></html>`;
 }
 
 function buildEmail({ firstName, downloadUrl, siteUrl, consented }) {

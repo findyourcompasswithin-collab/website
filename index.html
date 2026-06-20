@@ -1718,15 +1718,15 @@ footer{background:#162b1e;padding:60px 2rem 30px}
         <form class="contact-form reveal" onsubmit="handleForm(event)">
           <div class="form-group">
             <label class="form-label">Your Name</label>
-            <input type="text" class="form-input" placeholder="Your name">
+            <input type="text" id="contact-name" class="form-input" placeholder="Your name" required>
           </div>
           <div class="form-group">
             <label class="form-label">Email Address</label>
-            <input type="email" class="form-input" placeholder="you@email.com">
+            <input type="email" id="contact-email" class="form-input" placeholder="you@email.com" required>
           </div>
           <div class="form-group">
             <label class="form-label">What brings you here?</label>
-            <textarea class="form-textarea" placeholder="Tell me a little about where you are and what you're looking for..."></textarea>
+            <textarea class="form-textarea" id="contact-message" placeholder="Tell me a little about where you are and what you're looking for..." required></textarea>
           </div>
           <button type="submit" class="btn-primary" style="border:none;cursor:pointer;width:100%;padding:14px">Send Message</button>
         </form>
@@ -1866,16 +1866,35 @@ function toggleFaq(btn) {
 }
 
 // ── FORM ──
-function handleForm(e) {
+async function handleForm(e) {
   e.preventDefault();
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.textContent = '✓ Message sent. I\'ll be in touch within 24 hours';
-  btn.style.background = '#4a9e6b';
+  const btn     = e.target.querySelector('button[type="submit"]');
+  const name    = document.getElementById('contact-name').value.trim();
+  const email   = document.getElementById('contact-email').value.trim();
+  const message = document.getElementById('contact-message').value.trim();
+  if (!name || !email || !message) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  try {
+    const res = await fetch('/api/free-workbook', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ mode: 'contact', name, email, message }),
+    });
+    if (!res.ok) throw new Error('failed');
+    btn.textContent = '✓ Message sent. I\'ll be in touch within 24 hours';
+    btn.style.background = '#4a9e6b';
+    e.target.reset();
+  } catch (err) {
+    btn.textContent = 'Something went wrong. Please try again';
+    btn.style.background = '#c0392b';
+  }
   setTimeout(() => {
     btn.textContent = 'Send Message';
     btn.style.background = '';
-    e.target.reset();
-  }, 4000);
+    btn.disabled = false;
+  }, 4500);
 }
 
 // ── STICKY HEADER ──

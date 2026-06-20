@@ -76,6 +76,26 @@ export default async function handler(req, res) {
       return res.status(200).json({ questionnaire: data });
     }
 
+    if (action === 'questions') {
+      const { data, error } = await supabase
+        .from('question_submissions')
+        .select('id, name, email, q1, q2, q3, q4, q5, created_at')
+        .order('created_at', { ascending: false });
+
+      if (error) return res.status(500).json({ error: error.message });
+      return res.status(200).json({ questions: data || [] });
+    }
+
+    if (action === 'support') {
+      const { data, error } = await supabase
+        .from('support_messages')
+        .select('id, name, email, message, created_at')
+        .order('created_at', { ascending: false });
+
+      if (error) return res.status(500).json({ error: error.message });
+      return res.status(200).json({ support: data || [] });
+    }
+
     return res.status(400).json({ error: 'Unknown action' });
   }
 
