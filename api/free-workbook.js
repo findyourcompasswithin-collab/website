@@ -118,7 +118,7 @@ export default async function handler(req, res) {
     // ── CHECK-IN: generate signed download URL and email the PDF ─────────────
     const { data: urlData, error: urlError } = await supabase.storage
       .from(BUCKET)
-      .createSignedUrl(FILE, URL_EXPIRY);
+      .createSignedUrl(FILE, URL_EXPIRY, { download: true });
 
     if (urlError || !urlData?.signedUrl) {
       console.error('[FreeWorkbook] Supabase URL error:', urlError);
@@ -126,10 +126,11 @@ export default async function handler(req, res) {
     }
 
     await resend.emails.send({
-      from:    fromAddress,
-      to:      cleanEmail,
-      subject: 'Your Compass Check-In is ready',
-      html:    buildEmail({ firstName, downloadUrl: urlData.signedUrl, siteUrl, consented }),
+      from:        fromAddress,
+      to:          cleanEmail,
+      subject:     'Your Compass Check-In is ready',
+      html:        buildEmail({ firstName, downloadUrl: urlData.signedUrl, siteUrl, consented }),
+      attachments: [{ filename: 'compass-checkin.pdf', path: urlData.signedUrl }],
     });
 
     console.log(`[FreeWorkbook] Sent to ${cleanEmail}${consented ? ' (newsletter opt-in)' : ''}`);
@@ -218,7 +219,7 @@ function buildEmail({ firstName, downloadUrl, siteUrl, consented }) {
     <!-- Note -->
     <div style="background:#F7EFE4;border:0.5px solid #E6D8C3;border-radius:6px;padding:14px 18px;margin:0 0 24px;">
       <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0;line-height:1.65;">
-        &#9651; This link is valid for <strong>7 days</strong>. Save your PDF to your device so you can return to it any time.
+        &#9651; Your Compass Check-In is <strong>attached to this email</strong>, so it is yours to keep. The button above downloads it too.
       </p>
     </div>
 

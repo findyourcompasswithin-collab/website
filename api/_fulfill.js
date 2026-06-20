@@ -100,16 +100,23 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
   }
 
   const downloadLinks = [];
+  const attachments   = [];
+  // Single-file products are attached to the email; multi-file bundles (esp. the
+  // 13-PDF Complete Collection) stay link-only to keep the email small and deliverable.
+  const attachFiles   = product.files.length <= 1;
   for (const fileName of product.files) {
+    // download:true makes the signed URL force a download instead of opening
+    // the (ugly) Supabase URL in the browser.
     const { data: urlData, error } = await supabase.storage
       .from(BUCKET)
-      .createSignedUrl(fileName, URL_EXPIRY_SECONDS);
+      .createSignedUrl(fileName, URL_EXPIRY_SECONDS, { download: true });
 
     if (error) {
       console.error(`[Supabase] Signed URL error for ${fileName}:`, error);
       continue;
     }
     downloadLinks.push({ name: fileDisplayName(fileName), url: urlData.signedUrl });
+    if (attachFiles) attachments.push({ filename: fileName, path: urlData.signedUrl });
   }
 
   if (downloadLinks.length === 0) {
@@ -118,10 +125,11 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
   }
 
   await resend.emails.send({
-    from:    fromAddress,
-    to:      customerEmail,
-    subject: `Your download is ready: ${product.displayName}`,
-    html:    buildDownloadEmail({ customerName: name, product, downloadLinks, siteUrl }),
+    from:        fromAddress,
+    to:          customerEmail,
+    subject:     `Your download is ready: ${product.displayName}`,
+    html:        buildDownloadEmail({ customerName: name, product, downloadLinks, siteUrl, attached: attachments.length > 0 }),
+    attachments: attachments.length ? attachments : undefined,
   });
 
   return { ok: true };
@@ -163,7 +171,7 @@ export async function sendLibraryEmail(email) {
   for (const fileName of fileSet) {
     const { data: urlData, error: urlError } = await supabase.storage
       .from(BUCKET)
-      .createSignedUrl(fileName, URL_EXPIRY_SECONDS);
+      .createSignedUrl(fileName, URL_EXPIRY_SECONDS, { download: true });
     if (urlError) {
       console.error(`[Library] Signed URL error for ${fileName}:`, urlError);
       continue;
@@ -312,7 +320,7 @@ function buildCircleWelcomeEmail({ customerName, product, questionnaireUrl, site
 </table></td></tr></table></body></html>`;
 }
 
-function buildDownloadEmail({ customerName, product, downloadLinks, siteUrl }) {
+function buildDownloadEmail({ customerName, product, downloadLinks, siteUrl, attached }) {
   const firstName = escapeHtml(String(customerName).split(' ')[0]);
   const linkRows = downloadLinks.map(link => `
     <tr><td style="padding:0 0 12px 0;">
@@ -341,7 +349,7 @@ function buildDownloadEmail({ customerName, product, downloadLinks, siteUrl }) {
     <table width="100%" cellpadding="0" cellspacing="0">${linkRows}</table>
     <div style="background:#F7EFE4;border:0.5px solid #E6D8C3;border-radius:6px;padding:14px 18px;margin:8px 0 24px;">
       <p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0;line-height:1.6;">
-        &#9651; Your links are valid for <strong>12 months</strong>, so you can return to your workbook whenever you need it. If a link ever stops working, you can request fresh links for everything you own at <a href="${siteUrl}/downloads" style="color:#2F4F3F;font-weight:500;">${siteUrl.replace('https://','')}/downloads</a>, or simply reply to this email.
+        &#9651; ${attached ? 'Your workbook is also attached to this email, so it is yours to keep. ' : ''}Your download link${downloadLinks.length > 1 ? 's are' : ' is'} valid for <strong>12 months</strong>, so you can return whenever you need it. If a link ever stops working, you can request fresh links for everything you own at <a href="${siteUrl}/downloads" style="color:#2F4F3F;font-weight:500;">${siteUrl.replace('https://','')}/downloads</a>, or simply reply to this email.
       </p>
     </div>
     <p style="font-family:Georgia,serif;font-size:13px;font-style:italic;color:#C2A46F;margin:16px 0 0;">
