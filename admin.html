@@ -145,6 +145,7 @@ nav{flex:1;padding:8px 0}
       <div class="nav-item active" onclick="showTab('bookings')">&#128197; Bookings</div>
       <div class="nav-item" onclick="showTab('questions')">&#128221; Submitted Questions</div>
       <div class="nav-item" onclick="showTab('support')">&#9993;&#65039; Submitted Support</div>
+      <div class="nav-item" onclick="showTab('invite')">&#128233; Send Invite</div>
       <div class="nav-item" onclick="showTab('blocked')">&#128683; Blocked Dates</div>
     </nav>
     <div class="sidebar-foot">
@@ -215,6 +216,33 @@ nav{flex:1;padding:8px 0}
       <div class="page-sub">Messages sent through the Get in Touch form</div>
       <div class="booking-list" id="support-list">
         <div style="text-align:center;padding:32px"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- Send Invite tab -->
+    <div class="tab-pane" id="tab-invite">
+      <div class="page-title">Send Invite</div>
+      <div class="page-sub">For a manual sale: email a client their 5 Questions and booking instructions</div>
+      <div class="block-form" style="max-width:520px">
+        <h4>Invite a client</h4>
+        <div class="form-field" style="margin-bottom:14px">
+          <label>Client email</label>
+          <input type="email" id="invite-email" placeholder="client@email.com">
+        </div>
+        <div class="form-field" style="margin-bottom:14px">
+          <label>Client name <span style="color:rgba(245,240,232,0.25)">(optional)</span></label>
+          <input type="text" id="invite-name" placeholder="First name">
+        </div>
+        <div class="form-field" style="margin-bottom:18px">
+          <label>Package</label>
+          <select id="invite-package" style="width:100%;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.12);border-radius:6px;padding:9px 12px;font-size:13px;color:#F2E8D9;font-family:'Outfit',sans-serif;outline:none">
+            <option value="compass-reading" style="color:#2F4F3F">A Compass Reading (single session)</option>
+            <option value="expedition" style="color:#2F4F3F">The Expedition (3 sessions)</option>
+            <option value="guided-navigation" style="color:#2F4F3F">Guided Navigation (5 sessions)</option>
+            <option value="compass-circle-perimenopause" style="color:#2F4F3F">Perimenopause Pivot: Guided Round (group)</option>
+          </select>
+        </div>
+        <button class="block-btn" onclick="sendInvite()" id="invite-btn">Send Invitation</button>
       </div>
     </div>
 
@@ -533,6 +561,33 @@ async function loadSupport() {
       <div class="q-row-value" style="background:rgba(255,255,255,0.03);border-left:2px solid rgba(194,164,111,0.4);padding:12px 14px;border-radius:0 6px 6px 0;white-space:pre-wrap">${escHtml(s.message)}</div>
     </div>`;
   }).join('');
+}
+
+// ── Send Invite (manual sale) ─────────────────────────────────────────────────
+async function sendInvite() {
+  const email     = document.getElementById('invite-email').value.trim();
+  const name      = document.getElementById('invite-name').value.trim();
+  const productId = document.getElementById('invite-package').value;
+  const btn       = document.getElementById('invite-btn');
+  if (!email || email.indexOf('@') === -1) { showToast('Please enter a valid email'); return; }
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  try {
+    const res = await fetch('/api/admin', {
+      method:  'POST',
+      headers: authHeader(),
+      body:    JSON.stringify({ action: 'invite', email: email, name: name, productId: productId }),
+    });
+    if (!res.ok) throw new Error();
+    showToast('Invitation sent to ' + email);
+    document.getElementById('invite-email').value = '';
+    document.getElementById('invite-name').value  = '';
+    loadBookings();
+  } catch (e) {
+    showToast('Could not send invitation');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Send Invitation';
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

@@ -17,6 +17,8 @@
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import { buildClientConfirmationEmail } from './create-booking.js';
+import { fulfillOrder } from './_fulfill.js';
+import { PRODUCTS } from './_products.js';
 
 function checkAuth(req) {
   const auth = req.headers['authorization'] || '';
@@ -200,6 +202,31 @@ export default async function handler(req, res) {
       }
 
       return res.status(200).json({ success: true, emailed: true, date: displayDate, time: displayTime });
+    }
+
+    // Manual sale: create the booking and send the same welcome email (5 Questions
+    // + questionnaire/booking links) a real coaching purchase would, no payment.
+    if (action === 'invite') {
+      const { email, name = '', productId = 'compass-reading' } = req.body;
+      if (!email || !String(email).includes('@')) {
+        return res.status(400).json({ error: 'A valid email is required' });
+      }
+      const product = PRODUCTS[productId];
+      if (!product || product.type !== 'coaching') {
+        return res.status(400).json({ error: 'Please choose a coaching package' });
+      }
+      const result = await fulfillOrder({
+        product,
+        productId,
+        customerEmail: String(email).toLowerCase().trim(),
+        customerName:  String(name).trim(),
+        paymentId:     `MANUAL-${Date.now()}`,
+        paymentMethod: 'manual',
+      });
+      if (!result || !result.ok) {
+        return res.status(500).json({ error: 'Could not send the invitation' });
+      }
+      return res.status(200).json({ success: true });
     }
 
     return res.status(400).json({ error: 'Unknown action' });
