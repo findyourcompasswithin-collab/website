@@ -15,13 +15,18 @@ export default async function handler(req, res) {
   const { token, responses } = req.body;
   if (!token || !responses) return res.status(400).json({ error: 'Token and responses required' });
 
+  // Reusable, no-payment test link (?token=test) maps to a fixed test booking.
+  const TEST_TOKEN  = '00000000-0000-0000-0000-000000000000';
+  const isTest      = token === 'test' || token === TEST_TOKEN;
+  const lookupToken = isTest ? TEST_TOKEN : token;
+
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
   // Validate token and get booking
   const { data: booking, error: bookingError } = await supabase
     .from('bookings')
     .select('id, client_name, client_email, package_id, package_name, sessions_total, questionnaire_completed')
-    .eq('questionnaire_token', token)
+    .eq('questionnaire_token', lookupToken)
     .single();
 
   if (bookingError || !booking) {
@@ -36,27 +41,37 @@ export default async function handler(req, res) {
     ? `${siteUrl}/circle-confirmed?token=${token}`
     : `${siteUrl}/schedule?token=${token}`;
 
-  if (booking.questionnaire_completed) {
+  if (booking.questionnaire_completed && !isTest) {
     // Already submitted - just return the next URL
     return res.status(200).json({ scheduleUrl: nextUrl });
   }
 
-  // Save responses
-  const { error: saveError } = await supabase
+  // Save responses. Update the existing row if one is already there (so the
+  // reusable test link does not pile up duplicate rows, which would break the
+  // admin viewer's single-row lookup).
+  const payload = {
+    booking_id:          booking.id,
+    client_name:         booking.client_name,
+    client_email:        booking.client_email,
+    brought_to_coaching: responses.broughtToCoaching,
+    stuck_areas:         responses.stuckAreas,
+    desired_outcome:     responses.desiredOutcome,
+    already_tried:       responses.alreadyTried,
+    readiness_score:     responses.readinessScore,
+    current_challenges:  responses.currentChallenges,
+    success_vision:      responses.successVision,
+    additional_notes:    responses.additionalNotes,
+  };
+
+  const { data: existingResp } = await supabase
     .from('questionnaire_responses')
-    .insert({
-      booking_id:          booking.id,
-      client_name:         booking.client_name,
-      client_email:        booking.client_email,
-      brought_to_coaching: responses.broughtToCoaching,
-      stuck_areas:         responses.stuckAreas,
-      desired_outcome:     responses.desiredOutcome,
-      already_tried:       responses.alreadyTried,
-      readiness_score:     responses.readinessScore,
-      current_challenges:  responses.currentChallenges,
-      success_vision:      responses.successVision,
-      additional_notes:    responses.additionalNotes,
-    });
+    .select('id')
+    .eq('booking_id', booking.id)
+    .maybeSingle();
+
+  const { error: saveError } = existingResp
+    ? await supabase.from('questionnaire_responses').update(payload).eq('id', existingResp.id)
+    : await supabase.from('questionnaire_responses').insert(payload);
 
   if (saveError) {
     console.error('[Questionnaire] Save error:', saveError);
