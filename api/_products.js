@@ -182,25 +182,6 @@ export const PRODUCTS = {
     ],
   },
 
-  // ── HIDDEN TEST PRODUCT (temporary: verifying new PayPal account) ────────────
-  'test-1': {
-    name: 'Connection Test',
-    displayName: 'Connection Test',
-    price: 1.00,
-    type: 'digital',
-    files: ['compass-checkin.pdf'],
-  },
-
-  // ── HIDDEN TEST PRODUCT (temporary: verifying coaching payment + booking flow) ──
-  'test-consult': {
-    name: 'Consult Connection Test',
-    displayName: 'Consult Connection Test',
-    price: 1.00,
-    type: 'coaching',
-    sessions: 1,
-    files: [],
-  },
-
   // ── COACHING SESSIONS ───────────────────────────────────────────────────────
   'compass-reading': {
     name: 'A Compass Reading: Single Session',

@@ -18,39 +18,6 @@ export default async function handler(req, res) {
 
   const COLS = 'id, client_name, client_email, package_id, package_name, sessions_total, sessions_booked, status, questionnaire_completed';
 
-  // Reusable, no-payment test link: /questionnaire?token=test
-  // Ensures a single fixed test booking exists, and resets it each load so the
-  // form always shows and the questionnaire can be re-submitted for testing.
-  const TEST_TOKEN = '00000000-0000-0000-0000-000000000000';
-  if (token === 'test' || token === TEST_TOKEN) {
-    let { data: tb } = await supabase.from('bookings').select(COLS).eq('questionnaire_token', TEST_TOKEN).maybeSingle();
-    if (!tb) {
-      const ins = await supabase.from('bookings').insert({
-        client_name:             'Questionnaire Test',
-        client_email:            process.env.FROM_EMAIL,
-        package_id:              'test-consult',
-        package_name:            'Consult Connection Test',
-        sessions_total:          1,
-        sessions_booked:         0,
-        status:                  'pending_questionnaire',
-        payment_id:              'TEST-QUESTIONNAIRE',
-        questionnaire_token:     TEST_TOKEN,
-        questionnaire_completed: false,
-      }).select(COLS).single();
-      tb = ins.data;
-    }
-    // Note: we do NOT reset questionnaire_completed here. The questionnaire page
-    // re-shows the form for the test booking regardless (see questionnaire.html),
-    // and resetting would make the schedule step reject booking ("complete the
-    // questionnaire first").
-    if (tb) {
-      const tp = PRODUCTS['test-consult'] || {};
-      tb.format = tp.format || 'individual';
-      tb.cohort = tp.cohort || null;
-      return res.status(200).json({ booking: tb });
-    }
-  }
-
   const { data: booking, error } = await supabase
     .from('bookings')
     .select(COLS)
