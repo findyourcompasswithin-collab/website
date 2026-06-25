@@ -79,6 +79,28 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
                   : 'Questionnaire link sent. You will be notified once completed and a session is booked.'}</p>`,
     });
 
+    // If this coaching package bundles workbooks (e.g. Expedition + Guided
+    // Navigation include the Discovery Bundle), deliver them as a second email
+    // so the buyer gets the goods straight away. Sent alongside the booking
+    // welcome, not gated behind the questionnaire.
+    if (Array.isArray(product.files) && product.files.length > 0) {
+      const { attachments, fileNames } = await buildWorkbookAttachments(supabase, product.files);
+      if (attachments.length > 0) {
+        const firstName = String(name).split(' ')[0];
+        await resend.emails.send({
+          from:        fromAddress,
+          to:          customerEmail,
+          bcc:         OWNER_BCC,
+          subject:     `You said yes to yourself, ${firstName}`,
+          html:        buildDownloadEmail({ customerName: name, product, fileNames, siteUrl }),
+          attachments,
+        });
+      } else {
+        // Booking still succeeded; the bundled PDFs can be re-sent manually from /admin.
+        console.error(`[Fulfill] Coaching booking ${paymentId} succeeded but bundled workbook delivery produced 0 attachments for ${productId}`);
+      }
+    }
+
     return { ok: true };
   }
 
@@ -106,22 +128,7 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
   // Workbooks are delivered as PDF attachments. Resend fetches each signed URL
   // server-side via `path`, so the file streams straight from Supabase to the
   // email without passing through this function as a base64 payload.
-  const attachments = [];
-  const fileNames   = [];
-  for (const fileName of product.files) {
-    const { data: urlData, error } = await supabase.storage
-      .from(BUCKET)
-      .createSignedUrl(fileName, URL_EXPIRY_SECONDS, { download: true });
-
-    if (error) {
-      console.error(`[Supabase] Signed URL error for ${fileName}:`, error);
-      continue;
-    }
-    const displayName = fileDisplayName(fileName);
-    attachments.push({ filename: `${displayName}.pdf`, path: urlData.signedUrl });
-    fileNames.push(displayName);
-  }
-
+  const { attachments, fileNames } = await buildWorkbookAttachments(supabase, product.files);
   if (attachments.length === 0) {
     console.error('[Fulfill] No attachments built for product:', productId);
     return { ok: false, error: 'no_attachments' };
@@ -198,6 +205,24 @@ export async function sendLibraryEmail(email) {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
+async function buildWorkbookAttachments(supabase, files) {
+  const attachments = [];
+  const fileNames   = [];
+  for (const fileName of files) {
+    const { data: urlData, error } = await supabase.storage
+      .from(BUCKET)
+      .createSignedUrl(fileName, URL_EXPIRY_SECONDS, { download: true });
+    if (error) {
+      console.error(`[Supabase] Signed URL error for ${fileName}:`, error);
+      continue;
+    }
+    const displayName = fileDisplayName(fileName);
+    attachments.push({ filename: `${displayName}.pdf`, path: urlData.signedUrl });
+    fileNames.push(displayName);
+  }
+  return { attachments, fileNames };
+}
 
 function fileDisplayName(fileName) {
   const map = {

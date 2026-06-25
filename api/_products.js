@@ -197,7 +197,14 @@ export const PRODUCTS = {
     price: 297.00,
     type: 'coaching',
     sessions: 3,
-    files: [],
+    // Sales card promises "Full Discovery Bundle (all 4 PDF tools)" — delivered as
+    // a second email at purchase time, alongside the booking welcome.
+    files: [
+      'find-your-true-north.pdf',
+      'habit-tracker.pdf',
+      'gratitude-journal.pdf',
+      'letters-to-future-self.pdf',
+    ],
   },
   'guided-navigation': {
     name: 'Guided Navigation: 5-Session Programme',
@@ -205,7 +212,12 @@ export const PRODUCTS = {
     price: 397.00,
     type: 'coaching',
     sessions: 5,
-    files: [],
+    files: [
+      'find-your-true-north.pdf',
+      'habit-tracker.pdf',
+      'gratitude-journal.pdf',
+      'letters-to-future-self.pdf',
+    ],
   },
 
   // ── GROUP ROUNDS (COMPASS CIRCLES) ──────────────────────────────────────────
