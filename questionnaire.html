@@ -136,51 +136,141 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 
         <!-- STEP 2: Stuck areas -->
         <div class="step" id="step-2">
-          <div class="step-q">Which area of your life feels most stuck right now?</div>
-          <div class="step-hint">Select all that apply.</div>
-          <div class="check-grid" id="areas-grid">
-            <label class="check-item" onclick="toggleCheck(event, this)">
-              <input type="checkbox" value="Career Direction">
-              <div class="check-box"><span class="check-tick">✓</span></div>
-              <span class="check-label">Career Direction</span>
-            </label>
-            <label class="check-item" onclick="toggleCheck(event, this)">
-              <input type="checkbox" value="Self-Confidence">
-              <div class="check-box"><span class="check-tick">✓</span></div>
-              <span class="check-label">Self-Confidence</span>
-            </label>
-            <label class="check-item" onclick="toggleCheck(event, this)">
-              <input type="checkbox" value="Purpose & Identity">
-              <div class="check-box"><span class="check-tick">✓</span></div>
-              <span class="check-label">Purpose & Identity</span>
-            </label>
-            <label class="check-item" onclick="toggleCheck(event, this)">
-              <input type="checkbox" value="Money & Financial Mindset">
-              <div class="check-box"><span class="check-tick">✓</span></div>
-              <span class="check-label">Money & Financial Mindset</span>
-            </label>
-            <label class="check-item" onclick="toggleCheck(event, this)">
-              <input type="checkbox" value="Relationships">
-              <div class="check-box"><span class="check-tick">✓</span></div>
-              <span class="check-label">Relationships</span>
-            </label>
-            <label class="check-item" onclick="toggleCheck(event, this)">
-              <input type="checkbox" value="Returning to Work">
-              <div class="check-box"><span class="check-tick">✓</span></div>
-              <span class="check-label">Returning to Work</span>
-            </label>
-            <label class="check-item" onclick="toggleCheck(event, this)">
-              <input type="checkbox" value="Fear & Limiting Beliefs">
-              <div class="check-box"><span class="check-tick">✓</span></div>
-              <span class="check-label">Fear & Limiting Beliefs</span>
-            </label>
-            <label class="check-item" onclick="toggleCheck(event, this)">
-              <input type="checkbox" value="Life Balance">
-              <div class="check-box"><span class="check-tick">✓</span></div>
-              <span class="check-label">Life Balance</span>
-            </label>
+          <!-- Generic step 2: shown for 1:1 coaching and any non-themed booking -->
+          <div id="step-2-general">
+            <div class="step-q">Which area of your life feels most stuck right now?</div>
+            <div class="step-hint">Select all that apply.</div>
+            <div class="check-grid" id="areas-grid">
+              <label class="check-item" onclick="toggleCheck(event, this)">
+                <input type="checkbox" value="Career Direction">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">Career Direction</span>
+              </label>
+              <label class="check-item" onclick="toggleCheck(event, this)">
+                <input type="checkbox" value="Self-Confidence">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">Self-Confidence</span>
+              </label>
+              <label class="check-item" onclick="toggleCheck(event, this)">
+                <input type="checkbox" value="Purpose & Identity">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">Purpose & Identity</span>
+              </label>
+              <label class="check-item" onclick="toggleCheck(event, this)">
+                <input type="checkbox" value="Money & Financial Mindset">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">Money & Financial Mindset</span>
+              </label>
+              <label class="check-item" onclick="toggleCheck(event, this)">
+                <input type="checkbox" value="Relationships">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">Relationships</span>
+              </label>
+              <label class="check-item" onclick="toggleCheck(event, this)">
+                <input type="checkbox" value="Returning to Work">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">Returning to Work</span>
+              </label>
+              <label class="check-item" onclick="toggleCheck(event, this)">
+                <input type="checkbox" value="Fear & Limiting Beliefs">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">Fear & Limiting Beliefs</span>
+              </label>
+              <label class="check-item" onclick="toggleCheck(event, this)">
+                <input type="checkbox" value="Life Balance">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">Life Balance</span>
+              </label>
+            </div>
+            <textarea class="sm" id="areas-other" placeholder="Anything else you'd like to mention… (optional)"></textarea>
           </div>
-          <textarea class="sm" id="areas-other" placeholder="Anything else you'd like to mention… (optional)"></textarea>
+
+          <!-- Perimenopause step 2: shown when intake === 'perimenopause' (Compass Circles) -->
+          <div id="step-2-perimenopause" style="display:none">
+            <div class="step-q">Where are you in the shift right now?</div>
+            <div class="step-hint">Pick the one that fits best. There is no wrong answer.</div>
+            <div class="check-grid" id="peri-stage-grid">
+              <label class="check-item" onclick="toggleRadio(event, this, 'peri-stage-grid')">
+                <input type="radio" name="peri-stage" value="I'm just starting to notice things changing">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">I'm just starting to notice things changing</span>
+              </label>
+              <label class="check-item" onclick="toggleRadio(event, this, 'peri-stage-grid')">
+                <input type="radio" name="peri-stage" value="I'm in the thick of it">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">I'm in the thick of it</span>
+              </label>
+              <label class="check-item" onclick="toggleRadio(event, this, 'peri-stage-grid')">
+                <input type="radio" name="peri-stage" value="I think I'm coming out the other side">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">I think I'm coming out the other side</span>
+              </label>
+              <label class="check-item" onclick="toggleRadio(event, this, 'peri-stage-grid')">
+                <input type="radio" name="peri-stage" value="I'm not sure yet, that's part of why I'm here">
+                <div class="check-box"><span class="check-tick">✓</span></div>
+                <span class="check-label">I'm not sure yet, that's part of why I'm here</span>
+              </label>
+            </div>
+
+            <div style="margin-top:24px">
+              <div class="step-q">What's hitting hardest right now?</div>
+              <div class="step-hint">Select all that apply.</div>
+              <div class="check-grid" id="peri-symptoms-grid">
+                <label class="check-item" onclick="toggleCheck(event, this)">
+                  <input type="checkbox" value="Sleep">
+                  <div class="check-box"><span class="check-tick">✓</span></div>
+                  <span class="check-label">Sleep</span>
+                </label>
+                <label class="check-item" onclick="toggleCheck(event, this)">
+                  <input type="checkbox" value="Mood, anxiety, or irritability">
+                  <div class="check-box"><span class="check-tick">✓</span></div>
+                  <span class="check-label">Mood, anxiety, or irritability</span>
+                </label>
+                <label class="check-item" onclick="toggleCheck(event, this)">
+                  <input type="checkbox" value="Energy and brain fog">
+                  <div class="check-box"><span class="check-tick">✓</span></div>
+                  <span class="check-label">Energy and brain fog</span>
+                </label>
+                <label class="check-item" onclick="toggleCheck(event, this)">
+                  <input type="checkbox" value="Hormonal symptoms (hot flashes, cycle changes, periods)">
+                  <div class="check-box"><span class="check-tick">✓</span></div>
+                  <span class="check-label">Hormonal symptoms (hot flashes, cycle, periods)</span>
+                </label>
+                <label class="check-item" onclick="toggleCheck(event, this)">
+                  <input type="checkbox" value="Sense of self / identity">
+                  <div class="check-box"><span class="check-tick">✓</span></div>
+                  <span class="check-label">Sense of self / identity</span>
+                </label>
+                <label class="check-item" onclick="toggleCheck(event, this)">
+                  <input type="checkbox" value="Relationships and intimacy">
+                  <div class="check-box"><span class="check-tick">✓</span></div>
+                  <span class="check-label">Relationships and intimacy</span>
+                </label>
+                <label class="check-item" onclick="toggleCheck(event, this)">
+                  <input type="checkbox" value="Body changes / weight">
+                  <div class="check-box"><span class="check-tick">✓</span></div>
+                  <span class="check-label">Body changes / weight</span>
+                </label>
+                <label class="check-item" onclick="toggleCheck(event, this)">
+                  <input type="checkbox" value="Work and focus">
+                  <div class="check-box"><span class="check-tick">✓</span></div>
+                  <span class="check-label">Work and focus</span>
+                </label>
+                <label class="check-item" onclick="toggleCheck(event, this)">
+                  <input type="checkbox" value="I'm not sure yet">
+                  <div class="check-box"><span class="check-tick">✓</span></div>
+                  <span class="check-label">I'm not sure yet</span>
+                </label>
+                <label class="check-item" onclick="toggleOther(event, this)">
+                  <input type="checkbox" id="peri-other-check" value="__other__">
+                  <div class="check-box"><span class="check-tick">✓</span></div>
+                  <span class="check-label">Something else</span>
+                </label>
+              </div>
+              <textarea class="sm" id="peri-other-text" placeholder="In your own words…" style="display:none;margin-top:10px"></textarea>
+            </div>
+          </div>
+
           <div class="btn-row">
             <button class="btn-back" onclick="prevStep(2)">Back</button>
             <button class="btn-next" onclick="nextStep(2)">Continue &rarr;</button>
@@ -265,6 +355,7 @@ let currentStep = 1;
 const totalSteps = 6;
 let token = '';
 let format = 'individual';   // 'group' for Compass Circle rounds
+let intake = 'general';      // 'perimenopause' swaps step 2 to the themed intake
 
 const progressPct = {1:16, 2:32, 3:50, 4:66, 5:82, 6:100};
 
@@ -283,6 +374,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!res.ok) throw new Error('Invalid token');
     const { booking } = await res.json();
     format = booking.format || 'individual';
+    intake = booking.intake || 'general';
+
+    // Swap step 2 to the themed intake when the booking calls for it.
+    if (intake === 'perimenopause') {
+      document.getElementById('step-2-general').style.display = 'none';
+      document.getElementById('step-2-perimenopause').style.display = 'block';
+    }
 
     // If questionnaire already done, go straight to the next step.
     // Group rounds (Compass Circles) skip the 1:1 calendar.
@@ -354,6 +452,31 @@ function toggleCheck(e, el) {
   el.querySelector('input[type="checkbox"]').checked = el.classList.contains('selected');
 }
 
+// Single-select counterpart for radio-style check-items (e.g. perimenopause stage).
+function toggleRadio(e, el, gridId) {
+  if (e) e.preventDefault();
+  document.querySelectorAll(`#${gridId} .check-item`).forEach(item => {
+    item.classList.remove('selected');
+    const r = item.querySelector('input[type="radio"]');
+    if (r) r.checked = false;
+  });
+  el.classList.add('selected');
+  el.querySelector('input[type="radio"]').checked = true;
+}
+
+// Toggles the "Something else" checkbox AND reveals/hides the free-text input.
+function toggleOther(e, el) {
+  if (e) e.preventDefault();
+  el.classList.toggle('selected');
+  const checked = el.classList.contains('selected');
+  el.querySelector('input[type="checkbox"]').checked = checked;
+  const txt = document.getElementById('peri-other-text');
+  if (txt) {
+    txt.style.display = checked ? 'block' : 'none';
+    if (!checked) txt.value = '';
+  }
+}
+
 function updateScale(val) {
   document.getElementById('scale-display').textContent     = val;
   document.getElementById('scale-fill').style.width        = ((val - 1) / 9 * 100) + '%';
@@ -377,12 +500,26 @@ async function submitQuestionnaire() {
   clearErr();
   const btn = document.getElementById('submit-btn');
 
-  const stuckAreas = Array.from(
-    document.querySelectorAll('#areas-grid .check-item.selected input')
-  ).map(i => i.value);
-
-  const areasOther = document.getElementById('areas-other').value.trim();
-  if (areasOther) stuckAreas.push(areasOther);
+  // Step 2 has two variants: the generic life-areas grid, and the themed
+  // perimenopause intake (stage + symptoms + optional "something else").
+  // Both pack into the same stuckAreas array so the API + admin schema do
+  // not have to fork. Perimenopause entries are prefixed ("Stage: …",
+  // "Other: …") so they read cleanly in the admin booking detail.
+  const stuckAreas = [];
+  if (intake === 'perimenopause') {
+    const stage = document.querySelector('#peri-stage-grid input[type="radio"]:checked');
+    if (stage) stuckAreas.push(`Stage: ${stage.value}`);
+    document.querySelectorAll('#peri-symptoms-grid .check-item.selected input[type="checkbox"]')
+      .forEach(i => { if (i.value !== '__other__') stuckAreas.push(i.value); });
+    const otherChecked = document.getElementById('peri-other-check')?.checked;
+    const otherText    = document.getElementById('peri-other-text')?.value.trim();
+    if (otherChecked && otherText) stuckAreas.push(`Other: ${otherText}`);
+  } else {
+    Array.from(document.querySelectorAll('#areas-grid .check-item.selected input'))
+      .forEach(i => stuckAreas.push(i.value));
+    const areasOther = document.getElementById('areas-other').value.trim();
+    if (areasOther) stuckAreas.push(areasOther);
+  }
 
   const broughtToCoaching = document.getElementById('brought-to-coaching').value.trim();
   const desiredOutcome     = document.getElementById('desired-outcome').value.trim();

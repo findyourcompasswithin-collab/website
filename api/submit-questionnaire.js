@@ -31,7 +31,9 @@ export default async function handler(req, res) {
   const siteUrl = process.env.SITE_URL || 'https://findyourcompasswithin.com';
   // Group rounds (Compass Circles) have fixed dates: skip the 1:1 calendar and
   // send them straight to the cohort confirmation page.
-  const isGroup  = PRODUCTS[booking.package_id]?.format === 'group';
+  const product  = PRODUCTS[booking.package_id] || {};
+  const isGroup  = product.format === 'group';
+  const intake   = product.intake || 'general';
   const nextUrl  = isGroup
     ? `${siteUrl}/circle-confirmed?token=${token}`
     : `${siteUrl}/schedule?token=${token}`;
@@ -91,7 +93,7 @@ export default async function handler(req, res) {
   </div>
   <div style="padding:28px 32px;">
     ${buildResponseRow('What brought them to coaching', responses.broughtToCoaching)}
-    ${buildResponseRow('Areas feeling most stuck', areasText)}
+    ${buildResponseRow(intake === 'perimenopause' ? 'Where they are + what hits hardest' : 'Areas feeling most stuck', areasText)}
     ${buildResponseRow('Desired outcome', responses.desiredOutcome)}
     ${buildResponseRow('What they have already tried', responses.alreadyTried)}
     ${buildResponseRow('Readiness to change (1-10)', responses.readinessScore)}

@@ -29,10 +29,12 @@ export default async function handler(req, res) {
   }
 
   // Surface the product format so group rounds (Compass Circles) can route
-  // around the 1:1 self-serve calendar.
+  // around the 1:1 self-serve calendar. Surface intake so the questionnaire
+  // knows which step 2 variant to render (generic vs perimenopause).
   const product = PRODUCTS[booking.package_id] || {};
   booking.format = product.format || 'individual';
   booking.cohort = product.cohort || null;
+  booking.intake = product.intake || 'general';
 
   return res.status(200).json({ booking });
 }

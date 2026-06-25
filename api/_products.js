@@ -231,6 +231,7 @@ export const PRODUCTS = {
     price: 117.00,
     type: 'coaching',
     format: 'group',
+    intake: 'perimenopause', // tells the questionnaire to render the perimenopause-specific step 2
     sessions: 6,            // six weekly live calls
     seats: null,            // soft cap, not shown to clients; Mel keeps it a small group (her call, e.g. up to ~10)
     cohort: {
