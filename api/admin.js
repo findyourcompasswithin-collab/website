@@ -229,6 +229,32 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true });
     }
 
+    // testFulfill: fires the same fulfillOrder path a real purchase would,
+    // but without going through Payfast. Accepts any product (digital,
+    // coaching, group). For end-to-end testing of the delivery emails.
+    if (action === 'testFulfill') {
+      const { email, name = 'Test Buyer', productId } = req.body;
+      if (!email || !String(email).includes('@')) {
+        return res.status(400).json({ error: 'A valid email is required' });
+      }
+      const product = PRODUCTS[productId];
+      if (!product) {
+        return res.status(400).json({ error: 'Unknown product' });
+      }
+      const result = await fulfillOrder({
+        product,
+        productId,
+        customerEmail: String(email).toLowerCase().trim(),
+        customerName:  String(name).trim() || 'Test Buyer',
+        paymentId:     `TEST-${Date.now()}`,
+        paymentMethod: 'test',
+      });
+      if (!result || !result.ok) {
+        return res.status(500).json({ error: result?.error || 'Test fulfilment failed' });
+      }
+      return res.status(200).json({ success: true, duplicate: !!result.duplicate });
+    }
+
     return res.status(400).json({ error: 'Unknown action' });
   }
 

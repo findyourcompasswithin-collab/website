@@ -146,6 +146,7 @@ nav{flex:1;padding:8px 0}
       <div class="nav-item" onclick="showTab('questions')">&#128221; Submitted Questions</div>
       <div class="nav-item" onclick="showTab('support')">&#9993;&#65039; Submitted Support</div>
       <div class="nav-item" onclick="showTab('invite')">&#128233; Send Invite</div>
+      <div class="nav-item" onclick="showTab('test')">&#129514; Test Delivery</div>
       <div class="nav-item" onclick="showTab('blocked')">&#128683; Blocked Dates</div>
     </nav>
     <div class="sidebar-foot">
@@ -243,6 +244,57 @@ nav{flex:1;padding:8px 0}
           </select>
         </div>
         <button class="block-btn" onclick="sendInvite()" id="invite-btn">Send Invitation</button>
+      </div>
+    </div>
+
+    <!-- Test Delivery tab -->
+    <div class="tab-pane" id="tab-test">
+      <div class="page-title">Test Delivery</div>
+      <div class="page-sub">Fires the real fulfilment flow without Payfast: same emails, real attachments, real BCC. For end-to-end testing.</div>
+      <div class="block-form" style="max-width:520px">
+        <h4>Send a test order</h4>
+        <div class="form-field" style="margin-bottom:14px">
+          <label>Recipient email</label>
+          <input type="email" id="test-email" placeholder="you@findyourcompasswithin.com">
+        </div>
+        <div class="form-field" style="margin-bottom:14px">
+          <label>Recipient name <span style="color:rgba(245,240,232,0.25)">(optional)</span></label>
+          <input type="text" id="test-name" placeholder="Test Buyer">
+        </div>
+        <div class="form-field" style="margin-bottom:18px">
+          <label>Product</label>
+          <select id="test-product" style="width:100%;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.12);border-radius:6px;padding:9px 12px;font-size:13px;color:#F2E8D9;font-family:'Outfit',sans-serif;outline:none">
+            <optgroup label="Single workbooks" style="color:#2F4F3F">
+              <option value="workbook">The Compass Workbook</option>
+              <option value="fear-audit">The Fear Audit</option>
+              <option value="confidence-code">The Confidence Code</option>
+              <option value="money-mindset">Money Mindset Workbook</option>
+              <option value="strength-finder">The Strength Finder</option>
+              <option value="boundary-blueprint">The Boundary Blueprint</option>
+              <option value="re-entry">The Re-Entry Workbook</option>
+              <option value="still-me">Still Me</option>
+              <option value="mother-behind-the-role">The Mother Behind the Role</option>
+              <option value="perimenopause-pivot">The Perimenopause Pivot</option>
+            </optgroup>
+            <optgroup label="Bundles" style="color:#2F4F3F">
+              <option value="discovery-bundle">The Discovery Bundle (4 PDFs)</option>
+              <option value="inner-work-trilogy">The Inner Work Trilogy (3 PDFs)</option>
+              <option value="unapologetic-series">The Unapologetic Series (3 PDFs)</option>
+              <option value="still-me-series">The Still Me Series (3 PDFs)</option>
+              <option value="complete-collection">The Complete Compass Collection (13 PDFs)</option>
+            </optgroup>
+            <optgroup label="Coaching (1:1)" style="color:#2F4F3F">
+              <option value="compass-reading">A Compass Reading (no bundle)</option>
+              <option value="expedition">The Expedition (+ Discovery Bundle)</option>
+              <option value="guided-navigation">Guided Navigation (+ Discovery Bundle)</option>
+            </optgroup>
+            <optgroup label="Group" style="color:#2F4F3F">
+              <option value="compass-circle-perimenopause">Founding Circle (+ Perimenopause Pivot)</option>
+            </optgroup>
+          </select>
+        </div>
+        <button class="block-btn" onclick="sendTestFulfill()" id="test-btn">Send Test Order</button>
+        <p style="font-size:11px;color:rgba(245,240,232,0.4);margin-top:14px;line-height:1.6">A unique TEST-{timestamp} payment ID is generated each click, so re-running never collides. Coaching tests also create a real booking row in the database, which you can delete from Bookings if needed.</p>
       </div>
     </div>
 
@@ -588,6 +640,31 @@ async function sendInvite() {
   }
   btn.disabled = false;
   btn.textContent = 'Send Invitation';
+}
+
+// ── Test Delivery ─────────────────────────────────────────────────────────────
+async function sendTestFulfill() {
+  const email     = document.getElementById('test-email').value.trim();
+  const name      = document.getElementById('test-name').value.trim();
+  const productId = document.getElementById('test-product').value;
+  const btn       = document.getElementById('test-btn');
+  if (!email || email.indexOf('@') === -1) { showToast('Please enter a valid email'); return; }
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  try {
+    const res = await fetch('/api/admin', {
+      method:  'POST',
+      headers: authHeader(),
+      body:    JSON.stringify({ action: 'testFulfill', email: email, name: name, productId: productId }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'failed');
+    showToast(data.duplicate ? 'Already fulfilled (duplicate)' : 'Test order sent to ' + email);
+  } catch (e) {
+    showToast('Test failed: ' + (e.message || 'unknown error'));
+  }
+  btn.disabled = false;
+  btn.textContent = 'Send Test Order';
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
