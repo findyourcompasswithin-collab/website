@@ -228,7 +228,7 @@ export const PRODUCTS = {
   'compass-circle-perimenopause': {
     name: 'The Perimenopause Pivot: A Guided Round (Founding Circle)',
     displayName: 'The Perimenopause Pivot Guided Round',
-    price: 97.00,
+    price: 117.00,
     type: 'coaching',
     format: 'group',
     sessions: 6,            // six weekly live calls
@@ -241,6 +241,7 @@ export const PRODUCTS = {
       // members their call dates will be emailed personally. One source of truth.
       dates: [],
     },
-    files: [],
+    // Round includes the workbook so members get it as a second email at purchase.
+    files: ['perimenopause-pivot.pdf'],
   },
 };
