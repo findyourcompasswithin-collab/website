@@ -39,7 +39,7 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
         payment_id:      paymentId,
         status:          'pending_questionnaire',
       })
-      .select('questionnaire_token')
+      .select('id, questionnaire_token')
       .single();
 
     if (bookingError || !booking) {
@@ -55,6 +55,24 @@ export async function fulfillOrder({ product, productId, customerEmail, customer
 
     const questionnaireUrl = `${siteUrl}/questionnaire?token=${booking.questionnaire_token}`;
     const isGroup = product.format === 'group';
+
+    // Group rounds: seed one circle_attendance row per scheduled week, so each
+    // week has a stable rsvp_token to embed in its reminder email. Cohort dates
+    // may still be placeholders (cohort.confirmed === false); the rows are
+    // created either way, but reminder emails do not fire until confirmed.
+    if (isGroup && Array.isArray(product.cohort?.dates) && product.cohort.dates.length > 0) {
+      const attendanceRows = product.cohort.dates.map((d) => ({
+        booking_id:   booking.id,
+        week_number:  d.week,
+        session_date: d.date,
+        session_time: d.time,
+      }));
+      const { error: attendErr } = await supabase.from('circle_attendance').insert(attendanceRows);
+      if (attendErr) {
+        // Booking still succeeds; admin can re-seed manually if needed.
+        console.error('[Fulfill] Could not seed circle_attendance rows for booking', booking.id, attendErr);
+      }
+    }
 
     await resend.emails.send({
       from:    fromAddress,
@@ -224,6 +242,16 @@ async function buildWorkbookAttachments(supabase, files) {
   return { attachments, fileNames };
 }
 
+// Renders a cohort date entry like { date: '2026-09-02', time: '19:00' }
+// as a friendly SAST string: "Wednesday, 2 September 2026 at 19:00 SAST."
+function formatCohortDate(entry) {
+  if (!entry || !entry.date || !entry.time) return '';
+  const display = new Date(`${entry.date}T12:00:00+02:00`).toLocaleDateString('en-ZA', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Africa/Johannesburg',
+  });
+  return `${display} at ${entry.time} SAST`;
+}
+
 function fileDisplayName(fileName) {
   const map = {
     'find-your-true-north.pdf':   'The Compass Workbook',
@@ -298,14 +326,18 @@ function buildCoachingWelcomeEmail({ customerName, product, questionnaireUrl, si
 
 function buildCircleWelcomeEmail({ customerName, product, questionnaireUrl, siteUrl }) {
   const firstName = escapeHtml(customerName.split(' ')[0]);
-  const cohort = product.cohort || {};
-  const dates  = Array.isArray(cohort.dates) ? cohort.dates : [];
-  const calls  = product.sessions || dates.length || 6;
+  const cohort    = product.cohort || {};
+  const dates     = Array.isArray(cohort.dates) ? cohort.dates : [];
+  const calls     = product.sessions || dates.length || 6;
+  // Only surface dates publicly once Mel has flipped confirmed: true on the
+  // cohort. Until then they are placeholders and the member sees "I will email
+  // you shortly" — same wording as before so the UX does not regress.
+  const showDates = cohort.confirmed === true && dates.length > 0;
 
-  const datesBlock = dates.length
+  const datesBlock = showDates
     ? `<p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0 0 8px;line-height:1.6;">Here are our ${calls} weekly calls. Pop them in your calendar now:</p>
        <ul style="font-family:'Outfit',sans-serif;font-size:12px;color:#2F4F3F;margin:0;padding-left:18px;line-height:1.9;">
-         ${dates.map((d) => `<li>${escapeHtml(d)}</li>`).join('')}
+         ${dates.map((d) => `<li>${escapeHtml(formatCohortDate(d))}</li>`).join('')}
        </ul>`
     : `<p style="font-family:'Outfit',sans-serif;font-size:12px;color:#5a7a68;margin:0;line-height:1.6;">I will email you the ${calls} weekly call dates and your private group space shortly, so you can set them aside. Nothing for you to book: the whole circle moves together.</p>`;
 

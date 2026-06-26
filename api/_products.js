@@ -236,11 +236,21 @@ export const PRODUCTS = {
     seats: null,            // soft cap, not shown to clients; Mel keeps it a small group (her call, e.g. up to ~10)
     cohort: {
       name: 'Founding Circle',
-      // FILL IN when dates are set, e.g.:
-      //   'Wednesday 16 July 2026, 19:00 SAST'
-      // Until this list has entries, the confirmation page and welcome email tell
-      // members their call dates will be emailed personally. One source of truth.
-      dates: [],
+      // Structured per-week schedule. Each entry: { week, date, time } in SAST.
+      // Mel can replace the placeholders below with real dates when ready.
+      // While `confirmed: false` is set, the welcome email and confirmation
+      // page still say "I'll email you the dates shortly" — Phase C reminders
+      // also stay dormant until Mel flips confirmed: true.
+      confirmed: false,
+      dates: [
+        // PLACEHOLDERS — replace dates + flip confirmed:true before opening enrolment.
+        { week: 1, date: '2026-09-02', time: '19:00' },
+        { week: 2, date: '2026-09-09', time: '19:00' },
+        { week: 3, date: '2026-09-16', time: '19:00' },
+        { week: 4, date: '2026-09-23', time: '19:00' },
+        { week: 5, date: '2026-09-30', time: '19:00' },
+        { week: 6, date: '2026-10-07', time: '19:00' },
+      ],
     },
     // Round includes the workbook so members get it as a second email at purchase.
     files: ['perimenopause-pivot.pdf'],

@@ -76,12 +76,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('round-name').textContent = booking.package_name;
     }
 
-    const dates = booking.cohort && Array.isArray(booking.cohort.dates) ? booking.cohort.dates : [];
-    if (dates.length) {
+    const cohort    = booking.cohort || {};
+    const dates     = Array.isArray(cohort.dates) ? cohort.dates : [];
+    const showDates = cohort.confirmed === true && dates.length > 0;
+    if (showDates) {
       const list = document.getElementById('date-list');
       dates.forEach((d) => {
-        const li = document.createElement('li');
-        li.textContent = d;
+        const li      = document.createElement('li');
+        const display = new Date(`${d.date}T12:00:00+02:00`).toLocaleDateString('en-ZA', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Africa/Johannesburg',
+        });
+        li.textContent = `${display} at ${d.time} SAST`;
         list.appendChild(li);
       });
       document.getElementById('dates-known').style.display = 'block';
