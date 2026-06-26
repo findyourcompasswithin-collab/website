@@ -138,6 +138,8 @@ export default async function handler(req, res) {
       displayTime,
       meetLink,
       siteUrl,
+      bookingId: booking.id,
+      token,
     }),
     attachments: [invite],
   });
@@ -215,8 +217,11 @@ export function escapeHtml(str) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-export function buildClientConfirmationEmail({ clientName, packageName, displayDate, displayTime, meetLink, siteUrl }) {
+export function buildClientConfirmationEmail({ clientName, packageName, displayDate, displayTime, meetLink, siteUrl, bookingId, token }) {
   const firstName = escapeHtml(clientName.split(' ')[0]);
+  const calendarUrl = bookingId && token
+    ? `${siteUrl}/api/calendar-invite?bookingId=${encodeURIComponent(bookingId)}&token=${encodeURIComponent(token)}`
+    : null;
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#F2E8D9;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2E8D9;padding:40px 20px;">
@@ -241,9 +246,12 @@ export function buildClientConfirmationEmail({ clientName, packageName, displayD
     </div>
 
     <div style="text-align:center;margin:24px 0;">
-      <a href="${meetLink}" style="display:inline-block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:14px 28px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;">
+      <a href="${meetLink}" style="display:inline-block;background:#2F4F3F;color:#F2E8D9;text-decoration:none;padding:14px 28px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;margin:0 6px 8px;">
         Join Google Meet &rarr;
       </a>
+      ${calendarUrl ? `<a href="${calendarUrl}" style="display:inline-block;background:#fff;color:#2F4F3F;text-decoration:none;padding:13px 26px;border:1px solid #C2A46F;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;margin:0 6px 8px;">
+        Add to Calendar
+      </a>` : ''}
     </div>
 
     <div style="background:#F7EFE4;border:0.5px solid #E6D8C3;border-radius:6px;padding:14px 18px;margin:0 0 24px;">

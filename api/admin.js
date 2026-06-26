@@ -168,7 +168,7 @@ export default async function handler(req, res) {
 
       const { data: booking, error: fetchError } = await supabase
         .from('bookings')
-        .select('id, client_name, client_email, package_name, sessions_booked')
+        .select('id, client_name, client_email, package_name, sessions_booked, questionnaire_token')
         .eq('id', bookingId)
         .single();
 
@@ -216,6 +216,8 @@ export default async function handler(req, res) {
             clientName:  booking.client_name,
             packageName: booking.package_name,
             displayDate, displayTime, meetLink, siteUrl,
+            bookingId: booking.id,
+            token:     booking.questionnaire_token,
           }),
           attachments: [invite],
         });
