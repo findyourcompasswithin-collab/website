@@ -1,0 +1,38 @@
+name: Compass Circle weekly RSVP cron
+
+# Runs daily at 06:00 SAST (= 04:00 UTC). The endpoint scans
+# circle_attendance for calls 1-3 days away and sends weekly reminder
+# emails to members, then sends a morning-of-call summary email to Mel
+# for any call landing today. Idempotent: rows are marked once handled.
+#
+# This is a separate quota to Vercel cron (we are NOT using Vercel cron),
+# and GitHub Actions on the free plan allows many scheduled workflows
+# with very generous monthly minute allowances - a daily 30-second
+# request costs about 30 minutes per month.
+
+on:
+  schedule:
+    - cron: '0 4 * * *'   # 04:00 UTC = 06:00 SAST, daily
+  workflow_dispatch:        # also allow manual trigger from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hit the cron endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::CRON_SECRET secret is not set on this repo"
+            exit 1
+          fi
+          BASE_URL="${SITE_URL:-https://www.findyourcompasswithin.com}"
+          echo "Pinging $BASE_URL/api/admin?action=cron"
+          curl -fSs --max-time 60 \
+            "$BASE_URL/api/admin?action=cron&secret=$CRON_SECRET" \
+            -o response.json
+          echo "Response:"
+          cat response.json
+          echo ""
