@@ -106,6 +106,26 @@ export default async function handler(req, res) {
       return res.status(200).json({ questions: data || [] });
     }
 
+    if (action === 'circleAttendance') {
+      // Pull every attendance row for any non-cancelled group booking, joined
+      // with the booking row so the admin view has name + email. Group on the
+      // client by session_date + session_time so the page can render one card
+      // per call.
+      const { data, error } = await supabase
+        .from('circle_attendance')
+        .select(`
+          id, week_number, session_date, session_time, status, reminded_at, responded_at,
+          bookings:booking_id ( id, client_name, client_email, package_name, status )
+        `)
+        .order('session_date', { ascending: true })
+        .order('week_number',  { ascending: true });
+
+      if (error) return res.status(500).json({ error: error.message });
+      // Drop rows whose parent booking was cancelled.
+      const rows = (data || []).filter(r => r.bookings && r.bookings.status !== 'cancelled');
+      return res.status(200).json({ attendance: rows });
+    }
+
     if (action === 'support') {
       const { data, error } = await supabase
         .from('support_messages')
@@ -381,7 +401,62 @@ async function handleCron(req, res) {
     }
   }
 
-  return res.status(200).json({ ok: true, sent, skipped, failed, windowStart, windowEnd });
+  // Second pass: morning-of-call summary to Mel. For every call landing today
+  // that has not had its summary sent, build one email per call listing the
+  // roster and stamp summary_logged_at on every row for that date so we do
+  // not double-send if cron runs more than once today.
+  const today = sastToday;
+  const { data: todayRows, error: todayErr } = await supabase
+    .from('circle_attendance')
+    .select(`
+      id, booking_id, week_number, session_date, session_time, status, summary_logged_at,
+      bookings:booking_id ( client_name, client_email, package_name, package_id, status )
+    `)
+    .eq('session_date', today)
+    .is('summary_logged_at', null);
+
+  let summaries = 0;
+  if (!todayErr && todayRows && todayRows.length) {
+    // Group by week (one call per week_number).
+    const byWeek = {};
+    for (const r of todayRows) {
+      if (!r.bookings || r.bookings.status === 'cancelled') continue;
+      const product = PRODUCTS[r.bookings.package_id];
+      if (!product?.cohort?.confirmed) continue;
+      (byWeek[r.week_number] = byWeek[r.week_number] || []).push(r);
+    }
+
+    for (const wk of Object.keys(byWeek)) {
+      const rows  = byWeek[wk];
+      const first = rows[0];
+      const total = PRODUCTS[first.bookings.package_id]?.sessions || 6;
+      try {
+        await resend.emails.send({
+          from:    fromAddress,
+          to:      process.env.FROM_EMAIL,
+          subject: `Today's circle: Week ${first.week_number} of ${total} at ${first.session_time.substring(0,5)}`,
+          html:    buildCircleSummaryEmail({
+            packageName: first.bookings.package_name,
+            weekNumber:  first.week_number,
+            totalWeeks:  total,
+            sessionDate: first.session_date,
+            sessionTime: first.session_time,
+            rows,
+          }),
+        });
+        await supabase
+          .from('circle_attendance')
+          .update({ summary_logged_at: new Date().toISOString() })
+          .eq('session_date', today)
+          .eq('week_number', first.week_number);
+        summaries++;
+      } catch (e) {
+        console.error('[Cron] summary send failed for week', wk, e);
+      }
+    }
+  }
+
+  return res.status(200).json({ ok: true, sent, skipped, failed, summaries, windowStart, windowEnd });
 }
 
 function displaySastDate(dateStr) {
@@ -449,4 +524,49 @@ function buildCircleReminderEmail({ clientName, packageName, weekNumber, totalWe
 
 function escapeHtmlMini(s) {
   return String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function buildCircleSummaryEmail({ packageName, weekNumber, totalWeeks, sessionDate, sessionTime, rows }) {
+  const dayLong   = displaySastDate(sessionDate);
+  const timeShort = String(sessionTime).substring(0,5);
+  const attending = rows.filter(r => r.status === 'attending');
+  const replay    = rows.filter(r => r.status === 'replay');
+  const pending   = rows.filter(r => r.status === 'pending');
+
+  const renderList = (list, emptyText) => list.length
+    ? `<ul style="font-family:'Outfit',sans-serif;font-size:13px;color:#2F4F3F;margin:6px 0 0;padding-left:20px;line-height:1.8">
+        ${list.map(r => `<li>${escapeHtmlMini(r.bookings?.client_name || '—')} <span style="color:#a89878;font-size:11px;">&middot; ${escapeHtmlMini(r.bookings?.client_email || '')}</span></li>`).join('')}
+      </ul>`
+    : `<p style="font-family:'Outfit',sans-serif;font-size:12px;color:#a89878;font-style:italic;margin:6px 0 0;">${emptyText}</p>`;
+
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#F2E8D9;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F2E8D9;padding:30px 20px;">
+<tr><td align="center">
+<table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+  <tr><td style="background:#2F4F3F;border-radius:10px 10px 0 0;overflow:hidden;">
+    <div style="height:3px;background:linear-gradient(90deg,#C2A46F,#A6B695,#C2A46F);"></div>
+    <div style="padding:24px 32px 22px;text-align:center;">
+      <p style="font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(194,164,111,0.7);margin:0 0 8px;">Today's Circle</p>
+      <h1 style="font-family:Georgia,serif;font-size:22px;font-weight:400;color:#F5F0E8;margin:0;">${escapeHtmlMini(packageName)} &middot; Week ${weekNumber} of ${totalWeeks}</h1>
+      <p style="font-family:'Outfit',sans-serif;font-size:12px;color:rgba(245,240,232,0.6);margin:6px 0 0;">${escapeHtmlMini(dayLong)} &middot; ${timeShort} SAST</p>
+    </div>
+  </td></tr>
+  <tr><td style="background:#fff;padding:24px 32px;border:0.5px solid #E6D8C3;border-top:none;border-radius:0 0 10px 10px;">
+    <p style="font-family:'Outfit',sans-serif;font-size:13px;color:#5a7a68;margin:0 0 20px;">
+      <strong style="color:#2F4F3F;">${attending.length}</strong> attending &middot;
+      <strong style="color:#2F4F3F;">${replay.length}</strong> replay &middot;
+      <strong style="color:#2F4F3F;">${pending.length}</strong> no response
+    </p>
+
+    <p style="font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#A6B695;margin:0 0 4px;">Attending live</p>
+    ${renderList(attending, 'No one confirmed live yet.')}
+
+    <p style="font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#8B4A6B;margin:18px 0 4px;">Replay</p>
+    ${renderList(replay, 'No replay requests.')}
+
+    <p style="font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#C2A46F;margin:18px 0 4px;">Not yet responded</p>
+    ${renderList(pending, 'Everyone has responded.')}
+  </td></tr>
+</table></td></tr></table></body></html>`;
 }
