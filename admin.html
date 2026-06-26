@@ -74,6 +74,28 @@ nav{flex:1;padding:8px 0}
 .action-btn.danger:hover{border-color:rgba(192,57,43,0.4);color:#c0392b}
 .empty-state{text-align:center;padding:48px 20px;color:rgba(245,240,232,0.3);font-size:13px}
 
+/* Calendar */
+.cal-container{background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:18px 20px 22px;margin-bottom:28px}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;color:#F2E8D9;letter-spacing:0.3px}
+.cal-nav-btn{background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);color:rgba(245,240,232,0.7);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.cal-nav-btn:hover{background:rgba(194,164,111,0.12);color:#C2A46F;border-color:rgba(194,164,111,0.3)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dows{margin-bottom:6px}
+.cal-dow{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(245,240,232,0.35);text-align:center;padding:6px 0}
+.cal-day{background:rgba(255,255,255,0.02);border:0.5px solid rgba(255,255,255,0.05);border-radius:6px;min-height:78px;padding:6px;display:flex;flex-direction:column;gap:3px}
+.cal-day.other-month{opacity:0.35}
+.cal-day.today{border-color:rgba(194,164,111,0.55);background:rgba(194,164,111,0.05)}
+.cal-day-num{font-size:11px;color:rgba(245,240,232,0.55);text-align:right;font-weight:500;margin-bottom:2px}
+.cal-day.today .cal-day-num{color:#C2A46F;font-weight:600}
+.cal-pill{font-size:9.5px;line-height:1.3;padding:3px 6px;border-radius:4px;color:#F2E8D9;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-left:2px solid transparent;transition:opacity 0.15s}
+.cal-pill:hover{opacity:0.85}
+.cal-pill-confirmed{background:rgba(166,182,149,0.15);border-left-color:rgba(166,182,149,0.7)}
+.cal-pill-pending{background:rgba(194,164,111,0.12);border-left-color:rgba(194,164,111,0.7)}
+.cal-pill-qdone{background:rgba(139,74,107,0.15);border-left-color:rgba(139,74,107,0.7)}
+.cal-more{font-size:9px;color:rgba(245,240,232,0.4);padding:1px 6px;font-style:italic}
+.booking-item.booking-highlight{box-shadow:0 0 0 2px rgba(194,164,111,0.6);transition:box-shadow 0.3s}
+
 /* Block dates */
 .block-form{background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:20px 24px;margin-bottom:24px}
 .block-form h4{font-size:13px;color:#F2E8D9;margin-bottom:16px}
@@ -173,6 +195,17 @@ nav{flex:1;padding:8px 0}
           <div class="stat-num" id="stat-qcomplete">&middot;</div>
           <div class="stat-label">Questionnaire done, unscheduled</div>
         </div>
+      </div>
+      <div class="cal-container" id="cal-container">
+        <div class="cal-header">
+          <button class="cal-nav-btn" onclick="changeMonth(-1)" title="Previous month">&larr;</button>
+          <div class="cal-title" id="cal-title">&middot;</div>
+          <button class="cal-nav-btn" onclick="changeMonth(1)" title="Next month">&rarr;</button>
+        </div>
+        <div class="cal-grid cal-dows">
+          <div class="cal-dow">Mon</div><div class="cal-dow">Tue</div><div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div><div class="cal-dow">Sun</div>
+        </div>
+        <div class="cal-grid" id="cal-days"></div>
       </div>
       <div class="booking-list" id="booking-list">
         <div style="text-align:center;padding:32px"><div class="spinner"></div></div>
@@ -382,25 +415,31 @@ function showTab(name) {
 }
 
 // ── Bookings ──────────────────────────────────────────────────────────────────
+let currentBookings = [];
+let calMonth = (() => { const d = new Date(); d.setDate(1); return d; })();
+
 async function loadBookings() {
   const res  = await fetch('/api/admin?action=bookings', { headers: authHeader() });
   const { bookings } = await res.json();
+  currentBookings = bookings || [];
 
-  const confirmed   = bookings.filter(b => b.status === 'confirmed').length;
-  const pending     = bookings.filter(b => b.status === 'pending_questionnaire').length;
-  const qcomplete   = bookings.filter(b => b.status === 'questionnaire_complete').length;
+  const confirmed   = currentBookings.filter(b => b.status === 'confirmed').length;
+  const pending     = currentBookings.filter(b => b.status === 'pending_questionnaire').length;
+  const qcomplete   = currentBookings.filter(b => b.status === 'questionnaire_complete').length;
 
   document.getElementById('stat-confirmed').textContent = confirmed;
   document.getElementById('stat-pending').textContent   = pending;
   document.getElementById('stat-qcomplete').textContent = qcomplete;
 
+  renderCalendar();
+
   const list = document.getElementById('booking-list');
-  if (!bookings.length) {
+  if (!currentBookings.length) {
     list.innerHTML = '<div class="empty-state">No bookings yet</div>';
     return;
   }
 
-  list.innerHTML = bookings.map(b => {
+  list.innerHTML = currentBookings.map(b => {
     const hasDate   = b.session_date && b.session_time;
     const dateDisp  = hasDate
       ? new Date(`${b.session_date}T12:00:00+02:00`).toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short',year:'numeric',timeZone:'Africa/Johannesburg'})
@@ -417,7 +456,7 @@ async function loadBookings() {
     const itemClass = b.status === 'confirmed' ? 'confirmed'
       : !hasDate ? 'no-date' : 'pending';
 
-    return `<div class="booking-item ${itemClass}">
+    return `<div class="booking-item ${itemClass}" data-booking-id="${b.id}">
       <div class="booking-date">
         <div class="booking-date-main">${escHtml(dateDisp)}</div>
         <div class="booking-date-time">${escHtml(timeDisp)}</div>
@@ -433,6 +472,77 @@ async function loadBookings() {
       </div>
     </div>`;
   }).join('');
+}
+
+// ── Calendar ──────────────────────────────────────────────────────────────────
+function ymd(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function changeMonth(delta) {
+  calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + delta, 1);
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const title = calMonth.toLocaleDateString('en-ZA', { month: 'long', year: 'numeric', timeZone: 'Africa/Johannesburg' });
+  document.getElementById('cal-title').textContent = title;
+
+  // Group bookings by their session_date (YYYY-MM-DD); skip undated ones.
+  const byDate = {};
+  for (const b of currentBookings) {
+    if (!b.session_date) continue;
+    (byDate[b.session_date] = byDate[b.session_date] || []).push(b);
+  }
+  // Stable sort per day: earliest time first.
+  for (const k of Object.keys(byDate)) {
+    byDate[k].sort((a, b) => (a.session_time || '').localeCompare(b.session_time || ''));
+  }
+
+  // Grid starts on the Monday on/before the 1st of the month, 42 cells (6 weeks).
+  const firstOfMonth = new Date(calMonth);
+  const mondayOffset = (firstOfMonth.getDay() + 6) % 7;
+  const start = new Date(firstOfMonth);
+  start.setDate(start.getDate() - mondayOffset);
+
+  const todayStr = ymd(new Date());
+  let html = '';
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    const ds = ymd(d);
+    const isOtherMonth = d.getMonth() !== calMonth.getMonth();
+    const isToday      = ds === todayStr;
+    const dayBookings  = byDate[ds] || [];
+
+    let pillsHtml = '';
+    dayBookings.slice(0, 3).forEach(b => {
+      const cls = b.status === 'confirmed'              ? 'cal-pill-confirmed'
+                : b.status === 'questionnaire_complete' ? 'cal-pill-qdone'
+                :                                         'cal-pill-pending';
+      const time      = b.session_time ? b.session_time.substring(0,5) : '';
+      const firstName = (b.client_name || '').split(' ')[0] || '(no name)';
+      const tooltip   = `${b.client_name || ''} · ${b.package_name || ''}`;
+      pillsHtml += `<div class="cal-pill ${cls}" onclick="scrollToBooking('${b.id}')" title="${escHtml(tooltip)}">${escHtml(time + ' ' + firstName)}</div>`;
+    });
+    if (dayBookings.length > 3) {
+      pillsHtml += `<div class="cal-more">+${dayBookings.length - 3} more</div>`;
+    }
+
+    html += `<div class="cal-day${isOtherMonth ? ' other-month' : ''}${isToday ? ' today' : ''}">
+      <div class="cal-day-num">${d.getDate()}</div>
+      ${pillsHtml}
+    </div>`;
+  }
+  document.getElementById('cal-days').innerHTML = html;
+}
+
+function scrollToBooking(id) {
+  const el = document.querySelector(`[data-booking-id="${id}"]`);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.classList.add('booking-highlight');
+  setTimeout(() => el.classList.remove('booking-highlight'), 1800);
 }
 
 async function cancelBooking(id) {
