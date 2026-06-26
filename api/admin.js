@@ -19,6 +19,7 @@ import { Resend } from 'resend';
 import { buildClientConfirmationEmail } from './create-booking.js';
 import { fulfillOrder } from './_fulfill.js';
 import { PRODUCTS } from './_products.js';
+import { makeSessionInvite } from './_ical.js';
 
 function checkAuth(req) {
   const auth = req.headers['authorization'] || '';
@@ -194,6 +195,18 @@ export default async function handler(req, res) {
       const siteUrl     = process.env.SITE_URL || 'https://findyourcompasswithin.com';
       const meetLink    = process.env.MEET_LINK || '#';
 
+      const invite = makeSessionInvite({
+        bookingId:   booking.id,
+        date,
+        time,
+        summary:     `${booking.package_name} with Mel Cooper`,
+        description: `Your session with Mel Cooper.\n\nJoin on Google Meet: ${meetLink}\n\nNothing to prepare. Just bring yourself.`,
+        meetLink,
+        clientName:  booking.client_name,
+        clientEmail: booking.client_email,
+        ownerEmail:  process.env.FROM_EMAIL,
+      });
+
       try {
         await resend.emails.send({
           from:    fromAddress,
@@ -204,6 +217,7 @@ export default async function handler(req, res) {
             packageName: booking.package_name,
             displayDate, displayTime, meetLink, siteUrl,
           }),
+          attachments: [invite],
         });
       } catch (mailErr) {
         // The booking is confirmed; a mail failure should not undo that.

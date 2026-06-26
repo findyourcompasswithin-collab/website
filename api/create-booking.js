@@ -8,6 +8,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import { TIME_SLOTS, SAST_OFFSET_HOURS as SAST_OFFSET } from './_schedule.js';
+import { makeSessionInvite } from './_ical.js';
 
 const MIN_NOTICE_MS   = 60 * 60 * 1000; // 60 minutes
 
@@ -111,6 +112,20 @@ export default async function handler(req, res) {
   const fromAddress = `${process.env.FROM_NAME || 'Find Your Compass Within'} <${process.env.FROM_EMAIL}>`;
   const meetLink    = process.env.MEET_LINK || '#';
 
+  // Calendar invite attached to both emails so the client and Mel can accept
+  // straight from their inbox. One .ics, two recipients.
+  const invite = makeSessionInvite({
+    bookingId:   booking.id,
+    date,
+    time,
+    summary:     `${booking.package_name} with Mel Cooper`,
+    description: `Your session with Mel Cooper.\n\nJoin on Google Meet: ${meetLink}\n\nNothing to prepare. Just bring yourself.`,
+    meetLink,
+    clientName:  booking.client_name,
+    clientEmail: booking.client_email,
+    ownerEmail:  process.env.FROM_EMAIL,
+  });
+
   // Confirmation email to client
   await resend.emails.send({
     from:    fromAddress,
@@ -124,6 +139,7 @@ export default async function handler(req, res) {
       meetLink,
       siteUrl,
     }),
+    attachments: [invite],
   });
 
   // Notification to Mel
@@ -139,6 +155,7 @@ export default async function handler(req, res) {
       <p><strong>Time:</strong> ${displayTime}</p>
       <p><strong>Google Meet:</strong> <a href="${meetLink}">${meetLink}</a></p>
     </div>`,
+    attachments: [invite],
   });
 
   return res.status(200).json({ success: true, date: displayDate, time: displayTime });
