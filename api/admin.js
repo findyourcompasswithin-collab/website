@@ -216,8 +216,7 @@ export default async function handler(req, res) {
             clientName:  booking.client_name,
             packageName: booking.package_name,
             displayDate, displayTime, meetLink, siteUrl,
-            bookingId: booking.id,
-            token:     booking.questionnaire_token,
+            token:       booking.questionnaire_token,
           }),
           attachments: [invite],
         });

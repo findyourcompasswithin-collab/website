@@ -138,7 +138,6 @@ export default async function handler(req, res) {
       displayTime,
       meetLink,
       siteUrl,
-      bookingId: booking.id,
       token,
     }),
     attachments: [invite],
@@ -217,10 +216,11 @@ export function escapeHtml(str) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-export function buildClientConfirmationEmail({ clientName, packageName, displayDate, displayTime, meetLink, siteUrl, bookingId, token }) {
+export function buildClientConfirmationEmail({ clientName, packageName, displayDate, displayTime, meetLink, siteUrl, token }) {
   const firstName = escapeHtml(clientName.split(' ')[0]);
-  const calendarUrl = bookingId && token
-    ? `${siteUrl}/api/calendar-invite?bookingId=${encodeURIComponent(bookingId)}&token=${encodeURIComponent(token)}`
+  // The "Add to Calendar" button hits verify-token in its ics-format mode.
+  const calendarUrl = token
+    ? `${siteUrl}/api/verify-token?token=${encodeURIComponent(token)}&format=ics`
     : null;
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#F2E8D9;">
