@@ -461,9 +461,12 @@ async function viewQuestionnaire(bookingId, clientName) {
   }
 
   const q = data.questionnaire;
+  const stuckLabel = q.intake === 'perimenopause'
+    ? 'Where they are + what hits hardest'
+    : 'Areas feeling most stuck';
   const rows = [
     ['What brought them to coaching', q.brought_to_coaching],
-    ['Areas feeling most stuck',      formatList(q.stuck_areas)],
+    [stuckLabel,                      formatList(q.stuck_areas)],
     ['Desired outcome',               q.desired_outcome],
     ['What they have already tried',  q.already_tried],
     ['Readiness to change (1–10)',    q.readiness_score],

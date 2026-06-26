@@ -75,7 +75,17 @@ export default async function handler(req, res) {
         .single();
 
       if (error || !data) return res.status(404).json({ error: 'Not found' });
-      return res.status(200).json({ questionnaire: data });
+
+      // Look up the booking's product so the admin modal can choose the right
+      // label for themed intakes (perimenopause circles vs generic coaching).
+      const { data: booking } = await supabase
+        .from('bookings')
+        .select('package_id')
+        .eq('id', bookingId)
+        .single();
+      const intake = PRODUCTS[booking?.package_id]?.intake || 'general';
+
+      return res.status(200).json({ questionnaire: { ...data, intake } });
     }
 
     if (action === 'questions') {
