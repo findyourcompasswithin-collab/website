@@ -146,7 +146,7 @@ nav{flex:1;padding:8px 0}
       <div class="nav-item" onclick="showTab('questions')">&#128221; Submitted Questions</div>
       <div class="nav-item" onclick="showTab('support')">&#9993;&#65039; Submitted Support</div>
       <div class="nav-item" onclick="showTab('invite')">&#128233; Send Invite</div>
-      <div class="nav-item" onclick="showTab('test')">&#129514; Test Delivery</div>
+      <div class="nav-item" onclick="showTab('test')">&#128181; Sales Submission</div>
       <div class="nav-item" onclick="showTab('blocked')">&#128683; Blocked Dates</div>
     </nav>
     <div class="sidebar-foot">
@@ -247,19 +247,19 @@ nav{flex:1;padding:8px 0}
       </div>
     </div>
 
-    <!-- Test Delivery tab -->
+    <!-- Sales Submission tab -->
     <div class="tab-pane" id="tab-test">
-      <div class="page-title">Test Delivery</div>
-      <div class="page-sub">Fires the real fulfilment flow without Payfast: same emails, real attachments, real BCC. For end-to-end testing.</div>
+      <div class="page-title">Sales Submission</div>
+      <div class="page-sub">Manually record and fulfil a sale (cash, in-person, or off-platform). Sends the buyer the same delivery email a real online purchase would: PDFs attached for digital products, booking flow for coaching, with you BCC'd.</div>
       <div class="block-form" style="max-width:520px">
-        <h4>Send a test order</h4>
+        <h4>Record a sale</h4>
         <div class="form-field" style="margin-bottom:14px">
-          <label>Recipient email</label>
-          <input type="email" id="test-email" placeholder="you@findyourcompasswithin.com">
+          <label>Buyer email</label>
+          <input type="email" id="test-email" placeholder="buyer@example.com">
         </div>
         <div class="form-field" style="margin-bottom:14px">
-          <label>Recipient name <span style="color:rgba(245,240,232,0.25)">(optional)</span></label>
-          <input type="text" id="test-name" placeholder="Test Buyer">
+          <label>Buyer name <span style="color:rgba(245,240,232,0.25)">(optional)</span></label>
+          <input type="text" id="test-name" placeholder="First name">
         </div>
         <div class="form-field" style="margin-bottom:18px">
           <label>Product</label>
@@ -293,8 +293,8 @@ nav{flex:1;padding:8px 0}
             </optgroup>
           </select>
         </div>
-        <button class="block-btn" onclick="sendTestFulfill()" id="test-btn">Send Test Order</button>
-        <p style="font-size:11px;color:rgba(245,240,232,0.4);margin-top:14px;line-height:1.6">A unique TEST-{timestamp} payment ID is generated each click, so re-running never collides. Coaching tests also create a real booking row in the database, which you can delete from Bookings if needed.</p>
+        <button class="block-btn" onclick="submitSale()" id="test-btn">Submit Sale</button>
+        <p style="font-size:11px;color:rgba(245,240,232,0.4);margin-top:14px;line-height:1.6">A unique SALE-{timestamp} reference is generated for each submission, so re-running for the same buyer never collides. Coaching and group sales create a real booking row in the database (visible under Bookings) and trigger the questionnaire flow exactly like an online sale.</p>
       </div>
     </div>
 
@@ -645,29 +645,33 @@ async function sendInvite() {
   btn.textContent = 'Send Invitation';
 }
 
-// ── Test Delivery ─────────────────────────────────────────────────────────────
-async function sendTestFulfill() {
+// ── Sales Submission ──────────────────────────────────────────────────────────
+async function submitSale() {
   const email     = document.getElementById('test-email').value.trim();
   const name      = document.getElementById('test-name').value.trim();
   const productId = document.getElementById('test-product').value;
   const btn       = document.getElementById('test-btn');
   if (!email || email.indexOf('@') === -1) { showToast('Please enter a valid email'); return; }
   btn.disabled = true;
-  btn.textContent = 'Sending...';
+  btn.textContent = 'Submitting...';
   try {
     const res = await fetch('/api/admin', {
       method:  'POST',
       headers: authHeader(),
-      body:    JSON.stringify({ action: 'testFulfill', email: email, name: name, productId: productId }),
+      body:    JSON.stringify({ action: 'recordSale', email: email, name: name, productId: productId }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'failed');
-    showToast(data.duplicate ? 'Already fulfilled (duplicate)' : 'Test order sent to ' + email);
+    showToast(data.duplicate ? 'Already fulfilled (duplicate)' : 'Sale submitted, delivery sent to ' + email);
+    // Clear the form so the next sale starts fresh
+    document.getElementById('test-email').value = '';
+    document.getElementById('test-name').value  = '';
+    loadBookings();
   } catch (e) {
-    showToast('Test failed: ' + (e.message || 'unknown error'));
+    showToast('Submission failed: ' + (e.message || 'unknown error'));
   }
   btn.disabled = false;
-  btn.textContent = 'Send Test Order';
+  btn.textContent = 'Submit Sale';
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

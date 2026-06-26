@@ -239,11 +239,11 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true });
     }
 
-    // testFulfill: fires the same fulfillOrder path a real purchase would,
-    // but without going through Payfast. Accepts any product (digital,
-    // coaching, group). For end-to-end testing of the delivery emails.
-    if (action === 'testFulfill') {
-      const { email, name = 'Test Buyer', productId } = req.body;
+    // recordSale: fires the same fulfillOrder path a real online purchase
+    // would, but without going through Payfast. Used for cash, in-person,
+    // and off-platform sales. Accepts any product (digital, coaching, group).
+    if (action === 'recordSale') {
+      const { email, name = '', productId } = req.body;
       if (!email || !String(email).includes('@')) {
         return res.status(400).json({ error: 'A valid email is required' });
       }
@@ -255,12 +255,12 @@ export default async function handler(req, res) {
         product,
         productId,
         customerEmail: String(email).toLowerCase().trim(),
-        customerName:  String(name).trim() || 'Test Buyer',
-        paymentId:     `TEST-${Date.now()}`,
-        paymentMethod: 'test',
+        customerName:  String(name).trim() || 'there',
+        paymentId:     `SALE-${Date.now()}`,
+        paymentMethod: 'cash',
       });
       if (!result || !result.ok) {
-        return res.status(500).json({ error: result?.error || 'Test fulfilment failed' });
+        return res.status(500).json({ error: result?.error || 'Sale fulfilment failed' });
       }
       return res.status(200).json({ success: true, duplicate: !!result.duplicate });
     }
