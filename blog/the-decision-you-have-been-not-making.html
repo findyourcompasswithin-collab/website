@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The decision you have been not making | Find Your Compass Within</title>
+<meta name="description" content="Not deciding is still a decision. On why the fears keeping you stuck are almost always operating on outdated information, and what to do about it.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%232F4F3F'/><circle cx='50' cy='50' r='44' fill='none' stroke='%23C2A46F' stroke-width='2.5'/><polygon points='50,8 55,47 50,53 45,47' fill='%23C2A46F'/><path d='M50 59C50 59 41 52 41 47C41 43 45 41 50 45C55 41 59 43 59 47C59 52 50 59 50 59Z' fill='%23C2A46F'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Allura&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C2A46F;--gold-light:#d9be92;--gold-pale:#F7EFE4;--dark:#2F4F3F;--mid:#3a5e4a;--muted:#4a6858;--cream:#F2E8D9;--warm-border:#E6D8C3}
+html{scroll-behavior:smooth}body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--dark);overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--cream)}::-webkit-scrollbar-thumb{background:var(--gold-light);border-radius:2px}
+header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(242,232,217,0.95);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--warm-border)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:70px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--dark);text-decoration:none;display:flex;align-items:center;gap:8px;line-height:1.1}.logo-compass{width:28px;height:28px;flex-shrink:0}
+nav{display:flex;align-items:center;gap:2rem}nav a{font-size:13px;font-weight:400;color:var(--mid);text-decoration:none;letter-spacing:0.3px;transition:color 0.2s}nav a:hover{color:var(--dark)}nav a.active{color:var(--dark);font-weight:500}
+.nav-cta{background:var(--gold);color:#fff!important;padding:9px 20px;border-radius:6px;font-weight:500!important;transition:opacity 0.2s!important}.nav-cta:hover{opacity:0.88}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}.hamburger span{width:22px;height:1.5px;background:var(--dark);display:block;transition:all 0.3s;transform-origin:center}
+.mobile-nav{display:none;position:fixed;top:70px;left:0;right:0;background:var(--cream);border-bottom:0.5px solid var(--warm-border);padding:1.5rem 2rem;z-index:999;flex-direction:column;gap:1.2rem}
+.mobile-nav a{font-size:15px;color:var(--mid);text-decoration:none;padding:8px 0;border-bottom:0.5px solid var(--warm-border)}.mobile-nav .nav-cta{background:var(--gold);color:#fff;text-align:center;border-radius:6px;padding:12px;border:none;margin-top:8px}
+@media(max-width:768px){nav{display:none}.hamburger{display:flex}}
+.article-hero{background:var(--dark);padding:160px 2rem 80px;text-align:center;position:relative;overflow:hidden}.article-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(194,164,111,0.09) 0%,transparent 65%)}
+.article-hero-inner{position:relative;z-index:2;max-width:740px;margin:0 auto}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(194,164,111,0.55);text-decoration:none;margin-bottom:32px;transition:color 0.2s}.back-link:hover{color:var(--gold)}
+.article-tag{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;font-weight:500}
+.article-hero h1{font-family:'Playfair Display',serif;font-size:clamp(28px,4.5vw,52px);font-weight:400;color:#f5f0e8;line-height:1.2;letter-spacing:-0.5px;margin-bottom:24px}
+.gold-divider{width:50px;height:1px;background:var(--gold);margin:0 auto}
+.article-body{padding:72px 2rem 80px;background:white}.article-content{max-width:720px;margin:0 auto}
+.article-intro{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:var(--dark);line-height:1.7;margin-bottom:36px;font-style:italic}
+.article-content p{font-size:15px;color:var(--mid);line-height:1.85;margin-bottom:22px;font-weight:300}
+.article-content h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:400;color:var(--dark);margin:44px 0 16px;line-height:1.3}
+.article-content blockquote{border-left:2px solid var(--gold);padding:16px 24px;margin:32px 0;background:var(--gold-pale);border-radius:0 8px 8px 0}
+.article-content blockquote p{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;font-style:italic;color:var(--dark);margin:0;line-height:1.65}
+.article-content ul{margin:0 0 22px 20px}.article-content ul li{font-size:15px;color:var(--mid);line-height:1.85;margin-bottom:8px;font-weight:300}
+.article-cta{padding:72px 2rem;background:var(--gold-pale)}.article-cta-inner{max-width:600px;margin:0 auto;text-align:center}
+.cta-eyebrow{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-weight:500}
+.article-cta h3{font-family:'Playfair Display',serif;font-size:30px;font-weight:400;color:var(--dark);margin-bottom:16px;line-height:1.3}
+.article-cta h3 em{font-style:normal;font-family:'Allura',cursive;color:var(--gold);font-size:1.1em;line-height:1;letter-spacing:0}
+.article-cta p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:28px;font-weight:300}
+.btn-primary{background:var(--gold);color:#fff;padding:13px 28px;border-radius:6px;font-size:13px;font-weight:500;text-decoration:none;letter-spacing:0.5px;display:inline-block;transition:opacity 0.2s}.btn-primary:hover{opacity:0.88}
+.btn-outline{border:1px solid rgba(47,79,63,0.25);color:var(--dark);padding:13px 28px;border-radius:6px;font-size:13px;font-weight:400;text-decoration:none;letter-spacing:0.5px;display:inline-block;margin-left:12px;transition:all 0.2s}.btn-outline:hover{border-color:var(--dark)}
+.site-footer{background:var(--dark);padding:48px 2rem 32px}.footer-inner{max-width:1100px;margin:0 auto}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-top:12px}
+.footer-copy{font-size:11px;color:rgba(245,240,232,0.25)}.footer-note a{color:rgba(194,164,111,0.4);text-decoration:none;font-size:11px}
+.footer-disclaimer{font-size:11px;color:rgba(245,240,232,0.18);line-height:1.6;margin-top:12px;font-weight:300}
+@media(max-width:600px){.btn-outline{margin-left:0;margin-top:10px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <svg class="logo-compass" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18.5" stroke="#C2A46F" stroke-width="0.9"/><circle cx="20" cy="20" r="12.5" stroke="#C2A46F" stroke-width="0.4" stroke-dasharray="2 3"/><circle cx="20" cy="20" r="7" stroke="#C2A46F" stroke-width="0.3" opacity="0.5"/><polygon points="20,4 21.8,19.5 20,21.5 18.2,19.5" fill="#C2A46F"/><polygon points="20,36 21.8,20.5 20,18.5 18.2,20.5" fill="#C2A46F" opacity="0.3"/><polygon points="4,20 19.5,18.2 21.5,20 19.5,21.8" fill="#C2A46F" opacity="0.3"/><polygon points="36,20 20.5,21.8 18.5,20 20.5,18.2" fill="#C2A46F" opacity="0.3"/><path d="M20 23 C20 23 16.5 20.5 16.5 18.5 C16.5 17 17.8 16.2 20 18 C22.2 16.2 23.5 17 23.5 18.5 C23.5 20.5 20 23 20 23Z" fill="#C2A46F" opacity="0.85"/></svg>
+      <span style="letter-spacing:0.2px">Find Your Compass</span><span style="font-family:'Allura',cursive;font-size:24px;color:#C2A46F;line-height:0.9;position:relative;top:3px;margin-left:1px"> Within</span>
+    </a>
+    <nav><a href="/">Home</a><a href="/">About</a><a href="/">Work With Me</a><a href="/">Resources</a><a href="../blog.html" class="active">Articles</a><a href="/" class="nav-cta">Get in Touch</a></nav>
+    <div class="hamburger" onclick="toggleMobileNav()" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</header>
+<div class="mobile-nav" id="mobileNav"><a href="/">Home</a><a href="/">About</a><a href="/">Work With Me</a><a href="/">Resources</a><a href="../blog.html">Articles</a><a href="/" class="nav-cta">Get in Touch</a></div>
+
+<section class="article-hero">
+  <div class="article-hero-inner">
+    <a href="../blog.html" class="back-link">&#8592; All articles</a>
+    <div class="article-tag">Inner Work</div>
+    <h1>The decision you have been not making</h1>
+    <div class="gold-divider"></div>
+  </div>
+</section>
+
+<section class="article-body">
+  <div class="article-content">
+    <p class="article-intro">What decision have you been not making for so long that not deciding has become the decision?</p>
+
+    <p>There is a specific kind of stuck that does not feel like stuck. It feels like being careful. Like being responsible. Like not rushing into something. You are not avoiding the decision, you tell yourself. You are just waiting until you have more information. Until the timing is better. Until you feel more ready.</p>
+
+    <p>Waiting is not neutral. Every day spent not deciding is a day spent in the current arrangement, which is itself a choice. The person who stays in the job they have been wanting to leave for three years has made a three-year decision. Not actively, not deliberately, but by accumulation. The life they have now is the life that not deciding produced.</p>
+
+    <h2>What fear is actually doing</h2>
+
+    <p>Fear is a biological system, not a moral one. It is not a signal that something is wrong with you or that the thing you want is wrong for you. It is a risk-detection system, and it is calibrated for a threat landscape that no longer exists.</p>
+
+    <p>The amygdala, the part of the brain that processes threat, does not distinguish well between a physical danger and a social or professional one. The fear of being judged, of failing publicly, of being wrong, of losing security, activates the same threat response as a physical threat. And the threat response is not designed for nuanced deliberation. It is designed for speed. Get away. Stay still. Do not move.</p>
+
+    <p>That response is useful when the threat is immediate and physical. It is actively unhelpful when the threat is a career decision you have been sitting with for four years.</p>
+
+    <blockquote>
+      <p>Not deciding is the decision. The life you have is the life that not deciding produced.</p>
+    </blockquote>
+
+    <h2>Fears that have never been examined</h2>
+
+    <p>Most fears that keep people stuck have never been put to the question. They operate as felt certainties: if I do this, that will happen. If I leave, I will fail. If I speak up, they will leave. If I try, I will be exposed. These feel like facts. They are actually predictions, and predictions can be examined.</p>
+
+    <p>The Fear Audit workbook is built around exactly this process. It starts with naming: what is the specific fear that is holding this decision in place? Not the vague anxiety, but the concrete story. If I do X, then Y. Once it is named, it can be audited.</p>
+
+    <p>The audit process asks several questions. Where did this belief come from? Is there actual evidence for this outcome, or is the fear extrapolating from something that happened in a different context, at a different point in your life, to a different version of you? What is the actual worst case, and what is the realistic case? If the worst case happened, could you handle it? What would handling it look like?</p>
+
+    <h2>The cost of staying</h2>
+
+    <p>Most fear-based decision-making focuses on the cost of acting. What if it goes wrong. What if I lose something. What if I am not ready.</p>
+
+    <p>The Fear Audit asks a different question: what is the cost of not acting? Not as a way to manufacture urgency, but as a way to make the real trade-off visible. Staying has a cost. It is just a cost you are already paying, so it feels invisible. The workbook makes it visible.</p>
+
+    <p>The cost of staying in a job that has no future for you is not zero. It is three more years of energy spent maintaining something that is not moving. The cost of not having the conversation is not zero. It is the accumulation of distance, resentment, and unsaid things between you and someone you care about. The cost of not starting is not zero. It is the compounding of time in which nothing you wanted got closer.</p>
+
+    <h2>What the audit produces</h2>
+
+    <p>By the end of the Fear Audit, you have three things. A named fear that is no longer hiding in the general background. A factual examination of whether the fear's predictions hold up under scrutiny. And a forward move, specifically designed around the smallest possible step toward the decision, one that tests the fear's predictions in the real world rather than in your head.</p>
+
+    <p>The fears that keep people stuck are almost never as solid as they feel. They are operating on outdated information, exaggerated probability, and worst-case thinking that has never been tested against evidence. When you sit a fear down and ask it to make its case, it usually has less of a case than it has been claiming.</p>
+
+    <p>The decision is still yours. The audit just clears the ground so you can make it from a position of actual clarity, rather than from the fog of accumulated avoidance.</p>
+  </div>
+</section>
+
+<section class="article-cta">
+  <div class="article-cta-inner">
+    <div class="cta-eyebrow">Name it. Question it. Move.</div>
+    <h3>The Fear <em>Audit</em></h3>
+    <p>A structured workbook for auditing the fears that have been holding a decision in place. Not cheerleading. A factual process for examining what the fear is actually claiming, and whether the evidence supports it.</p>
+    <a href="/" class="btn-primary">Explore The Fear Audit</a>
+    <a href="/" class="btn-outline">See the Inner Work Trilogy</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <span class="footer-copy">&#169; 2025 Find Your Compass Within &middot; Mel Cooper &middot; All rights reserved.</span>
+      <span class="footer-note"><a href="/terms">Terms &amp; Conditions</a></span>
+    </div>
+    <p class="footer-disclaimer">This is a coaching space, not a clinical service. If you need mental health support, please reach out to a qualified professional.</p>
+  </div>
+</footer>
+<script>
+function toggleMobileNav(){const n=document.getElementById('mobileNav'),h=document.getElementById('hamburger'),o=n.style.display==='flex';n.style.display=o?'none':'flex';const s=h.querySelectorAll('span');if(!o){s[0].style.transform='rotate(45deg) translate(4px,4px)';s[1].style.opacity='0';s[2].style.transform='rotate(-45deg) translate(4px,-4px)'}else{s[0].style.transform='';s[1].style.opacity='';s[2].style.transform=''}}
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What would your life look like if you stopped building it around everyone else? | Find Your Compass Within</title>
+<meta name="description" content="Most people can't design their life from scratch because they've never been asked to. On why the prior question is always whose life you've been living.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%232F4F3F'/><circle cx='50' cy='50' r='44' fill='none' stroke='%23C2A46F' stroke-width='2.5'/><polygon points='50,8 55,47 50,53 45,47' fill='%23C2A46F'/><path d='M50 59C50 59 41 52 41 47C41 43 45 41 50 45C55 41 59 43 59 47C59 52 50 59 50 59Z' fill='%23C2A46F'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Allura&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C2A46F;--gold-light:#d9be92;--gold-pale:#F7EFE4;--dark:#2F4F3F;--dark2:#1e3829;--mid:#3a5e4a;--muted:#4a6858;--cream:#F2E8D9;--warm-border:#E6D8C3}
+html{scroll-behavior:smooth}body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--dark);overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--cream)}::-webkit-scrollbar-thumb{background:var(--gold-light);border-radius:2px}
+header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(242,232,217,0.95);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--warm-border)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:70px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--dark);text-decoration:none;display:flex;align-items:center;gap:8px;line-height:1.1}
+.logo-compass{width:28px;height:28px;flex-shrink:0}
+nav{display:flex;align-items:center;gap:2rem}nav a{font-size:13px;font-weight:400;color:var(--mid);text-decoration:none;letter-spacing:0.3px;transition:color 0.2s}nav a:hover{color:var(--dark)}nav a.active{color:var(--dark);font-weight:500}
+.nav-cta{background:var(--gold);color:#fff!important;padding:9px 20px;border-radius:6px;font-weight:500!important;transition:opacity 0.2s!important}.nav-cta:hover{opacity:0.88}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}.hamburger span{width:22px;height:1.5px;background:var(--dark);display:block;transition:all 0.3s;transform-origin:center}
+.mobile-nav{display:none;position:fixed;top:70px;left:0;right:0;background:var(--cream);border-bottom:0.5px solid var(--warm-border);padding:1.5rem 2rem;z-index:999;flex-direction:column;gap:1.2rem}
+.mobile-nav a{font-size:15px;color:var(--mid);text-decoration:none;padding:8px 0;border-bottom:0.5px solid var(--warm-border)}.mobile-nav .nav-cta{background:var(--gold);color:#fff;text-align:center;border-radius:6px;padding:12px;border:none;margin-top:8px}
+@media(max-width:768px){nav{display:none}.hamburger{display:flex}}
+.article-hero{background:var(--dark);padding:160px 2rem 80px;text-align:center;position:relative;overflow:hidden}.article-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(194,164,111,0.09) 0%,transparent 65%)}
+.article-hero-inner{position:relative;z-index:2;max-width:740px;margin:0 auto}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(194,164,111,0.55);text-decoration:none;margin-bottom:32px;transition:color 0.2s}.back-link:hover{color:var(--gold)}
+.article-tag{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;font-weight:500}
+.article-hero h1{font-family:'Playfair Display',serif;font-size:clamp(28px,4.5vw,52px);font-weight:400;color:#f5f0e8;line-height:1.2;letter-spacing:-0.5px;margin-bottom:24px}
+.gold-divider{width:50px;height:1px;background:var(--gold);margin:0 auto}
+.article-body{padding:72px 2rem 80px;background:white}.article-content{max-width:720px;margin:0 auto}
+.article-intro{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:var(--dark);line-height:1.7;margin-bottom:36px;font-style:italic}
+.article-content p{font-size:15px;color:var(--mid);line-height:1.85;margin-bottom:22px;font-weight:300}
+.article-content h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:400;color:var(--dark);margin:44px 0 16px;line-height:1.3}
+.article-content blockquote{border-left:2px solid var(--gold);padding:16px 24px;margin:32px 0;background:var(--gold-pale);border-radius:0 8px 8px 0}
+.article-content blockquote p{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;font-style:italic;color:var(--dark);margin:0;line-height:1.65}
+.article-content ul{margin:0 0 22px 20px}.article-content ul li{font-size:15px;color:var(--mid);line-height:1.85;margin-bottom:8px;font-weight:300}
+.article-cta{padding:72px 2rem;background:var(--gold-pale)}.article-cta-inner{max-width:600px;margin:0 auto;text-align:center}
+.cta-eyebrow{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-weight:500}
+.article-cta h3{font-family:'Playfair Display',serif;font-size:30px;font-weight:400;color:var(--dark);margin-bottom:16px;line-height:1.3}
+.article-cta h3 em{font-style:normal;font-family:'Allura',cursive;color:var(--gold);font-size:1.1em;line-height:1;letter-spacing:0}
+.article-cta p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:28px;font-weight:300}
+.btn-primary{background:var(--gold);color:#fff;padding:13px 28px;border-radius:6px;font-size:13px;font-weight:500;text-decoration:none;letter-spacing:0.5px;display:inline-block;transition:opacity 0.2s}.btn-primary:hover{opacity:0.88}
+.btn-outline{border:1px solid rgba(47,79,63,0.25);color:var(--dark);padding:13px 28px;border-radius:6px;font-size:13px;font-weight:400;text-decoration:none;letter-spacing:0.5px;display:inline-block;margin-left:12px;transition:all 0.2s}.btn-outline:hover{border-color:var(--dark)}
+.site-footer{background:var(--dark);padding:48px 2rem 32px}.footer-inner{max-width:1100px;margin:0 auto}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-top:12px}
+.footer-copy{font-size:11px;color:rgba(245,240,232,0.25)}.footer-note a{color:rgba(194,164,111,0.4);text-decoration:none;font-size:11px}
+.footer-disclaimer{font-size:11px;color:rgba(245,240,232,0.18);line-height:1.6;margin-top:12px;font-weight:300}
+@media(max-width:600px){.btn-outline{margin-left:0;margin-top:10px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <svg class="logo-compass" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18.5" stroke="#C2A46F" stroke-width="0.9"/><circle cx="20" cy="20" r="12.5" stroke="#C2A46F" stroke-width="0.4" stroke-dasharray="2 3"/><circle cx="20" cy="20" r="7" stroke="#C2A46F" stroke-width="0.3" opacity="0.5"/><polygon points="20,4 21.8,19.5 20,21.5 18.2,19.5" fill="#C2A46F"/><polygon points="20,36 21.8,20.5 20,18.5 18.2,20.5" fill="#C2A46F" opacity="0.3"/><polygon points="4,20 19.5,18.2 21.5,20 19.5,21.8" fill="#C2A46F" opacity="0.3"/><polygon points="36,20 20.5,21.8 18.5,20 20.5,18.2" fill="#C2A46F" opacity="0.3"/><path d="M20 23 C20 23 16.5 20.5 16.5 18.5 C16.5 17 17.8 16.2 20 18 C22.2 16.2 23.5 17 23.5 18.5 C23.5 20.5 20 23 20 23Z" fill="#C2A46F" opacity="0.85"/></svg>
+      <span style="letter-spacing:0.2px">Find Your Compass</span><span style="font-family:'Allura',cursive;font-size:24px;color:#C2A46F;line-height:0.9;position:relative;top:3px;margin-left:1px"> Within</span>
+    </a>
+    <nav><a href="/">Home</a><a href="/">About</a><a href="/">Work With Me</a><a href="/">Resources</a><a href="../blog.html" class="active">Articles</a><a href="/" class="nav-cta">Get in Touch</a></nav>
+    <div class="hamburger" onclick="toggleMobileNav()" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</header>
+<div class="mobile-nav" id="mobileNav"><a href="/">Home</a><a href="/">About</a><a href="/">Work With Me</a><a href="/">Resources</a><a href="../blog.html">Articles</a><a href="/" class="nav-cta">Get in Touch</a></div>
+
+<section class="article-hero">
+  <div class="article-hero-inner">
+    <a href="../blog.html" class="back-link">&#8592; All articles</a>
+    <div class="article-tag">Life Design</div>
+    <h1>What would your life look like if you stopped building it around everyone else?</h1>
+    <div class="gold-divider"></div>
+  </div>
+</section>
+
+<section class="article-body">
+  <div class="article-content">
+    <p class="article-intro">What would your life look like if you stopped building it around everyone else's expectations?</p>
+
+    <p>Most people do not realise how much of their life is structured around someone else's voice until they sit down to design it from scratch and find they cannot.</p>
+
+    <p>Try this. Imagine for a moment that nobody is watching. No parents, no partner, no boss, no friends, no children, no colleagues. Just you, in a room, with a piece of paper, asked one question: what kind of life do you actually want?</p>
+
+    <p>If you went blank, you are not alone. Most people do. We have been so well-trained at building lives around external expectations that the question of what we want, on its own, with nobody else in the equation, feels almost impossible to answer.</p>
+
+    <p>That is the first thing the Compass Workbook is built to address. Not your career. Not your goals. The much deeper question of whose life you have been living.</p>
+
+    <h2>The cost of a borrowed direction</h2>
+
+    <p>There is a particular kind of tired that comes from succeeding at the wrong things. You hit the targets. You tick the boxes. You do what everyone said would make you happy, and then you wake up at thirty-eight, or forty-five, or fifty-two, and you cannot quite explain why none of it feels like yours.</p>
+
+    <p>It is not that you made bad choices. It is that you made choices, often very good ones, by someone else's measure of what good means. A good job. A good partner. A good house. A good schedule. All of it good, none of it specifically chosen for who you actually are.</p>
+
+    <p>This is what eight years of recruitment work made clear. People did not come confused because they had no options. They came confused because they had built their lives around what they thought they were supposed to want, and the gap between that and what they actually wanted had grown so wide that they could no longer see across it.</p>
+
+    <h2>Direction is not the same as ambition</h2>
+
+    <p>There is a difference between knowing what you are pushing toward and knowing what is yours. Ambition tells you to go faster. Direction tells you which way to go. Most career advice and most life advice is built around ambition. Push harder, aim higher, do more. Almost none of it asks the prior question: toward what, and for whom?</p>
+
+    <p>The Compass Workbook is built around three movements that take that question seriously.</p>
+
+    <p>The first movement is the Check-In. Eight areas of life, scored honestly, mapped visually as your Compass Map. Before you can pick a direction, you have to know where you actually are.</p>
+
+    <p>The second movement is the Deep Dive. This is where the workbook splits into modules that match where you scored lowest. Your values, your energy audit, your inner compass, your Ikigai, your life and wellbeing, your financial clarity, your career compass, and your limiting beliefs. You do not work through all of them. You work through the ones that match the areas where the real work is waiting.</p>
+
+    <p>The third movement is the ninety-day Compass Plan. One or two priority areas. A specific goal for each month. A weekly action small enough that you can actually do it. An accountability check-in. A clear measure of how you will know you have moved forward. Most importantly, a section that asks what might get in the way and how you will respond when it does, because that is what most plans leave out, and that is what most plans fail on.</p>
+
+    <h2>The Ikigai you keep hearing about</h2>
+
+    <p>If you have spent any time on the internet, you have seen the four-circle diagram. What you love. What you are good at. What the world needs. What you can be paid for. The intersection is supposed to be your purpose.</p>
+
+    <p>The workbook uses Ikigai as one of its frameworks, but not the way the internet does. The four circles are not the work. The work is the honest answers to the questions inside each circle. What do you actually love, not what should you love. What are you actually good at, not what does your CV say. What does the world around you actually need. What can you actually be paid for, given who you are and what you can build from where you stand.</p>
+
+    <p>When you answer those four sets of questions honestly, the overlap is not theoretical. It is concrete. It points to a real direction, in a real life, that you can actually walk toward.</p>
+
+    <h2>A different way of designing</h2>
+
+    <p>Most life design starts with the job. Then it tries to build a life around the job. The Compass Workbook starts with the life. The job is one chapter inside it.</p>
+
+    <blockquote>
+      <p>When the life comes first, the work has to fit into it. When the work comes first, the life is whatever is left over after work has taken its share.</p>
+    </blockquote>
+
+    <p>One of those produces tired people in good careers. The other produces whole people in lives they recognise.</p>
+
+    <h2>What you walk out with</h2>
+
+    <p>By the end of the workbook, you have three things. A visual map of where you are, an honest deep dive into the area or two where the real work lives, and a ninety-day plan you actually believe in because you built it.</p>
+
+    <p>The plan is not a manifesto. It is not a vision board. It is a set of small, honest, specific actions that move you in a direction that is yours. Reviewed at the end of each month. Adjusted as you learn. The goal is not perfection. The goal is forward motion, one honest step at a time.</p>
+
+    <p>This is the work the Compass Workbook is built for. The full route from where you are to where you can actually see yourself going. Not because someone told you to. Because you finally asked.</p>
+  </div>
+</section>
+
+<section class="article-cta">
+  <div class="article-cta-inner">
+    <div class="cta-eyebrow">The foundation</div>
+    <h3>The Compass <em>Workbook</em></h3>
+    <p>The starting point of the Find Your Compass Within library. It walks you from a whole-life Check-In through the deep work to a ninety-day plan that is genuinely yours, not someone else's idea of what your life should look like.</p>
+    <a href="/" class="btn-primary">Explore The Compass Workbook</a>
+    <a href="/" class="btn-outline">See all tools</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <span class="footer-copy">&#169; 2025 Find Your Compass Within &middot; Mel Cooper &middot; All rights reserved.</span>
+      <span class="footer-note"><a href="/terms">Terms &amp; Conditions</a></span>
+    </div>
+    <p class="footer-disclaimer">This is a coaching space, not a clinical service. If you need mental health support, please reach out to a qualified professional.</p>
+  </div>
+</footer>
+<script>
+function toggleMobileNav(){const n=document.getElementById('mobileNav'),h=document.getElementById('hamburger'),o=n.style.display==='flex';n.style.display=o?'none':'flex';const s=h.querySelectorAll('span');if(!o){s[0].style.transform='rotate(45deg) translate(4px,4px)';s[1].style.opacity='0';s[2].style.transform='rotate(-45deg) translate(4px,-4px)'}else{s[0].style.transform='';s[1].style.opacity='';s[2].style.transform=''}}
+</script>
+</body>
+</html>

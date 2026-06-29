@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Articles | Find Your Compass Within</title>
+<meta name="description" content="Honest writing on career, life and direction by Mel Cooper, life and career coach.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%232F4F3F'/><circle cx='50' cy='50' r='44' fill='none' stroke='%23C2A46F' stroke-width='2.5'/><circle cx='50' cy='50' r='30' fill='none' stroke='%23C2A46F' stroke-width='1' stroke-dasharray='4 6'/><polygon points='50,8 55,47 50,53 45,47' fill='%23C2A46F'/><polygon points='50,92 55,53 50,47 45,53' fill='%23C2A46F' opacity='.32'/><polygon points='8,50 47,45 53,50 47,55' fill='%23C2A46F' opacity='.32'/><polygon points='92,50 53,55 47,50 53,45' fill='%23C2A46F' opacity='.32'/><path d='M50 59C50 59 41 52 41 47C41 43 45 41 50 45C55 41 59 43 59 47C59 52 50 59 50 59Z' fill='%23C2A46F'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Allura&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#C2A46F;--gold-light:#d9be92;--gold-pale:#F7EFE4;
+  --dark:#2F4F3F;--dark2:#1e3829;--mid:#3a5e4a;--muted:#4a6858;
+  --cream:#F2E8D9;--warm-border:#E6D8C3;--text:#2F4F3F;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--cream)}
+::-webkit-scrollbar-thumb{background:var(--gold-light);border-radius:2px}
+
+/* ── HEADER ── */
+header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(242,232,217,0.95);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--warm-border)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:70px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--dark);text-decoration:none;display:flex;align-items:center;gap:8px;letter-spacing:0;line-height:1.1}
+.logo-compass{width:28px;height:28px;flex-shrink:0}
+nav{display:flex;align-items:center;gap:2rem}
+nav a{font-size:13px;font-weight:400;color:var(--mid);text-decoration:none;letter-spacing:0.3px;transition:color 0.2s}
+nav a:hover{color:var(--dark)}
+nav a.active{color:var(--dark);font-weight:500}
+.nav-cta{background:var(--gold);color:#fff!important;padding:9px 20px;border-radius:6px;font-weight:500!important;transition:opacity 0.2s!important}
+.nav-cta:hover{opacity:0.88}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:22px;height:1.5px;background:var(--dark);display:block;transition:all 0.3s;transform-origin:center}
+.mobile-nav{display:none;position:fixed;top:70px;left:0;right:0;background:var(--cream);border-bottom:0.5px solid var(--warm-border);padding:1.5rem 2rem;z-index:999;flex-direction:column;gap:1.2rem}
+.mobile-nav a{font-size:15px;color:var(--mid);text-decoration:none;padding:8px 0;border-bottom:0.5px solid var(--warm-border)}
+.mobile-nav .nav-cta{background:var(--gold);color:#fff;text-align:center;border-radius:6px;padding:12px;border:none;margin-top:8px}
+@media(max-width:768px){nav{display:none}.hamburger{display:flex}}
+
+/* ── HERO ── */
+.blog-hero{background:var(--dark);padding:160px 2rem 90px;position:relative;overflow:hidden;text-align:center}
+.blog-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(194,164,111,0.1) 0%,transparent 60%)}
+.blog-hero-inner{position:relative;z-index:2;max-width:700px;margin:0 auto}
+.eyebrow{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;font-weight:500}
+h1{font-family:'Playfair Display',serif;font-size:clamp(36px,5vw,64px);font-weight:300;color:#f5f0e8;line-height:1.15;letter-spacing:-1px;margin-bottom:24px}
+h1 em{font-style:normal;font-family:'Allura',cursive;color:var(--gold-light);font-size:1.08em;line-height:1;letter-spacing:0}
+.gold-divider{width:50px;height:1px;background:var(--gold);margin:0 auto 24px}
+.hero-sub{font-size:15px;color:rgba(245,240,232,0.5);line-height:1.85;font-weight:300}
+
+/* ── ARTICLES ── */
+.articles-section{padding:80px 2rem 100px;background:white}
+.container{max-width:1100px;margin:0 auto}
+.articles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:48px}
+.article-card{background:white;border:0.5px solid var(--warm-border);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;display:block;transition:transform 0.3s,box-shadow 0.3s}
+.article-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(47,79,63,0.1)}
+.card-img{height:170px;background:linear-gradient(135deg,var(--dark) 0%,var(--dark2) 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-img::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(194,164,111,0.12) 0%,transparent 60%)}
+.card-body{padding:26px}
+.card-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-weight:500}
+.card-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--dark);margin-bottom:10px;line-height:1.3}
+.card-excerpt{font-size:12.5px;color:var(--muted);line-height:1.75;font-weight:300;margin-bottom:20px}
+.card-read{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:500}
+.card-read::after{content:' \2192';font-size:13px;letter-spacing:0}
+.articles-note{text-align:center;margin-top:56px;font-size:12px;color:var(--muted);font-weight:300;letter-spacing:0.3px}
+@media(max-width:900px){.articles-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.articles-grid{grid-template-columns:1fr}}
+
+/* ── FOOTER ── */
+.site-footer{background:var(--dark);padding:48px 2rem 32px}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:48px;padding-bottom:36px;border-bottom:0.5px solid rgba(194,164,111,0.15)}
+.footer-brand{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;color:#f5f0e8;margin-bottom:8px}
+.footer-tagline{font-size:12px;color:rgba(245,240,232,0.4);line-height:1.7;margin-bottom:4px;font-weight:300}
+.footer-cred{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(194,164,111,0.55);font-weight:400}
+.footer-col h4{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(194,164,111,0.6);margin-bottom:16px;font-weight:500}
+.footer-col a{display:block;font-size:13px;color:rgba(245,240,232,0.45);text-decoration:none;margin-bottom:8px;font-weight:300;transition:color 0.2s}
+.footer-col a:hover{color:rgba(245,240,232,0.8)}
+.footer-bottom{padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.footer-copy{font-size:11px;color:rgba(245,240,232,0.25)}
+.footer-note{font-size:11px;color:rgba(245,240,232,0.2)}
+.footer-note a{color:rgba(194,164,111,0.4);text-decoration:none}
+.footer-note a:hover{color:var(--gold)}
+.footer-disclaimer{font-size:11px;color:rgba(245,240,232,0.18);line-height:1.6;margin-top:12px;font-weight:300}
+@media(max-width:768px){.footer-top{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <svg class="logo-compass" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18.5" stroke="#C2A46F" stroke-width="0.9"/>
+        <circle cx="20" cy="20" r="12.5" stroke="#C2A46F" stroke-width="0.4" stroke-dasharray="2 3"/>
+        <circle cx="20" cy="20" r="7" stroke="#C2A46F" stroke-width="0.3" opacity="0.5"/>
+        <polygon points="20,4 21.8,19.5 20,21.5 18.2,19.5" fill="#C2A46F"/>
+        <polygon points="20,36 21.8,20.5 20,18.5 18.2,20.5" fill="#C2A46F" opacity="0.3"/>
+        <polygon points="4,20 19.5,18.2 21.5,20 19.5,21.8" fill="#C2A46F" opacity="0.3"/>
+        <polygon points="36,20 20.5,21.8 18.5,20 20.5,18.2" fill="#C2A46F" opacity="0.3"/>
+        <path d="M20 23 C20 23 16.5 20.5 16.5 18.5 C16.5 17 17.8 16.2 20 18 C22.2 16.2 23.5 17 23.5 18.5 C23.5 20.5 20 23 20 23Z" fill="#C2A46F" opacity="0.85"/>
+      </svg>
+      <span style="letter-spacing:0.2px">Find Your Compass</span><span style="font-family:'Allura',cursive;font-size:24px;color:#C2A46F;line-height:0.9;position:relative;top:3px;margin-left:1px"> Within</span>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/">About</a>
+      <a href="/">Work With Me</a>
+      <a href="/">Resources</a>
+      <a href="blog.html" class="active">Articles</a>
+      <a href="/" class="nav-cta">Get in Touch</a>
+    </nav>
+    <div class="hamburger" onclick="toggleMobileNav()" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="/">Home</a>
+  <a href="/">About</a>
+  <a href="/">Work With Me</a>
+  <a href="/">Resources</a>
+  <a href="blog.html">Articles</a>
+  <a href="/" class="nav-cta">Get in Touch</a>
+</div>
+
+<!-- HERO -->
+<section class="blog-hero">
+  <div class="blog-hero-inner">
+    <div class="eyebrow">Articles</div>
+    <h1>Thinking on career,<br>life &amp; <em>direction</em></h1>
+    <div class="gold-divider"></div>
+    <p class="hero-sub">Honest writing on the crossroads moments, the identity questions, and the practical steps that follow. Written for the person in the middle of figuring it out.</p>
+  </div>
+</section>
+
+<!-- ARTICLES -->
+<section class="articles-section">
+  <div class="container">
+    <div class="articles-grid">
+
+      <a href="blog/compass-check-in.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><polygon points="22,5 24,20.5 22,22.5 20,20.5" fill="white"/><circle cx="22" cy="22" r="2.5" fill="white"/><polygon points="22,39 24,23.5 22,21.5 20,23.5" fill="white" opacity="0.5"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Life Design</div>
+          <h2 class="card-title">The area of your life you are most afraid to look at</h2>
+          <p class="card-excerpt">Score yourself honestly across eight areas of life. The shape that appears tells you more than you expect.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/what-would-your-life-look-like.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><circle cx="22" cy="22" r="10" stroke="white" stroke-width="0.8"/><line x1="22" y1="2" x2="22" y2="12" stroke="white" stroke-width="0.8"/><line x1="22" y1="32" x2="22" y2="42" stroke="white" stroke-width="0.8"/><line x1="2" y1="22" x2="12" y2="22" stroke="white" stroke-width="0.8"/><line x1="32" y1="22" x2="42" y2="22" stroke="white" stroke-width="0.8"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Life Design</div>
+          <h2 class="card-title">What would your life look like if you stopped building it around everyone else?</h2>
+          <p class="card-excerpt">Most people can't design their life from scratch because they've never been asked to. Here's where to start.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/why-clarity-is-not-what-you-are-missing.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><polyline points="10,30 16,20 22,25 28,15 34,20" stroke="white" stroke-width="0.8" fill="none"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Habit &amp; Routine</div>
+          <h2 class="card-title">Why clarity is not what you are missing</h2>
+          <p class="card-excerpt">You know what needs to change. So why does it still look the same ninety days later? On follow-through infrastructure.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/when-did-you-last-do-something-entirely-yours.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><path d="M22 14 C22 14 14 18 14 24 C14 28 17.5 31 22 31 C26.5 31 30 28 30 24 C30 18 22 14 22 14Z" stroke="white" stroke-width="0.8"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Parenthood</div>
+          <h2 class="card-title">When did you last do something that was entirely, unapologetically yours?</h2>
+          <p class="card-excerpt">Parents who give everything and keep nothing for themselves don't have more to give. They have less.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/what-are-you-passing-down-without-meaning-to.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><circle cx="22" cy="16" r="5" stroke="white" stroke-width="0.8"/><path d="M13 34 C13 28 17 25 22 25 C27 25 31 28 31 34" stroke="white" stroke-width="0.8"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Parenthood</div>
+          <h2 class="card-title">What are you passing down to your child without meaning to?</h2>
+          <p class="card-excerpt">The curriculum your children absorb is not the deliberate one. It's the one you run when you're not thinking.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/what-if-it-has-a-biological-name.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><path d="M14 22 Q18 14 22 22 Q26 30 30 22" stroke="white" stroke-width="0.8" fill="none"/><circle cx="22" cy="22" r="2" fill="white"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Women's Health</div>
+          <h2 class="card-title">What if everything you have been blaming yourself for has a biological name?</h2>
+          <p class="card-excerpt">The brain fog, anxiety, broken sleep. What the science of perimenopause actually says.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/the-decision-you-have-been-not-making.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><line x1="22" y1="10" x2="22" y2="24" stroke="white" stroke-width="0.8"/><circle cx="22" cy="30" r="2" fill="white"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Inner Work</div>
+          <h2 class="card-title">The decision you have been not making</h2>
+          <p class="card-excerpt">Not deciding is still a decision. The life you have is the life that not deciding produced.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/the-evidence-you-have-been-ignoring.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><polygon points="22,10 25,19 35,19 27,25 30,35 22,29 14,35 17,25 9,19 19,19" stroke="white" stroke-width="0.8" fill="none"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Inner Work</div>
+          <h2 class="card-title">The evidence you have been ignoring</h2>
+          <p class="card-excerpt">You already have more evidence of your capability than you are using. The work is building an accurate record.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/whose-voice-is-in-your-head-when-you-spend-money.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><circle cx="22" cy="22" r="8" stroke="white" stroke-width="0.8"/><line x1="22" y1="14" x2="22" y2="12" stroke="white" stroke-width="1.5"/><line x1="22" y1="30" x2="22" y2="32" stroke="white" stroke-width="1.5"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Inner Work</div>
+          <h2 class="card-title">Whose voice is in your head when you spend money?</h2>
+          <p class="card-excerpt">Your money beliefs were formed before you were twelve. Until the story changes, the spreadsheet doesn't.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/the-strength-you-have-stopped-counting.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><path d="M12 28 L18 16 L22 22 L26 12 L30 20 L34 16" stroke="white" stroke-width="0.8" fill="none"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Self-Discovery</div>
+          <h2 class="card-title">The strength you have stopped counting</h2>
+          <p class="card-excerpt">What comes so naturally to you that you've stopped seeing it as a strength? That's almost always the most important one.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/where-are-you-saying-yes-and-meaning-no.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><line x1="14" y1="22" x2="30" y2="22" stroke="white" stroke-width="0.8"/><line x1="22" y1="14" x2="22" y2="30" stroke="white" stroke-width="0.8"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Self-Discovery</div>
+          <h2 class="card-title">Where are you saying yes and meaning no?</h2>
+          <p class="card-excerpt">A yes given from empty is not generosity. It is depletion. On building limits that actually hold.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/who-are-you-now-that-you-are-stepping-back.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><line x1="12" y1="22" x2="32" y2="22" stroke="white" stroke-width="0.8"/><polyline points="24,16 32,22 24,28" stroke="white" stroke-width="0.8" fill="none"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Career</div>
+          <h2 class="card-title">Who are you now that you are stepping back?</h2>
+          <p class="card-excerpt">Returning to work is not picking up where you left off. It is stepping forward as someone who has changed.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+      <a href="blog/clarity-without-follow-through.html" class="article-card">
+        <div class="card-img"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity="0.22"><circle cx="22" cy="22" r="20" stroke="white" stroke-width="0.8"/><polygon points="22,5 24,20.5 22,22.5 20,20.5" fill="white"/><polygon points="4,20 19.5,18.2 21.5,20 19.5,21.8" fill="white" opacity="0.5"/><polygon points="40,20 24.5,21.8 22.5,20 24.5,18.2" fill="white" opacity="0.5"/></svg></div>
+        <div class="card-body">
+          <div class="card-tag">Life Design</div>
+          <h2 class="card-title">Clarity without follow-through is just a better-worded wish</h2>
+          <p class="card-excerpt">Most people have already had the clarity. The question is why it still looks the same. On building the second ingredient.</p>
+          <span class="card-read">Read article</span>
+        </div>
+      </a>
+
+    </div>
+    <p class="articles-note">More articles added regularly. <a href="/" style="color:var(--gold);text-decoration:none">Join the list</a> to know when something new lands.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">Find Your Compass Within</div>
+        <p class="footer-tagline">Helping you find the work and life you were made for.</p>
+        <p class="footer-cred">ICR Certified Life Coach</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <a href="/">Home</a>
+        <a href="/">About</a>
+        <a href="/">Work With Me</a>
+        <a href="/">Resources</a>
+        <a href="blog.html">Articles</a>
+        <a href="/">Get in Touch</a>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <a href="https://www.instagram.com/findyourcompasswithin/" target="_blank">Instagram</a>
+        <a href="https://www.facebook.com/share/1BB2Shr9yK/" target="_blank">Facebook</a>
+        <a href="/terms">Terms &amp; Conditions</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&#169; 2025 Find Your Compass Within &middot; Mel Cooper &middot; All rights reserved.</span>
+      <span class="footer-note"><a href="/terms">Terms &amp; Conditions</a> &nbsp;&middot;&nbsp; Website built with purpose</span>
+    </div>
+    <p class="footer-disclaimer">This is a coaching space, not a clinical service. If you need mental health support, please reach out to a qualified professional.</p>
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  const nav = document.getElementById('mobileNav');
+  const ham = document.getElementById('hamburger');
+  const isOpen = nav.style.display === 'flex';
+  nav.style.display = isOpen ? 'none' : 'flex';
+  const spans = ham.querySelectorAll('span');
+  if (!isOpen) {
+    spans[0].style.transform = 'rotate(45deg) translate(4px,4px)';
+    spans[1].style.opacity = '0';
+    spans[2].style.transform = 'rotate(-45deg) translate(4px,-4px)';
+  } else {
+    spans[0].style.transform = '';
+    spans[1].style.opacity = '';
+    spans[2].style.transform = '';
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Who are you now that you are stepping back? | Find Your Compass Within</title>
+<meta name="description" content="Returning to work after time away is not picking up where you left off. It is stepping forward as someone who has changed. On navigating re-entry with clarity.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%232F4F3F'/><circle cx='50' cy='50' r='44' fill='none' stroke='%23C2A46F' stroke-width='2.5'/><polygon points='50,8 55,47 50,53 45,47' fill='%23C2A46F'/><path d='M50 59C50 59 41 52 41 47C41 43 45 41 50 45C55 41 59 43 59 47C59 52 50 59 50 59Z' fill='%23C2A46F'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Allura&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C2A46F;--gold-light:#d9be92;--gold-pale:#F7EFE4;--dark:#2F4F3F;--mid:#3a5e4a;--muted:#4a6858;--cream:#F2E8D9;--warm-border:#E6D8C3}
+html{scroll-behavior:smooth}body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--dark);overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--cream)}::-webkit-scrollbar-thumb{background:var(--gold-light);border-radius:2px}
+header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(242,232,217,0.95);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--warm-border)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:70px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--dark);text-decoration:none;display:flex;align-items:center;gap:8px;line-height:1.1}.logo-compass{width:28px;height:28px;flex-shrink:0}
+nav{display:flex;align-items:center;gap:2rem}nav a{font-size:13px;font-weight:400;color:var(--mid);text-decoration:none;letter-spacing:0.3px;transition:color 0.2s}nav a:hover{color:var(--dark)}nav a.active{color:var(--dark);font-weight:500}
+.nav-cta{background:var(--gold);color:#fff!important;padding:9px 20px;border-radius:6px;font-weight:500!important;transition:opacity 0.2s!important}.nav-cta:hover{opacity:0.88}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}.hamburger span{width:22px;height:1.5px;background:var(--dark);display:block;transition:all 0.3s;transform-origin:center}
+.mobile-nav{display:none;position:fixed;top:70px;left:0;right:0;background:var(--cream);border-bottom:0.5px solid var(--warm-border);padding:1.5rem 2rem;z-index:999;flex-direction:column;gap:1.2rem}
+.mobile-nav a{font-size:15px;color:var(--mid);text-decoration:none;padding:8px 0;border-bottom:0.5px solid var(--warm-border)}.mobile-nav .nav-cta{background:var(--gold);color:#fff;text-align:center;border-radius:6px;padding:12px;border:none;margin-top:8px}
+@media(max-width:768px){nav{display:none}.hamburger{display:flex}}
+.article-hero{background:var(--dark);padding:160px 2rem 80px;text-align:center;position:relative;overflow:hidden}.article-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(194,164,111,0.09) 0%,transparent 65%)}
+.article-hero-inner{position:relative;z-index:2;max-width:740px;margin:0 auto}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(194,164,111,0.55);text-decoration:none;margin-bottom:32px;transition:color 0.2s}.back-link:hover{color:var(--gold)}
+.article-tag{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;font-weight:500}
+.article-hero h1{font-family:'Playfair Display',serif;font-size:clamp(28px,4.5vw,52px);font-weight:400;color:#f5f0e8;line-height:1.2;letter-spacing:-0.5px;margin-bottom:24px}
+.gold-divider{width:50px;height:1px;background:var(--gold);margin:0 auto}
+.article-body{padding:72px 2rem 80px;background:white}.article-content{max-width:720px;margin:0 auto}
+.article-intro{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:var(--dark);line-height:1.7;margin-bottom:36px;font-style:italic}
+.article-content p{font-size:15px;color:var(--mid);line-height:1.85;margin-bottom:22px;font-weight:300}
+.article-content h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:400;color:var(--dark);margin:44px 0 16px;line-height:1.3}
+.article-content blockquote{border-left:2px solid var(--gold);padding:16px 24px;margin:32px 0;background:var(--gold-pale);border-radius:0 8px 8px 0}
+.article-content blockquote p{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;font-style:italic;color:var(--dark);margin:0;line-height:1.65}
+.article-content ul{margin:0 0 22px 20px}.article-content ul li{font-size:15px;color:var(--mid);line-height:1.85;margin-bottom:8px;font-weight:300}
+.article-cta{padding:72px 2rem;background:var(--gold-pale)}.article-cta-inner{max-width:600px;margin:0 auto;text-align:center}
+.cta-eyebrow{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-weight:500}
+.article-cta h3{font-family:'Playfair Display',serif;font-size:30px;font-weight:400;color:var(--dark);margin-bottom:16px;line-height:1.3}
+.article-cta h3 em{font-style:normal;font-family:'Allura',cursive;color:var(--gold);font-size:1.1em;line-height:1;letter-spacing:0}
+.article-cta p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:28px;font-weight:300}
+.btn-primary{background:var(--gold);color:#fff;padding:13px 28px;border-radius:6px;font-size:13px;font-weight:500;text-decoration:none;letter-spacing:0.5px;display:inline-block;transition:opacity 0.2s}.btn-primary:hover{opacity:0.88}
+.btn-outline{border:1px solid rgba(47,79,63,0.25);color:var(--dark);padding:13px 28px;border-radius:6px;font-size:13px;font-weight:400;text-decoration:none;letter-spacing:0.5px;display:inline-block;margin-left:12px;transition:all 0.2s}.btn-outline:hover{border-color:var(--dark)}
+.site-footer{background:var(--dark);padding:48px 2rem 32px}.footer-inner{max-width:1100px;margin:0 auto}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-top:12px}
+.footer-copy{font-size:11px;color:rgba(245,240,232,0.25)}.footer-note a{color:rgba(194,164,111,0.4);text-decoration:none;font-size:11px}
+.footer-disclaimer{font-size:11px;color:rgba(245,240,232,0.18);line-height:1.6;margin-top:12px;font-weight:300}
+@media(max-width:600px){.btn-outline{margin-left:0;margin-top:10px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <svg class="logo-compass" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18.5" stroke="#C2A46F" stroke-width="0.9"/><circle cx="20" cy="20" r="12.5" stroke="#C2A46F" stroke-width="0.4" stroke-dasharray="2 3"/><circle cx="20" cy="20" r="7" stroke="#C2A46F" stroke-width="0.3" opacity="0.5"/><polygon points="20,4 21.8,19.5 20,21.5 18.2,19.5" fill="#C2A46F"/><polygon points="20,36 21.8,20.5 20,18.5 18.2,20.5" fill="#C2A46F" opacity="0.3"/><polygon points="4,20 19.5,18.2 21.5,20 19.5,21.8" fill="#C2A46F" opacity="0.3"/><polygon points="36,20 20.5,21.8 18.5,20 20.5,18.2" fill="#C2A46F" opacity="0.3"/><path d="M20 23 C20 23 16.5 20.5 16.5 18.5 C16.5 17 17.8 16.2 20 18 C22.2 16.2 23.5 17 23.5 18.5 C23.5 20.5 20 23 20 23Z" fill="#C2A46F" opacity="0.85"/></svg>
+      <span style="letter-spacing:0.2px">Find Your Compass</span><span style="font-family:'Allura',cursive;font-size:24px;color:#C2A46F;line-height:0.9;position:relative;top:3px;margin-left:1px"> Within</span>
+    </a>
+    <nav><a href="/">Home</a><a href="/">About</a><a href="/">Work With Me</a><a href="/">Resources</a><a href="../blog.html" class="active">Articles</a><a href="/" class="nav-cta">Get in Touch</a></nav>
+    <div class="hamburger" onclick="toggleMobileNav()" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</header>
+<div class="mobile-nav" id="mobileNav"><a href="/">Home</a><a href="/">About</a><a href="/">Work With Me</a><a href="/">Resources</a><a href="../blog.html">Articles</a><a href="/" class="nav-cta">Get in Touch</a></div>
+
+<section class="article-hero">
+  <div class="article-hero-inner">
+    <a href="../blog.html" class="back-link">&#8592; All articles</a>
+    <div class="article-tag">Career</div>
+    <h1>Who are you now that you are stepping back?</h1>
+    <div class="gold-divider"></div>
+  </div>
+</section>
+
+<section class="article-body">
+  <div class="article-content">
+    <p class="article-intro">You did not step away from work. You stepped into something. Who are you now that you are stepping back?</p>
+
+    <p>There is a story that gets told about career breaks that does harm. The story goes: you left, time passed, and now you need to get back to where you were. The gap is a problem to be explained, minimised, or apologised for. The goal is to return to the version of your career that existed before, as quickly as possible.</p>
+
+    <p>That story misrepresents almost everything about what actually happened. You did not pause. You changed. You made decisions, managed complexity, developed capabilities, and became someone different in the process. Re-entry is not a return. It is a new departure, from a different starting point than the one you left.</p>
+
+    <h2>What actually happened while you were away</h2>
+
+    <p>The years spent outside formal employment are not empty years. They are years in which a specific set of capabilities developed that the paid market rarely credits because it has no obvious category for them.</p>
+
+    <p>Project management at a level of resource constraint and ambiguity that most corporate environments do not approach. Negotiation, conflict resolution, and stakeholder management without the authority that organisations grant. Decision-making under conditions of incomplete information. Advocacy for someone who cannot advocate for themselves. Sustained attention to systems, needs, and outcomes over years.</p>
+
+    <p>These are not soft skills. They are the exact capabilities that senior roles require and that organisations consistently say are hard to find. The problem is not that you do not have them. The problem is that neither you nor the organisations you are approaching have a vocabulary for seeing them clearly.</p>
+
+    <blockquote>
+      <p>The same years can be called a gap or called a chapter. The words are not interchangeable. One is an absence. The other is a story.</p>
+    </blockquote>
+
+    <h2>The identity question underneath the practical one</h2>
+
+    <p>Most career re-entry support focuses on the practical: how to update a CV, how to explain the break, how to network back in. This matters, and the Re-Entry workbook covers it. But underneath the practical question is an identity question that, if left unaddressed, tends to undermine everything else.</p>
+
+    <p>That question is: who am I now? Not who was I before. Not who do I need to convince people I am. Who am I now, with these years behind me, these capabilities developed, these priorities clarified, and this knowledge of what I do and do not want next?</p>
+
+    <p>People who have not answered that question tend to approach re-entry apologetically. They frame the break as a problem. They understate what they bring. They aim lower than they should because they do not have a clear picture of what they are worth. They take the first thing that will have them rather than the thing that actually fits, and then wonder why it does not feel right.</p>
+
+    <h2>Reframing before you rebuild</h2>
+
+    <p>The Re-Entry workbook starts not with the CV but with the inventory. What did you actually do? What decisions did you make? What did you navigate that was genuinely hard? What capabilities did you develop that you did not have before? What do you know about yourself now, about what works for you, what does not, what you need in a role, and what kind of environment brings out your best, that you did not know before you left?</p>
+
+    <p>This inventory becomes the foundation for everything that follows. The CV, the application narrative, the interview answers, the salary conversation: all of it is more grounded when it is built on an honest, specific picture of what you bring rather than on an attempt to paper over what you did not do for a few years.</p>
+
+    <h2>What the market actually values</h2>
+
+    <p>The labour market has changed significantly in its attitude toward career breaks. Organisations that once treated gaps as red flags are increasingly treating them as unremarkable. LinkedIn added a Career Break category in 2022. Returnship programmes have proliferated. The demographic reality of an aging population and the prevalence of caregiving responsibilities have shifted the conversation.</p>
+
+    <p>That shift does not mean the bias has disappeared. It means it has reduced, and it continues to reduce. Which means the person entering re-entry now is in a better position than the person who entered it five years ago.</p>
+
+    <p>You are not returning to who you were. You are arriving as who you are now, wiser, deeper, more certain of what matters. That is not a consolation prize. It is the actual starting point.</p>
+  </div>
+</section>
+
+<section class="article-cta">
+  <div class="article-cta-inner">
+    <div class="cta-eyebrow">Step forward, not back</div>
+    <h3>The Re-Entry <em>Workbook</em></h3>
+    <p>An inventory of what you actually built while you were away, and the practical framework for re-entering work as the person you are now. Not an apology. A departure point.</p>
+    <a href="/" class="btn-primary">Explore The Re-Entry Workbook</a>
+    <a href="/" class="btn-outline">Browse the Unapologetic Series</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <span class="footer-copy">&#169; 2025 Find Your Compass Within &middot; Mel Cooper &middot; All rights reserved.</span>
+      <span class="footer-note"><a href="/terms">Terms &amp; Conditions</a></span>
+    </div>
+    <p class="footer-disclaimer">This is a coaching space, not a clinical service. If you need mental health support, please reach out to a qualified professional.</p>
+  </div>
+</footer>
+<script>
+function toggleMobileNav(){const n=document.getElementById('mobileNav'),h=document.getElementById('hamburger'),o=n.style.display==='flex';n.style.display=o?'none':'flex';const s=h.querySelectorAll('span');if(!o){s[0].style.transform='rotate(45deg) translate(4px,4px)';s[1].style.opacity='0';s[2].style.transform='rotate(-45deg) translate(4px,-4px)'}else{s[0].style.transform='';s[1].style.opacity='';s[2].style.transform=''}}
+</script>
+</body>
+</html>
