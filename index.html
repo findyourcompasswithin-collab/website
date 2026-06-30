@@ -2046,9 +2046,13 @@ const PRODUCT_INFO = {
 // Deep link to checkout from another page, e.g. the Compass Circle landing
 // page links to /?buy=compass-circle-perimenopause
 (function() {
-  var buyId = new URLSearchParams(window.location.search).get('buy');
+  var params = new URLSearchParams(window.location.search);
+  var buyId = params.get('buy');
   if (buyId && PRODUCT_INFO[buyId]) {
     window.addEventListener('load', function() { openCheckout(buyId); });
+  }
+  if (params.get('free') === '1') {
+    window.addEventListener('load', function() { openFwModal(); });
   }
 })();
 
