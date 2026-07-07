@@ -342,6 +342,17 @@ nav{flex:1;padding:8px 0}
           <div class="stat-label">Total planned</div>
         </div>
       </div>
+      <div class="cal-container" id="content-cal-container">
+        <div class="cal-header">
+          <button class="cal-nav-btn" onclick="changeContentMonth(-1)" title="Previous month">&larr;</button>
+          <div class="cal-title" id="content-cal-title">&middot;</div>
+          <button class="cal-nav-btn" onclick="changeContentMonth(1)" title="Next month">&rarr;</button>
+        </div>
+        <div class="cal-grid cal-dows">
+          <div class="cal-dow">Mon</div><div class="cal-dow">Tue</div><div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div><div class="cal-dow">Sun</div>
+        </div>
+        <div class="cal-grid" id="content-cal-days"></div>
+      </div>
       <div id="content-list">
         <div style="text-align:center;padding:32px"><div class="spinner"></div></div>
       </div>
@@ -899,6 +910,65 @@ async function loadCircle() {
 
 // ── Content Calendar ──────────────────────────────────────────────────────────
 let contentPosts = [];
+let contentCalMonth = (() => { const d = new Date(); d.setDate(1); return d; })();
+
+function changeContentMonth(delta) {
+  contentCalMonth = new Date(contentCalMonth.getFullYear(), contentCalMonth.getMonth() + delta, 1);
+  renderContentCal();
+}
+
+function renderContentCal() {
+  const title = contentCalMonth.toLocaleDateString('en-ZA', { month: 'long', year: 'numeric', timeZone: 'Africa/Johannesburg' });
+  document.getElementById('content-cal-title').textContent = title;
+
+  // Group posts by their due_date (YYYY-MM-DD); skip ones with no date set yet.
+  const byDate = {};
+  for (const p of contentPosts) {
+    if (!p.due_date) continue;
+    (byDate[p.due_date] = byDate[p.due_date] || []).push(p);
+  }
+
+  // Grid starts on the Monday on/before the 1st, 42 cells (6 weeks).
+  const firstOfMonth = new Date(contentCalMonth);
+  const mondayOffset = (firstOfMonth.getDay() + 6) % 7;
+  const start = new Date(firstOfMonth);
+  start.setDate(start.getDate() - mondayOffset);
+
+  const todayStr = ymd(new Date());
+  let html = '';
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    const ds = ymd(d);
+    const isOtherMonth = d.getMonth() !== contentCalMonth.getMonth();
+    const isToday      = ds === todayStr;
+    const dayPosts     = byDate[ds] || [];
+
+    let pillsHtml = '';
+    dayPosts.slice(0, 3).forEach(p => {
+      const cls     = p.posted ? 'cal-pill-confirmed' : 'cal-pill-pending';
+      const tooltip = `${p.platform} · ${p.post_type} · ${p.product}`;
+      pillsHtml += `<div class="cal-pill ${cls}" onclick="scrollToContentPost(${p.id})" title="${escHtml(tooltip)}">${escHtml(p.product)}</div>`;
+    });
+    if (dayPosts.length > 3) {
+      pillsHtml += `<div class="cal-more">+${dayPosts.length - 3} more</div>`;
+    }
+
+    html += `<div class="cal-day${isOtherMonth ? ' other-month' : ''}${isToday ? ' today' : ''}">
+      <div class="cal-day-num">${d.getDate()}</div>
+      ${pillsHtml}
+    </div>`;
+  }
+  document.getElementById('content-cal-days').innerHTML = html;
+}
+
+function scrollToContentPost(id) {
+  const el = document.querySelector(`[data-post-id="${id}"]`);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.classList.add('booking-highlight');
+  setTimeout(() => el.classList.remove('booking-highlight'), 1800);
+}
 
 async function loadContentCalendar() {
   const list = document.getElementById('content-list');
@@ -918,6 +988,8 @@ function renderContentCalendar() {
   const posted = contentPosts.filter(p => p.posted).length;
   document.getElementById('content-posted-count').textContent = posted;
   document.getElementById('content-total-count').textContent  = contentPosts.length;
+
+  renderContentCal();
 
   const list = document.getElementById('content-list');
   if (!contentPosts.length) {
@@ -982,6 +1054,7 @@ async function toggleContentPost(id, posted) {
     const row = document.querySelector(`[data-post-id="${id}"]`);
     if (row) row.classList.toggle('posted', posted);
     document.getElementById('content-posted-count').textContent = contentPosts.filter(x => x.posted).length;
+    renderContentCal();
   } else {
     showToast('Could not update, please try again');
   }
@@ -996,6 +1069,7 @@ async function setContentDueDate(id, dueDate) {
   if (res.ok) {
     const p = contentPosts.find(x => x.id === id);
     if (p) p.due_date = dueDate;
+    renderContentCal();
     showToast('Due date saved');
   } else {
     showToast('Could not save date');
