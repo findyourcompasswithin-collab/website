@@ -12,6 +12,9 @@
  * POST /api/admin  { action:'approveTime', bookingId, date, time }
  *                                          → confirm a custom-time request and
  *                                            email the client automatically
+ * GET  /api/admin?action=contentCalendar  → planned social/Pinterest posts
+ * POST /api/admin  { action:'toggleContentPost', id, posted }
+ * POST /api/admin  { action:'setContentDueDate', id, dueDate }
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -134,6 +137,17 @@ export default async function handler(req, res) {
 
       if (error) return res.status(500).json({ error: error.message });
       return res.status(200).json({ support: data || [] });
+    }
+
+    if (action === 'contentCalendar') {
+      const { data, error } = await supabase
+        .from('content_posts')
+        .select('id, week_number, product, platform, post_type, caption, due_date, posted, posted_at')
+        .order('week_number', { ascending: true })
+        .order('id', { ascending: true });
+
+      if (error) return res.status(500).json({ error: error.message });
+      return res.status(200).json({ posts: data || [] });
     }
 
     return res.status(400).json({ error: 'Unknown action' });
@@ -305,6 +319,32 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: result?.error || 'Sale fulfilment failed' });
       }
       return res.status(200).json({ success: true, duplicate: !!result.duplicate });
+    }
+
+    if (action === 'toggleContentPost') {
+      const { id, posted } = req.body;
+      if (!id) return res.status(400).json({ error: 'id required' });
+
+      const { error } = await supabase
+        .from('content_posts')
+        .update({ posted: !!posted, posted_at: posted ? new Date().toISOString() : null })
+        .eq('id', id);
+
+      if (error) return res.status(500).json({ error: error.message });
+      return res.status(200).json({ success: true });
+    }
+
+    if (action === 'setContentDueDate') {
+      const { id, dueDate } = req.body;
+      if (!id) return res.status(400).json({ error: 'id required' });
+
+      const { error } = await supabase
+        .from('content_posts')
+        .update({ due_date: dueDate || null })
+        .eq('id', id);
+
+      if (error) return res.status(500).json({ error: error.message });
+      return res.status(200).json({ success: true });
     }
 
     return res.status(400).json({ error: 'Unknown action' });
@@ -535,7 +575,7 @@ function buildCircleSummaryEmail({ packageName, weekNumber, totalWeeks, sessionD
 
   const renderList = (list, emptyText) => list.length
     ? `<ul style="font-family:'Outfit',sans-serif;font-size:13px;color:#2F4F3F;margin:6px 0 0;padding-left:20px;line-height:1.8">
-        ${list.map(r => `<li>${escapeHtmlMini(r.bookings?.client_name || '—')} <span style="color:#a89878;font-size:11px;">&middot; ${escapeHtmlMini(r.bookings?.client_email || '')}</span></li>`).join('')}
+        ${list.map(r => `<li>${escapeHtmlMini(r.bookings?.client_name || '(no name)')} <span style="color:#a89878;font-size:11px;">&middot; ${escapeHtmlMini(r.bookings?.client_email || '')}</span></li>`).join('')}
       </ul>`
     : `<p style="font-family:'Outfit',sans-serif;font-size:12px;color:#a89878;font-style:italic;margin:6px 0 0;">${emptyText}</p>`;
 

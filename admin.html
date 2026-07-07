@@ -96,6 +96,25 @@ nav{flex:1;padding:8px 0}
 .cal-more{font-size:9px;color:rgba(245,240,232,0.4);padding:1px 6px;font-style:italic}
 .booking-item.booking-highlight{box-shadow:0 0 0 2px rgba(194,164,111,0.6);transition:box-shadow 0.3s}
 
+/* Content Calendar */
+.content-week{margin-bottom:24px}
+.content-week-title{font-family:'Playfair Display',serif;font-size:16px;color:#C2A46F;margin-bottom:10px;padding-bottom:6px;border-bottom:0.5px solid rgba(255,255,255,0.08)}
+.content-row{background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 18px;margin-bottom:8px}
+.content-row.posted{opacity:0.5}
+.content-row-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.content-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;font-weight:500;white-space:nowrap}
+.content-tag-platform{background:rgba(139,74,107,0.15);color:#c08fa3}
+.content-tag-type{background:rgba(194,164,111,0.15);color:#C2A46F}
+.content-product{font-size:13px;font-weight:500;color:#F2E8D9;flex:1;min-width:140px}
+.content-caption{font-size:12px;color:rgba(245,240,232,0.7);line-height:1.7;white-space:pre-wrap;margin:4px 0 10px}
+.content-caption summary{cursor:pointer;font-size:11px;color:rgba(194,164,111,0.8);list-style:none}
+.content-caption summary::-webkit-details-marker{display:none}
+.content-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.content-checkbox-label{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(245,240,232,0.6);cursor:pointer;white-space:nowrap}
+.content-date-input{background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.12);border-radius:5px;padding:5px 8px;font-size:11px;color:#F2E8D9;font-family:'Outfit',sans-serif}
+.copy-btn{background:none;border:0.5px solid rgba(255,255,255,0.12);border-radius:5px;padding:5px 10px;font-size:11px;color:rgba(245,240,232,0.5);cursor:pointer;font-family:'Outfit',sans-serif}
+.copy-btn:hover{border-color:rgba(194,164,111,0.4);color:#C2A46F}
+
 /* Circle Attendance */
 .circle-call{background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:18px 22px;margin-bottom:14px}
 .circle-call.past{opacity:0.55}
@@ -188,6 +207,7 @@ nav{flex:1;padding:8px 0}
       <div class="nav-item" onclick="showTab('invite')">&#128233; Send Invite</div>
       <div class="nav-item" onclick="showTab('test')">&#128181; Sales Submission</div>
       <div class="nav-item" onclick="showTab('circle')">&#128101; Circle Attendance</div>
+      <div class="nav-item" onclick="showTab('content')">&#128198; Content Calendar</div>
       <div class="nav-item" onclick="showTab('blocked')">&#128683; Blocked Dates</div>
     </nav>
     <div class="sidebar-foot">
@@ -304,6 +324,25 @@ nav{flex:1;padding:8px 0}
       <div class="page-title">Circle Attendance</div>
       <div class="page-sub">Who is attending each weekly call, who needs the replay, and who has not yet responded.</div>
       <div id="circle-list">
+        <div style="text-align:center;padding:32px"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- Content Calendar tab -->
+    <div class="tab-pane" id="tab-content">
+      <div class="page-title">Content Calendar</div>
+      <div class="page-sub">Instagram, Facebook, and Pinterest posting plan. Mark each post done as you go, this is a private tracker only, nothing posts automatically.</div>
+      <div class="stats-row" style="grid-template-columns:repeat(2,1fr)">
+        <div class="stat">
+          <div class="stat-num" id="content-posted-count">&middot;</div>
+          <div class="stat-label">Posted</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="content-total-count">&middot;</div>
+          <div class="stat-label">Total planned</div>
+        </div>
+      </div>
+      <div id="content-list">
         <div style="text-align:center;padding:32px"><div class="spinner"></div></div>
       </div>
     </div>
@@ -441,6 +480,7 @@ function showTab(name) {
   document.getElementById(`tab-${name}`).classList.add('active');
   event.currentTarget.classList.add('active');
   if (name === 'circle') loadCircle();
+  if (name === 'content') loadContentCalendar();
 }
 
 // ── Bookings ──────────────────────────────────────────────────────────────────
@@ -838,7 +878,7 @@ async function loadCircle() {
                       : m.status === 'replay'    ? 'Replay'
                       :                            'Pending';
         return `<div class="circle-row">
-          <span class="circle-row-name">${escHtml(m.bookings?.client_name || '—')}</span>
+          <span class="circle-row-name">${escHtml(m.bookings?.client_name || '(no name)')}</span>
           <span class="circle-row-email">${escHtml(m.bookings?.client_email || '')}</span>
           <span class="circle-pill ${pillCls}">${pillTxt}</span>
         </div>`;
@@ -854,6 +894,122 @@ async function loadCircle() {
     }).join('');
   } catch (e) {
     list.innerHTML = `<div class="circle-empty">Could not load circle attendance: ${escHtml(e.message || 'unknown error')}</div>`;
+  }
+}
+
+// ── Content Calendar ──────────────────────────────────────────────────────────
+let contentPosts = [];
+
+async function loadContentCalendar() {
+  const list = document.getElementById('content-list');
+  list.innerHTML = '<div style="text-align:center;padding:32px"><div class="spinner"></div></div>';
+  try {
+    const res  = await fetch('/api/admin?action=contentCalendar', { headers: authHeader() });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'failed');
+    contentPosts = data.posts || [];
+    renderContentCalendar();
+  } catch (e) {
+    list.innerHTML = `<div class="empty-state">Could not load content calendar: ${escHtml(e.message || 'unknown error')}</div>`;
+  }
+}
+
+function renderContentCalendar() {
+  const posted = contentPosts.filter(p => p.posted).length;
+  document.getElementById('content-posted-count').textContent = posted;
+  document.getElementById('content-total-count').textContent  = contentPosts.length;
+
+  const list = document.getElementById('content-list');
+  if (!contentPosts.length) {
+    list.innerHTML = '<div class="empty-state">No content plan loaded yet. Run content-calendar-seed.sql in Supabase.</div>';
+    return;
+  }
+
+  // Group by week_number, preserving the order the API already returned.
+  const weeks = [];
+  const byWeek = {};
+  for (const p of contentPosts) {
+    if (!byWeek[p.week_number]) {
+      byWeek[p.week_number] = [];
+      weeks.push(p.week_number);
+    }
+    byWeek[p.week_number].push(p);
+  }
+
+  list.innerHTML = weeks.map(w => {
+    const rows = byWeek[w];
+    const products = [...new Set(rows.map(r => r.product))];
+    const title = w == 0 ? 'Setup' : (w == 13 ? 'Bundle Spotlight' : products.join(' / '));
+
+    const rowsHtml = rows.map(r => {
+      const dueVal = r.due_date || '';
+      return `<div class="content-row${r.posted ? ' posted' : ''}" data-post-id="${r.id}">
+        <div class="content-row-head">
+          <span class="content-tag content-tag-platform">${escHtml(r.platform)}</span>
+          <span class="content-tag content-tag-type">${escHtml(r.post_type)}</span>
+          <span class="content-product">${escHtml(r.product)}</span>
+        </div>
+        <details class="content-caption">
+          <summary>Show caption</summary>
+          <div style="margin-top:8px">${escHtml(r.caption)}</div>
+        </details>
+        <div class="content-actions">
+          <label class="content-checkbox-label">
+            <input type="checkbox" ${r.posted ? 'checked' : ''} onchange="toggleContentPost(${r.id}, this.checked)"> Posted
+          </label>
+          <input type="date" class="content-date-input" value="${dueVal}" onchange="setContentDueDate(${r.id}, this.value)">
+          <button class="copy-btn" onclick="copyCaption(${r.id})">Copy caption</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="content-week">
+      <div class="content-week-title">Week ${w} &middot; ${escHtml(title)}</div>
+      ${rowsHtml}
+    </div>`;
+  }).join('');
+}
+
+async function toggleContentPost(id, posted) {
+  const res = await fetch('/api/admin', {
+    method:  'POST',
+    headers: authHeader(),
+    body:    JSON.stringify({ action: 'toggleContentPost', id, posted }),
+  });
+  if (res.ok) {
+    const p = contentPosts.find(x => x.id === id);
+    if (p) p.posted = posted;
+    const row = document.querySelector(`[data-post-id="${id}"]`);
+    if (row) row.classList.toggle('posted', posted);
+    document.getElementById('content-posted-count').textContent = contentPosts.filter(x => x.posted).length;
+  } else {
+    showToast('Could not update, please try again');
+  }
+}
+
+async function setContentDueDate(id, dueDate) {
+  const res = await fetch('/api/admin', {
+    method:  'POST',
+    headers: authHeader(),
+    body:    JSON.stringify({ action: 'setContentDueDate', id, dueDate }),
+  });
+  if (res.ok) {
+    const p = contentPosts.find(x => x.id === id);
+    if (p) p.due_date = dueDate;
+    showToast('Due date saved');
+  } else {
+    showToast('Could not save date');
+  }
+}
+
+async function copyCaption(id) {
+  const p = contentPosts.find(x => x.id === id);
+  if (!p) return;
+  try {
+    await navigator.clipboard.writeText(p.caption);
+    showToast('Caption copied');
+  } catch (e) {
+    showToast('Could not copy, select the text manually');
   }
 }
 
