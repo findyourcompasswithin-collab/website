@@ -127,7 +127,7 @@ export const PRODUCTS = {
 
   // ── STILL ME SERIES ─────────────────────────────────────────────────────────
   'still-me': {
-    name: 'Still Me: Finding Your Compass as a Parent',
+    name: 'Still Me: Finding Yourself Again as a Parent',
     displayName: 'Still Me',
     price: 35.00,
     type: 'digital',

@@ -264,7 +264,7 @@ function fileDisplayName(fileName) {
     'strength-finder.pdf':        'The Strength Finder',
     'boundary-blueprint.pdf':     'The Boundary Blueprint',
     're-entry.pdf':               'The Re-Entry Workbook',
-    'still-me.pdf':               'Still Me: Finding Your Compass as a Parent',
+    'still-me.pdf':               'Still Me: Finding Yourself Again as a Parent',
     'mother-behind-the-role.pdf': 'The Mother Behind the Role',
     'perimenopause-pivot.pdf':    'The Perimenopause Pivot',
   };
